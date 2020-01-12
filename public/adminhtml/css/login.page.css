@@ -1,0 +1,163 @@
+@font-face {
+  font-family: Nunito;
+  src: url(/fonts/Nunito-Regular.ttf?d2e691bc4a2b696929172cb3d22ce8ba);
+}
+
+body {
+  font-family: Nunito, sans-serif !important;
+}
+
+/**
+ * Override style login page
+ */
+
+.checkbox label::before {
+  background: #fff3;
+}
+
+.login-sidebar {
+  max-height: 50%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  background: transparent;
+}
+
+.login-sidebar .white-box {
+  box-shadow: 0px 0px 30px 2px #000000a6;
+  background: #fff;
+  padding: 0;
+}
+
+.login-sidebar .white-box .form-horizontal #dmovieLogo {
+  background: #fff;
+  padding: 25px 10px;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group {
+  margin: 25px 25px;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control {
+  color: #0375b4;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control::-webkit-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #01a4a099;
+  opacity: 1;
+  /* Firefox */
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control::-moz-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #01a4a099;
+  opacity: 1;
+  /* Firefox */
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control:-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #01a4a099;
+  opacity: 1;
+  /* Firefox */
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control::-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #01a4a099;
+  opacity: 1;
+  /* Firefox */
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #01a4a099;
+  opacity: 1;
+  /* Firefox */
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #01a4a099;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .form-control::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #01a4a099;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group button[type=submit] {
+  background: #01a5a0;
+  border: none;
+  border-radius: 0;
+}
+
+.login-sidebar .white-box .form-horizontal .form-group .checkbox-primary input[type=checkbox]:checked + label::after {
+  background: #01a5a0;
+}
+
+.social a.btn {
+  padding: 0;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  -webkit-transition: background 0.3s ease-out;
+  transition: background 0.3s ease-out;
+}
+
+.social .btn-facebook:hover {
+  background: #1341b3 !important;
+}
+
+.social .btn-googleplus:hover {
+  background: #c90011 !important;
+}
+
+.font-size-1-55 {
+  font-size: 1.55rem !important;
+}
+
+.color-313131 {
+  color: #313131 !important;
+}
+
+.background-fff {
+  background: #fff !important;
+}
+
+.m-0 {
+  margin: 0 !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;
+}
+
+.mr-0 {
+  margin-right: 0 !important;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.ml--15 {
+  margin-left: -15px !important;
+}
+
+.mr--15 {
+  margin-right: -15px !important;
+}
+
+.mb-15 {
+  margin-bottom: 15px !important;
+}
+
