@@ -12,14 +12,14 @@ $(document).ready(function () {
         var currentStyle = $(this).attr('data-theme');
         store('theme', currentStyle);
         $('#theme').attr({
-            href: 'css/colors/' + currentStyle + '.css'
+            href: 'adminhtml/assets/css/colors/' + currentStyle + '.css'
         })
     });
 
     var currentTheme = get('theme');
     if (currentTheme) {
         $('#theme').attr({
-            href: 'css/colors/' + currentTheme + '.css'
+            href: 'adminhtml/assets/css/colors/' + currentTheme + '.css'
         });
     }
     // color selector
@@ -40,14 +40,14 @@ $(document).ready(function () {
         var currentStyle = $(this).attr('data-theme');
         store('theme', currentStyle);
         $('#theme').attr({
-            href: 'css/colors/' + currentStyle + '.css'
+            href: 'adminhtml/assets/css/colors/' + currentStyle + '.css'
         })
     });
 
     var currentTheme = get('theme');
     if (currentTheme) {
         $('#theme').attr({
-            href: 'css/colors/' + currentTheme + '.css'
+            href: 'adminhtml/assets/css/colors/' + currentTheme + '.css'
         });
     }
     // color selector

@@ -1,13 +1,9 @@
 <!-- ============================================================== -->
 <!-- All Jquery -->
 <!-- ============================================================== -->
-<script src="{{ asset('adminhtml/assets/plugins/bower_components/jquery/jquery.min.js') }}"></script>
-<!-- Bootstrap Core JavaScript -->
-<script src="{{ asset('adminhtml/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('adminhtml/js/adminjs.js') }}"></script>
 <!-- Menu Plugin JavaScript -->
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
-<!--slimscroll JavaScript -->
-<script src="{{ asset('adminhtml/assets/js/jquery.slimscroll.js') }}"></script>
 <!--Wave Effects -->
 <script src="{{ asset('adminhtml/assets/js/waves.js') }}"></script>
 <!--Counter js -->
@@ -24,11 +20,12 @@
 <script src='{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/fullcalendar.min.js') }}'></script>
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/cal-init.js') }}"></script>
 <!-- Custom Theme JavaScript -->
-<script src="{{ asset('adminhtml/assets/js/custom.min.js') }}"></script>
+<script src="{{ asset('adminhtml/assets/js/custom.js') }}"></script>
 <script src="{{ asset('adminhtml/assets/js/dashboard1.js') }}"></script>
 <!-- Custom tab JavaScript -->
 <script src="{{ asset('adminhtml/assets/js/cbpFWTabs.js') }}"></script>
 <script type="text/javascript">
+
     (function() {
         [].slice.call(document.querySelectorAll('.sttabs')).forEach(function(el) {
             new CBPFWTabs(el);

@@ -1,5 +1,7 @@
 {
+    "/adminhtml/js/adminjs.js": "/adminhtml/js/adminjs.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/adminhtml/css/login.page.css": "/adminhtml/css/login.page.css"
+    "/adminhtml/css/login.page.css": "/adminhtml/css/login.page.css",
+    "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css"
 }

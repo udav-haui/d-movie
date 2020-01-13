@@ -1,7 +1,7 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert*/
 
-$(document).ready(function () {
+$(document).ready(function ($) {
 
     "use strict";
 
@@ -204,7 +204,7 @@ $(document).ready(function () {
         $("#recoverform").fadeIn();
     });
 
-    /* ================================================================= 
+    /* =================================================================
         Update 1.5
         this is for close icon when navigation open in mobile view
     ================================================================= */

@@ -1,0 +1,41 @@
+@font-face {
+    font-family: Nunito;
+    src: url("fonts/Nunito-Regular.ttf");
+}
+$placeHolderColor: #01a4a099;
+$inputColor: #0375b4;
+$mainColor: #01a5a0;
+
+body {
+    font-family: Nunito, sans-serif !important;
+}
+
+.logo-img {
+    position: relative;
+    width: 40px !important;
+    margin-left: 15px;
+
+    img {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+    }
+}
+.logo-text {
+    position: absolute;
+    text-transform: none;
+    top: 15%;
+}
+.top-left-part {
+    width: 145px !important;
+}
+@media (max-width: 767px) {
+    .top-left-part {
+        width: auto !important;
+    }
+}
