@@ -97,5 +97,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Magento" />
+    <orderEntry type="module" module-name="Magento" />
+    <orderEntry type="module" module-name="Magento" />
+    <orderEntry type="module" module-name="Magento" />
   </component>
 </module>

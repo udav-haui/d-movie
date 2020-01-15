@@ -4,10 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Class CreateSocialFacebookAccountsTable
- */
-class CreateSocialAccountsTable extends Migration
+class CreatePermissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,10 +13,12 @@ class CreateSocialAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('social_accounts', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index()->unsigned();
-            $table->string('provider_user_id');
-            $table->string('provider');
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('name');
+            $table->string('permission_code');
+            $table->string('description');
+            $table->smallInteger('role_id');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateSocialAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('social_accounts');
+        Schema::dropIfExists('permissions');
     }
 }

@@ -45,6 +45,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        \Session::put('prefix', request()->route()->getPrefix());
         return view('admin.auth.login');
     }
 }

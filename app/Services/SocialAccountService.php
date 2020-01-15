@@ -20,7 +20,7 @@ class SocialAccountService
      * @param string $provider
      * @return mixed
      */
-    public function createOrGetUser(ProviderUser $providerUser, $provider)
+    public function createOrGetUser(ProviderUser $providerUser, $provider, $accountType, $state)
     {
         $account = SocialAccount::whereProvider($provider)
             ->whereProviderUserId($providerUser->getId())
@@ -36,8 +36,10 @@ class SocialAccountService
             if (!$user) {
                 $user = User::create([
                     'email' => $providerUser->getEmail(),
+                    'account_type' => $accountType,
                     'name' => $providerUser->getName(),
                     'password' => bcrypt(rand(1, 10000)),
+                    'state' => $state
                 ]);
             }
 

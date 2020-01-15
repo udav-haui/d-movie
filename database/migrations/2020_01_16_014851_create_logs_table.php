@@ -4,10 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Class CreateSocialFacebookAccountsTable
- */
-class CreateSocialAccountsTable extends Migration
+class CreateLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,10 +13,12 @@ class CreateSocialAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('social_accounts', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index()->unsigned();
-            $table->string('provider_user_id');
-            $table->string('provider');
+        Schema::create('logs', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->text('message');
+            $table->string('action');
+            $table->string('target');
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateSocialAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('social_accounts');
+        Schema::dropIfExists('logs');
     }
 }

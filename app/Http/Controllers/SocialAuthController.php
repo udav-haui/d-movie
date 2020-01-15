@@ -34,7 +34,12 @@ class SocialAuthController extends Controller
             return redirect($prefix . '/login');
         }
         $providerUser = Socialite::driver($provider)->stateless()->user();
-        $user = $service->createOrGetUser($providerUser, $provider);
+        $user = $service->createOrGetUser(
+            $providerUser,
+            $provider,
+            $prefix == '/admin' ? 1 : 2,
+            $prefix == '/admin' ? -1 : 1
+        );
         auth()->login($user, true);
         return redirect($prefix . '/');
     }

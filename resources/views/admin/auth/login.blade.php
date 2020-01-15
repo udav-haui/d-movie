@@ -72,7 +72,7 @@
                     <div class="col-md-12">
                         <div class="checkbox checkbox-primary pull-left p-t-0">
                             <input id="checkbox-signup" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label for="checkbox-signup"> {{ __('Remember me') }} </label>
+                            <label for="checkbox-signup select-none"> {{ __('Remember me') }} </label>
                         </div>
                         <a href="javascript:void(0)" id="to-recover" class="text-dark pull-right"><i class="fa fa-lock m-r-5"></i> {{ __('Forgot Your Password?') }}</a>
                     </div>
@@ -97,11 +97,6 @@
                                 <i aria-hidden="true" class="fa fa-google-plus"></i>
                             </a>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group m-b-0 m-0 background-fff p-t-10 p-b-10">
-                    <div class="col-sm-12 text-center">
-                        <p class="m-b-0">{{ __('Don\'t have an account?') }} <a href="{{ route('register') }}" class="text-primary m-l-5"><b>{{ __('Sign Up') }}</b></a></p>
                     </div>
                 </div>
             </form>
