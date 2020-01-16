@@ -1,25 +1,18 @@
 // Theme color settings
 $(document).ready(function () {
-    function store(name, val) {
-        if (typeof (Storage) !== "undefined") {
-            localStorage.setItem(name, val);
-        } else {
-            window.alert('Please use a modern browser to properly view this template!');
-        }
-    }
     $("*[data-theme]").click(function (e) {
         e.preventDefault();
         var currentStyle = $(this).attr('data-theme');
         store('theme', currentStyle);
         $('#theme').attr({
-            href: 'adminhtml/assets/css/colors/' + currentStyle + '.css'
+            href: '/adminhtml/assets/css/colors/' + currentStyle + '.css'
         })
     });
 
     var currentTheme = get('theme');
     if (currentTheme) {
         $('#theme').attr({
-            href: 'adminhtml/assets/css/colors/' + currentTheme + '.css'
+            href: '/adminhtml/assets/css/colors/' + currentTheme + '.css'
         });
     }
     // color selector
@@ -40,14 +33,14 @@ $(document).ready(function () {
         var currentStyle = $(this).attr('data-theme');
         store('theme', currentStyle);
         $('#theme').attr({
-            href: 'adminhtml/assets/css/colors/' + currentStyle + '.css'
+            href: '/adminhtml/assets/css/colors/' + currentStyle + '.css'
         })
     });
 
     var currentTheme = get('theme');
     if (currentTheme) {
         $('#theme').attr({
-            href: 'adminhtml/assets/css/colors/' + currentTheme + '.css'
+            href: '/adminhtml/assets/css/colors/' + currentTheme + '.css'
         });
     }
     // color selector
@@ -56,3 +49,10 @@ $(document).ready(function () {
         $(this).addClass('working')
     });
 });
+function store(name, val) {
+    if (typeof (Storage) !== "undefined") {
+        localStorage.setItem(name, val);
+    } else {
+        window.alert('Please use a modern browser to properly view this template!');
+    }
+}

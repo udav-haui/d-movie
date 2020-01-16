@@ -193,24 +193,20 @@
                             <div class="u-text">
                                 <h4>{{ auth()->user()->name }}</h4>
                                 <p class="text-muted">{{ auth()->user()->email }}</p>
-                                <a href="profile.html" class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a></div>
+                                <a href="/admin/user/{{ auth()->user()->id }}" class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a></div>
                         </div>
                     </li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#"><i class="ti-user"></i> My Profile</a></li>
-                    <li><a href="#"><i class="ti-wallet"></i> My Balance</a></li>
-                    <li><a href="#"><i class="ti-email"></i> Inbox</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="#"><i class="ti-settings"></i> Account Setting</a></li>
                     <li role="separator" class="divider"></li>
                     <li>
                         <a href="javascript:void(0);"
-                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                           onclick="event.preventDefault();$('.logout-form').submit();">
                             <i class="fa fa-power-off"></i>
                             {{ __('Logout') }}
                         </a>
                     </li>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form class="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </ul>

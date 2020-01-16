@@ -40,3 +40,27 @@ body {
   }
 }
 
+.btn {
+  -webkit-transition: 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.background-main-color {
+  background: #01a5a0 !important;
+}
+
+.border-none {
+  border: none !important;
+}
+
+blockquote {
+  border: none;
+  border-left: none !important;
+  font-size: 1.35rem;
+  font-style: italic;
+}
+

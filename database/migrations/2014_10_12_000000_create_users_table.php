@@ -20,11 +20,13 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable(true);
             $table->string('email')->nullable(true)->unique();
             $table->string('password');
+            $table->smallInteger('gender')->nullable(true);
             $table->string('phone')->nullable(true);
             $table->string('address')->nullable(true);
             $table->text('avatar')->nullable(true);
             $table->date('dob')->nullable(true);
             $table->smallInteger('state');
+            $table->string('description')->nullable(true);
             $table->smallInteger('role_id')->unsigned()->index()->nullable(true);
             $table->rememberToken();
             $table->timestamps();

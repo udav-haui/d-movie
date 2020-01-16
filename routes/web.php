@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    \Session::put('prefix', request()->route()->getPrefix());
-
-    return view('welcome');
+    return redirect('/admin/login');
 });
 Route::group(['middleware' => 'locale'], function () {
     Route::get('/switch-language/{lang}', 'LanguageController@switch')
@@ -16,6 +15,14 @@ Route::group(['middleware' => 'locale'], function () {
         'prefix' => 'admin'
     ], function () {
         Route::get('/', 'DashboardController@index');
+        /**
+         * USER SESSION
+         */
+        Route::resource('user', 'Auth\UserController');
+        Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+        Route::post('login', 'Auth\LoginController@login');
+        Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
         Auth::routes();
     });
 });

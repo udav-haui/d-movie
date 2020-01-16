@@ -39,3 +39,23 @@ body {
         width: auto !important;
     }
 }
+.btn {
+    transition: .25s ease-in-out;
+}
+.cursor-pointer {
+    cursor: pointer !important;
+}
+.background-main-color {
+    background: $mainColor !important;
+}
+.border-none {
+    border: none !important;
+}
+blockquote {
+    border: none;
+    border-left: none !important;
+    font-size: 1.35rem;
+    font-style: italic;
+}
+
+// Profile page
