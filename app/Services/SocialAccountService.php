@@ -37,6 +37,7 @@ class SocialAccountService
                 $user = User::create([
                     'email' => $providerUser->getEmail(),
                     'account_type' => $accountType,
+                    'can_change_username' => 1,
                     'name' => $providerUser->getName(),
                     'password' => bcrypt(rand(1, 10000)),
                     'state' => $state

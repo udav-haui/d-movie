@@ -44,9 +44,9 @@
                     </div>
                     <hr>
                     <h4 class="font-bold m-t-30">{{ __('Description') }}</h4>
-                    <p class="m-t-30">
-                        {!! $user->description ?? '<blockquote>' . __('This user have not say anything!') . '</blockquote>' !!}
-                    </p>
+                    <blockquote class="m-t-30">
+                        {{ $user->description ?? __('This user have not say anything!') }}
+                    </blockquote>
                 </div>
             </div>
         </div>
@@ -68,52 +68,116 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="settings">
-                        <form class="form-horizontal form-material">
-                            <div class="form-group">
-                                <label class="col-md-12" for="name">{{ __('Full Name') }}</label>
-                                <div class="col-md-12">
-                                    <input type="text" placeholder="{{ __('Input your name') }}"
-                                           class="form-control form-control-line"
-                                           value="{{ old('name', $user->name) }}" name="name"
-                                    />
+                        <form class="form-horizontal form-material" id="user_data_form"
+                              method="POST"
+                              action="{{ route('user.update', ['user' => $user]) }}">
+                            @csrf
+                            {{ method_field('PUT') }}
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="username">{{ __('Username') }}</label>
+                                        <div class="col-md-12">
+                                            <input type="text" placeholder="{{ __('Input your username') }}"
+                                                   class="form-control form-control-line @error('username') invalid @enderror"
+                                                   value="{{ old('username', $user->username) }}" name="username"
+                                                   {{ $user->can_change_username == '1' ? '' : 'disabled' }}/>
+                                            @error('username')
+                                                <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="name">{{ __('Full Name') }}</label>
+                                        <div class="col-md-12">
+                                            <input type="text" placeholder="{{ __('Input your name') }}"
+                                                   class="form-control form-control-line @error('name') invalid @enderror"
+                                                   value="{{ old('name', $user->name) }}" name="name"
+                                            />
+                                            @error('name')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email" class="col-md-12">{{ __('Email') }}</label>
+                                        <div class="col-md-12">
+                                            <input type="email" placeholder="{{ __('Input your E-Mail') }}"
+                                                   class="form-control form-control-line @error('email') invalid @enderror"
+                                                   name="email"
+                                                   id="example-email" value="{{ old('email', $user->email) }}"/>
+                                            @error('email')
+                                                <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="phone">{{ __('Phone') }}</label>
+                                        <div class="col-md-12">
+                                            <input name="phone" type="text" placeholder="{{ __('Input your phone number') }}"
+                                                   class="form-control form-control-line @error('phone') invalid @enderror"
+                                                   value="{{ old('phone', $user->phone) }}" />
+                                            @error('phone')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="address">{{ __('Address') }}</label>
+                                        <div class="col-md-12">
+                                            <input name="address" id="address" type="text"
+                                                   class="form-control form-control-line @error('address') invalid @enderror"
+                                                   placeholder="{{ __('Provide your address...') }}"
+                                                   value="{{ old('address', $user->address) }}" />
+                                            @error('address')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="gender">{{ __('Gender') }}</label>
+                                        <select name="gender" id="gender" class="col-md-12 gender-selector bs-select-hidden" data-style="form-control">
+                                            <option value="-1" {{ old('gender', $user->gender) ? '' : 'selected' }}>{{ __('Select your gender') }}</option>
+                                            <option value="0" {{ old('gender', $user->gender) != 0 ? '' : 'selected' }}>{{ __('Male') }}</option>
+                                            <option value="1" {{ old('gender', $user->gender) != 1 ? '' : 'selected' }}>{{ __('Female') }}</option>
+                                            <option value="2" {{ old('gender', $user->gender) != 2 ? '' : 'selected' }}>{{ __('Other') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }}</label>
+                                        <div class="input-group">
+                                            <input name="dob" type="text" class="form-control @error('dob') invalid @enderror"
+                                                   lang="{{ \Session::get('locale', config('app.locale')) }}"
+                                                   id="dob-datepicker-autoclose"
+                                                   placeholder="dd/mm/yyyy" value="{{ old('dob', $user->dob) }}"/>
+                                            <span class="input-group-addon"><i class="icon-calender"></i></span>
+                                        </div>
+                                        @error('dob')
+                                        <span class="error text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12" for="description">{{ __('Description') }}</label>
+                                        <div class="col-md-12">
+                                            <textarea name="description" id="description" rows="3"
+                                                      class="form-control form-control-line @error('description') invalid @enderror"
+                                                      placeholder="{{ __('Say something about your-self...') }}">{{ old('description', $user->description) }}</textarea>
+                                            @error('description')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="email" class="col-md-12">Email</label>
+                            <div class="row">
                                 <div class="col-md-12">
-                                    <input type="email" placeholder="johnathan@admin.com"
-                                           class="form-control form-control-line" name="email"
-                                           id="example-email" value="{{ old('email', $user->email) }}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-12">{{ __('Phone') }}</label>
-                                <div class="col-md-12">
-                                    <input type="text" placeholder="{{ __('Input your phone number') }}" class="form-control form-control-line"> </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-12" for="description">{{ __('Description') }}</label>
-                                <div class="col-md-12">
-                                    <textarea name="description" id="description" rows="3" class="form-control form-control-line" placeholder="{{ __('Say something about your-self...') }}">
-                                        {{ old('description', $user->description) }}
-                                    </textarea>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-12">Select Country</label>
-                                <div class="col-sm-12">
-                                    <select class="form-control form-control-line">
-                                        <option>London</option>
-                                        <option>India</option>
-                                        <option>Usa</option>
-                                        <option>Canada</option>
-                                        <option>Thailand</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <button class="btn btn-success background-main-color border-none">{{ __('Update') }}</button>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-success background-main-color border-none">{{ __('Update') }}</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -122,24 +186,26 @@
                         <form class="form-horizontal form-material">
                             @csrf
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="old_password">{{ _('Old Password') }}</label>
+                                <label class="col-md-12 cursor-pointer" for="current_password">{{ _('Old Password') }}</label>
                                 <div class="col-md-12">
-                                    <input name="old_password" id="old_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Input your current password') }}" />
+                                    <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
+                                           placeholder="{{ __('Input your current password') }}"
+                                           autocomplete="current_password" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-12 cursor-pointer" for="new_password">{{ __('New Password') }}</label>
                                 <div class="col-md-12">
                                     <input name="new_password" id="new_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Input your new password') }}"/>
+                                           placeholder="{{ __('Input your new password') }}"
+                                           autocomplete="new_password" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-12 cursor-pointer" for="repeat_password">{{ __('Repeat Password') }}</label>
                                 <div class="col-md-12">
                                     <input name="repeat_password" id="repeat_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Re-input your new password') }}"/>
+                                           placeholder="{{ __('Re-input your new password') }}" autocomplete="repeat_password"/>
                                 </div>
                             </div>
                             <div class="form-group">

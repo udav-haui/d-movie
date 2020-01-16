@@ -57,5 +57,10 @@ blockquote {
     font-size: 1.35rem;
     font-style: italic;
 }
+.invalid {
+    outline: red solid 1px !important;
+    padding: 0px 10px !important;
+    background-image: none !important;
+}
 
 // Profile page

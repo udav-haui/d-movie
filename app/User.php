@@ -16,16 +16,19 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'account_type',
+        'can_change_username',
         'username',
         'name',
         'email',
         'password',
-        'account_type',
+        'gender',
         'phone',
         'address',
         'avatar',
         'dob',
         'state',
+        'description',
         'role_id'
     ];
 

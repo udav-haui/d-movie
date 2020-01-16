@@ -4,8 +4,13 @@
 <script src="{{ asset('adminhtml/js/adminjs.js') }}"></script>
 <!-- Menu Plugin JavaScript -->
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
+{{-- Bootstrap select --}}
+<script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('adminhtml/assets/plugins/bower_components/custom-select/custom-select.min.js') }}" type="text/javascript"></script>
 <!--Wave Effects -->
 <script src="{{ asset('adminhtml/assets/js/waves.js') }}"></script>
+<!-- Date Picker Plugin JavaScript -->
+<script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 <!--Counter js -->
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/waypoints/lib/jquery.waypoints.js') }}"></script>
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/counterup/jquery.counterup.min.js') }}"></script>

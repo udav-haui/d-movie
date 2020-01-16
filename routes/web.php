@@ -14,16 +14,16 @@ Route::group(['middleware' => 'locale'], function () {
         'namespace' => 'Adminhtml',
         'prefix' => 'admin'
     ], function () {
-        Route::get('/', 'DashboardController@index');
-        /**
-         * USER SESSION
-         */
-        Route::resource('user', 'Auth\UserController');
+        Route::group(['middleware' => 'auth'], function () {
+            Route::get('/', 'DashboardController@index');
+            /**
+             * USER SESSION
+             */
+            Route::resource('user', 'Auth\UserController');
+        });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
         Route::post('login', 'Auth\LoginController@login');
         Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-
-        Auth::routes();
     });
 });
 Route::get('/callback/{provider}', 'SocialAuthController@callback');

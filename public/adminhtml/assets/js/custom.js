@@ -9,7 +9,9 @@ $(document).ready(function ($) {
 
     $(function () {
         $(".preloader").fadeOut();
-        $('#side-menu').metisMenu();
+        $('#side-menu').metisMenu({
+            toggle: false
+        });
     });
 
     /* ===== Theme Settings ===== */

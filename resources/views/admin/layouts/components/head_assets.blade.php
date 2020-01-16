@@ -1,10 +1,15 @@
 <!-- Template assets -->
 <!-- Bootstrap Core CSS -->
 <link href="{{ asset('adminhtml/assets/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet">
 <!-- Menu CSS -->
 <link href="{{ asset('adminhtml/assets/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css') }}" rel="stylesheet">
 <!-- animation CSS -->
 <link href="{{ asset('adminhtml/assets/css/animate.css') }}" rel="stylesheet">
+<!-- Date picker plugins css -->
+<link href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+{{--Cútom select--}}
+<link href="{{ asset('adminhtml/assets/plugins/bower_components/custom-select/custom-select.css') }}" rel="stylesheet" type="text/css" />
 <!-- Calendar CSS -->
 <link href="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
 <!-- Custom CSS -->

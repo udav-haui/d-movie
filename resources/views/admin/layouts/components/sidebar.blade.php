@@ -3,15 +3,28 @@
         <div class="sidebar-head">
             <h3><span class="fa-fw open-close"><i class="ti-menu hidden-xs"></i><i class="ti-close visible-xs"></i></span> <span class="hide-menu">Navigation</span></h3> </div>
         <ul class="nav" id="side-menu">
-            <li class="user-pro {{ request()->segment(2) == 'user' ? 'active' : ''}}">
-                <a href="#" class="waves-effect {{ request()->segment(2) == 'user' ? 'active' : ''}}"><img src="{{ asset('images/logo.png') }}" alt="user-img" class="img-circle"> <span class="hide-menu"> {{ auth()->user()->name }}<span class="fa arrow"></span></span>
+            <li class="user-pro">
+                <a href="#" class="waves-effect {{ request()->segment(2) != 'user' ? '' : 'active' }}">
+                    <img src="{{ asset('images/logo.png') }}" alt="user-img" class="img-circle">
+                    <span class="hide-menu"> {{ auth()->user()->name }}
+                        <span class="fa arrow"></span>
+                    </span>
                 </a>
-                <ul class="nav nav-second-level collapse {{ request()->segment(2) == 'user' ? 'show' : ''}}" aria-expanded="false">
-                    <li><a href="javascript:void(0)" id="sidebar-user" class="{{ request()->segment(2) == 'user' ? 'active' : ''}}"><i class="ti-user"></i> <span class="hide-menu">{{ __('My Profile') }}</span></a></li>
-                    <li><a href="javascript:void(0)"><i class="ti-settings"></i> <span class="hide-menu">Account Setting</span></a></li>
-                    <li><a href="javascript:void(0)" onclick="event.preventDefault();$('.logout-form').submit();"><i class="fa fa-power-off"></i> <span class="hide-menu">{{ __('Logout') }}</span></a></li>
+                <ul class="nav nav-second-level collapse {{ request()->segment(2) != 'user' ? '' : 'show' }}" aria-expanded="false">
+                    <li>
+                        <a href="javascript:void(0)" id="user-profile" data-id="{{ auth()->user()->id }}" class="{{ request()->segment(2) != 'user' ? '' : 'active' }}">
+                            <i class="ti-user"></i>
+                            <span class="hide-menu">{{ __('My Profile') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="event.preventDefault(); $('.logout-form').submit();">
+                            <i class="fa fa-power-off"></i>
+                            <span class="hide-menu">{{ __('Logout') }}</span>
+                        </a>
+                    </li>
                     <form class="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
+                        @csrf
                     </form>
                 </ul>
             </li>
