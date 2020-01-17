@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
 {
+    protected $guarded = [];
     /**
      * A log belong to a user
      *

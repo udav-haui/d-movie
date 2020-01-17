@@ -182,14 +182,14 @@
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
-                    <img src="{{ asset('images/logo/logo-dm-512.png') }}" alt="user-img" width="36" class="img-circle">
+                    <img src="{{ auth()->user()->avatar ?? asset('images/icons/account.png') }}" alt="user-img" width="36" class="img-circle">
                     <b class="hidden-xs">{{ auth()->user()->name }}</b>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-user animated flipInY">
                     <li>
                         <div class="dw-user-box">
-                            <div class="u-img"><img src="{{ asset('images/logo/logo-dm-512.png') }}" alt="user" /></div>
+                            <div class="u-img"><img src="{{ auth()->user()->avatar ?? asset('images/icons/account.png') }}" alt="user" /></div>
                             <div class="u-text">
                                 <h4>{{ auth()->user()->name }}</h4>
                                 <p class="text-muted">{{ auth()->user()->email }}</p>

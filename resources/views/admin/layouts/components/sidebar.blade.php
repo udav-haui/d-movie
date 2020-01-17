@@ -5,7 +5,7 @@
         <ul class="nav" id="side-menu">
             <li class="user-pro">
                 <a href="#" class="waves-effect {{ request()->segment(2) != 'user' ? '' : 'active' }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="user-img" class="img-circle">
+                    <img src="{{ auth()->user()->avatar ?? asset('images/icons/account.png') }}" alt="user-img" class="img-circle">
                     <span class="hide-menu"> {{ auth()->user()->name }}
                         <span class="fa arrow"></span>
                     </span>

@@ -70,3 +70,8 @@ blockquote {
   background-image: none !important;
 }
 
+.disabled {
+  background-color: #eee !important;
+  padding-left: 15px !important;
+}
+

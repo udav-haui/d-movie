@@ -2,13 +2,35 @@
 
 namespace App\Http\Controllers\Adminhtml\Auth;
 
+use App\Helper\Data;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Log;
+use App\Services\UserService;
 use App\User;
+use Carbon\Carbon;
+use Cache;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserService $userService
+     */
+    public function __construct(
+        UserService $userService
+    ) {
+        $this->userService = $userService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -48,6 +70,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        /**
+         * Make instance from namespace string
+         *
+         * $log = Log::find(3); $target = $log->target; $instance = new $target();
+         */
+//        $log = Log::find(1);
+//        $target = $log->target_model;
+//        $instance = new $target();
+//        $array = json_decode($log->message, true);
+//        $u = new User();
+//        $u->fill($array);
+//        dd($u->id, $array, $instance->find($log->target_id) ,$log->message);
         return view('admin.auth.profile', compact('user'));
     }
 
@@ -66,14 +100,19 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(UserRequest $request,User $user)
+    public function update(UserRequest $request, User $user)
     {
-        $this->authorize('update', $user);
-        dd($user, $request->all());
+        // $this->authorize('update', $user);
+        try {
+            $this->userService->update($request, $user);
+        } catch (AuthorizationException $exception) {
+            return back()->withError($exception->getMessage())->withInput();
+        }
+        return redirect()->back();
     }
 
     /**

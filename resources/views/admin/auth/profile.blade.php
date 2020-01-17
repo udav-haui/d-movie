@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @section('app.title')
-    {{ __('Profile - ') }}{{ $user->name }}
+    {{ __('Profile - :name', ['name' => $user->name]) }}
 @endsection
 @section('app.description')
     {{ __(':name\'s Profile', ['name' => $user->name]) }}
@@ -9,16 +9,16 @@
     <!-- /.row -->
     <!-- .row -->
     <div class="row">
-        <div class="col-md-4 col-xs-12">
+        <div class="@can('update', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
             <div class="white-box">
                 <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/icons/wall.jpg') }}">
                     <div class="overlay-box">
                         <div class="user-content">
                             <a href="javascript:void(0)">
-                                <img src="{{ asset('images/icons/account.png') }}" class="thumb-lg img-circle" alt="img">
+                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" class="thumb-lg img-circle" alt="img">
                             </a>
-                            <h4 class="text-white">{{ $user->name }}</h4>
-                            <h5 class="text-white">{{ $user->email }}</h5>
+                            <h4 class="text-white">{{ $user->name ?? __('Not update') }}</h4>
+                            <h5 class="text-white">{{ $user->email ?? __('Not update') }}</h5>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         <div class="col-md-12">
                             <strong>{{ __('Full Name') }}</strong>
                             <br>
-                            <p class="text-muted">{{ $user->name }}</p>
+                            <p class="text-muted">{{ $user->name ?? __('Not update') }}</p>
                         </div>
                         <div class="col-md-12"> <strong>{{ __('Mobile') }}</strong>
                             <br>
@@ -47,9 +47,13 @@
                     <blockquote class="m-t-30">
                         {{ $user->description ?? __('This user have not say anything!') }}
                     </blockquote>
+                    @if (session('error'))
+                        <div class="alert alert-danger text-center">{{ session('error') }}</div>
+                    @endif
                 </div>
             </div>
         </div>
+        @can('update', $user)
         <div class="col-md-8 col-xs-12">
             <div class="white-box">
                 <ul class="nav nav-tabs tabs customtab">
@@ -65,6 +69,12 @@
                             <span class="hidden-xs">{{ __('Change password') }}</span>
                         </a>
                     </li>
+                    <li class="tab">
+                        <a href="#change_avatar" data-toggle="tab" aria-expanded="false">
+                            <span class="visible-xs"><i class="fa fa-user"></i></span>
+                            <span class="hidden-xs">{{ __('Avatar') }}</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="settings">
@@ -76,19 +86,22 @@
                             <div class="row">
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
-                                        <label class="col-md-12" for="username">{{ __('Username') }}</label>
+                                        <label class="col-md-12" for="username">
+                                            {{ __('Username') }}
+                                            <strong class="text-danger small">({{ __('Username can edit for one times') }})</strong>
+                                        </label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
-                                                   class="form-control form-control-line @error('username') invalid @enderror"
+                                                   class="form-control form-control-line @error('username') invalid @enderror @if($user->can_change_username == 0) disabled @endif"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   {{ $user->can_change_username == '1' ? '' : 'disabled' }}/>
+                                                   {{ $user->can_change_username == '1' ? '' : 'disabled' }} />
                                             @error('username')
                                                 <span class="error text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12" for="name">{{ __('Full Name') }}</label>
+                                        <label class="col-md-12" for="name">{{ __('Full Name') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your name') }}"
                                                    class="form-control form-control-line @error('name') invalid @enderror"
@@ -100,7 +113,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="email" class="col-md-12">{{ __('Email') }}</label>
+                                        <label for="email" class="col-md-12">{{ __('Email') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
                                             <input type="email" placeholder="{{ __('Input your E-Mail') }}"
                                                    class="form-control form-control-line @error('email') invalid @enderror"
@@ -112,7 +125,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12" for="phone">{{ __('Phone') }}</label>
+                                        <label class="col-md-12" for="phone">{{ __('Phone') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
                                             <input name="phone" type="text" placeholder="{{ __('Input your phone number') }}"
                                                    class="form-control form-control-line @error('phone') invalid @enderror"
@@ -145,18 +158,20 @@
                                             <option value="2" {{ old('gender', $user->gender) != 2 ? '' : 'selected' }}>{{ __('Other') }}</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }}</label>
-                                        <div class="input-group">
-                                            <input name="dob" type="text" class="form-control @error('dob') invalid @enderror"
-                                                   lang="{{ \Session::get('locale', config('app.locale')) }}"
-                                                   id="dob-datepicker-autoclose"
-                                                   placeholder="dd/mm/yyyy" value="{{ old('dob', $user->dob) }}"/>
-                                            <span class="input-group-addon"><i class="icon-calender"></i></span>
+                                    <div class="form-group cold-md-12">
+                                        <label class="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }} <strong class="text-danger">*</strong></label>
+                                        <div class="col-md-12">
+                                            <div class="input-group">
+                                                <input name="dob" type="text" class="form-control @error('dob') invalid @enderror"
+                                                    lang="{{ \Session::get('locale', config('app.locale')) }}"
+                                                    id="dob-datepicker-autoclose"
+                                                    placeholder="dd/mm/yyyy" value="{{ old('dob', $user->getDob()) }}"/>
+                                                <span class="input-group-addon"><i class="icon-calender"></i></span>
+                                            </div>
+                                            @error('dob')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
-                                        @error('dob')
-                                        <span class="error text-danger">{{ $message }}</span>
-                                        @enderror
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12" for="description">{{ __('Description') }}</label>
@@ -186,7 +201,7 @@
                         <form class="form-horizontal form-material">
                             @csrf
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="current_password">{{ _('Old Password') }}</label>
+                                <label class="col-md-12 cursor-pointer" for="current_password">{{ __('Current Password') }}</label>
                                 <div class="col-md-12">
                                     <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
                                            placeholder="{{ __('Input your current password') }}"
@@ -215,11 +230,46 @@
                         </div>
                         </form>
                     </div>
+                    <div class="tab-pane" id="change_avatar">
+                        <form class="form-horizontal form-material">
+                            @csrf
+                            <div class="form-group">
+                                <label class="col-md-12 cursor-pointer" for="current_password">{{ __('hi') }}</label>
+                                <div class="col-md-12">
+                                    <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
+                                           placeholder="{{ __('Input your current password') }}"
+                                           autocomplete="current_password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 cursor-pointer" for="new_password">{{ __('New Password') }}</label>
+                                <div class="col-md-12">
+                                    <input name="new_password" id="new_password" type="password" class="form-control form-control-line"
+                                           placeholder="{{ __('Input your new password') }}"
+                                           autocomplete="new_password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 cursor-pointer" for="repeat_password">{{ __('Repeat Password') }}</label>
+                                <div class="col-md-12">
+                                    <input name="repeat_password" id="repeat_password" type="password" class="form-control form-control-line"
+                                           placeholder="{{ __('Re-input your new password') }}" autocomplete="repeat_password"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-success background-main-color border-none">{{ __('Change avatar') }}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+            @endcan
     </div>
     <!-- /.row -->
+
 @endsection
 @section('titlebar.title')
     {{ __('Profile') }}
@@ -231,4 +281,7 @@
 @endsection
 @section('bottom.js')
     <script src="{{ asset('adminhtml/js/profile.js') }}"></script>
+@endsection
+@section('head.css')
+    <link rel="stylesheet" href="{{ asset('adminhtml/css/profile.css') }}">
 @endsection

@@ -36,7 +36,6 @@
     "Phone": "Số điện thoại",
     "Description": "Giới thiệu",
     "Change password": "Đổi mật khẩu",
-    "Old Password": "Mật Khẩu Cũ",
     "New Password": "Mật Khẩu Mới",
     "Repeat Password": "Nhập Lại Mật Khẩu",
     "Input your current password": "Nhập mật khẩu hiện tại của bạn",
@@ -61,5 +60,13 @@
     "You can not input less than :min character": "Hãy nhập tối thiểu :min ký tự",
     "You must input a correct :attribute": "Bạn hãy nhập đúng định dạng :attribute",
     "Please input a correct Vietnam :attribute": "Hãy nhập đúng định dạng :attribute của Việt Nam",
-    "Please input a correct date format (dd/mm/yyyy)": "Vui lòng nhập đúng định dạng ngày tháng (ngày/tháng/năm)"
+    "Please input a correct date format (dd/mm/yyyy)": "Vui lòng nhập đúng định dạng ngày tháng (ngày/tháng/năm)",
+    "Profile - :name": ":name - Trang cá nhân",
+    "Please input a correct :attribute. Only 0-9. a-z. A-Z": ":attribute chỉ bao gồm các ký tự từ a-z và các số 0-9",
+    "Username can edit for one times": "Tên đăng nhập chỉ đổi được 1 lần",
+    "You can not do that :)": "Bạn không thể làm như vậy được :)",
+    "Users": "Mọi người",
+    "Change avatar": "Đổi ảnh đại diện",
+    "Avatar": "Ảnh đại diện",
+    "Current Password": "Mật khẩu hiện tại"
 }
