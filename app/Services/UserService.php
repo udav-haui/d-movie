@@ -6,7 +6,9 @@ use App\Helper\Data;
 use App\Http\Requests\UserRequest;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class UserService
@@ -58,5 +60,36 @@ class UserService
     public function getListUsers()
     {
         return User::where('id', '<>', auth()->user()->id)->get();
+    }
+
+    /**
+     * Update user avatar
+     *
+     * @param User $user
+     * @return bool
+     * @throws AuthorizationException
+     * @throws Exception
+     */
+    public function setAvatar(User $user)
+    {
+        if (auth()->user()->can('update', $user)) {
+            if (request()->has('avatar')) {
+                if ($user->avatar) {
+                    Storage::delete('/public/' . $user->avatar);
+                }
+                $avtPath = request('avatar')->store('uploads', 'public');
+                $data = [
+                    'avatar' => $avtPath
+                ];
+                try {
+                    $user->update($data);
+                    return true;
+                } catch (Exception $exception) {
+                    Storage::delete('/public/' . $avtPath);
+                    throw new Exception(__('Something wrong!!!'));
+                }
+            }
+        }
+        throw new AuthorizationException(__('You can not do that :)'));
     }
 }

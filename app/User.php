@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helper\Data;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,6 +45,9 @@ class User extends Authenticatable
      */
     public function getDob()
     {
+        if (!$this->attributes['dob']) {
+            return '';
+        }
         $dob = explode('-', $this->attributes['dob']);
         return $dob[2] . '/' . $dob[1] . '/' . $dob[0];
     }
@@ -55,7 +59,7 @@ class User extends Authenticatable
      */
     public function getAvatar()
     {
-
+        return $this->avatar ? Data::STORAGE . $this->avatar : '/images/icons/account.png';
     }
 
     /**
@@ -66,6 +70,11 @@ class User extends Authenticatable
     public function isOnline()
     {
         return Cache::has('active-user-' . $this->id);
+    }
+
+    public function isAdmin()
+    {
+        return $this->account_type == Data::IS_ADMIN;
     }
 
     /**

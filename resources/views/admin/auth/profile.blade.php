@@ -200,14 +200,19 @@
                     <div class="tab-pane" id="change_pass">
                         <form class="form-horizontal form-material">
                             @csrf
+                            @if (!auth()->user()->isAdmin() || (auth()->user()->isAdmin() && auth()->user()->id == $user->id))
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="current_password">{{ __('Current Password') }}</label>
+                                <label class="col-md-12 cursor-pointer"
+                                       for="current_password">
+                                    {{ __('Current Password') }}
+                                </label>
                                 <div class="col-md-12">
                                     <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
                                            placeholder="{{ __('Input your current password') }}"
                                            autocomplete="current_password" />
                                 </div>
                             </div>
+                            @endif
                             <div class="form-group">
                                 <label class="col-md-12 cursor-pointer" for="new_password">{{ __('New Password') }}</label>
                                 <div class="col-md-12">
@@ -231,29 +236,23 @@
                         </form>
                     </div>
                     <div class="tab-pane" id="change_avatar">
-                        <form class="form-horizontal form-material">
+                        <form class="form-horizontal form-material"
+                              method="POST"
+                              action="{{ route('user.setAvatar', ['user' => $user->id]) }}"
+                              enctype="multipart/form-data">
+                            {{ method_field('PUT') }}
                             @csrf
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="current_password">{{ __('hi') }}</label>
-                                <div class="col-md-12">
-                                    <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Input your current password') }}"
-                                           autocomplete="current_password" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="new_password">{{ __('New Password') }}</label>
-                                <div class="col-md-12">
-                                    <input name="new_password" id="new_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Input your new password') }}"
-                                           autocomplete="new_password" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="repeat_password">{{ __('Repeat Password') }}</label>
-                                <div class="col-md-12">
-                                    <input name="repeat_password" id="repeat_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Re-input your new password') }}" autocomplete="repeat_password"/>
+                                <div class="white-box">
+                                    <h3 class="box-title">{{ __('Upload avatar') }}</h3>
+                                    <input name="avatar" type="file"
+                                           class="avatar-dropify"
+                                           data-height="350"
+                                           required
+                                           msg-default="{{ __('Drag and drop a file here or click') }}"
+                                           msg-replace="{{ __('Drag and drop or click to replace') }}"
+                                           msg-remove="{{ __('Remove') }}"
+                                           msg-error="{{ __('Ooops, something wrong appended.') }}" />
                                 </div>
                             </div>
                             <div class="form-group">

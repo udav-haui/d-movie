@@ -20,6 +20,11 @@ Route::group(['middleware' => 'locale'], function () {
              * USER SESSION
              */
             Route::resource('user', 'Auth\UserController');
+
+            /**
+             * Api method
+             */
+            Route::put('user-change-avatar/{user}', 'Auth\UserController@setAvatar')->name('user.setAvatar');
         });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
         Route::post('login', 'Auth\LoginController@login');

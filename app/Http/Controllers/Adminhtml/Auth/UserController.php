@@ -125,4 +125,20 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * Set user avatar
+     *
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setAvatar(User $user)
+    {
+        try {
+            $this->userService->setAvatar($user);
+        } catch (\Exception $exception) {
+            return back()->withError($exception->getMessage())->withInput();
+        }
+        return redirect()->back();
+    }
 }

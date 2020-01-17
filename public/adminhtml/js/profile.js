@@ -36,4 +36,17 @@ $(document).ready(function () {
         endDate: '-15y'
     });
     /** ./End datetimepicker */
+
+    /**
+     * Profile uploader
+     */
+    let uploader = $('.avatar-dropify');
+    uploader.dropify({
+        messages: {
+            default: uploader.attr('msg-default'),
+            replace: uploader.attr('msg-replace'),
+            remove: uploader.attr('msg-remove'),
+            error: uploader.attr('msg-error')
+        }
+    });
 });

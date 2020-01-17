@@ -13,4 +13,9 @@ class Data
     const CREATE_MSG = 'have created';
     const UPDATE_MSG = 'have updated';
     const DELETE_MSG = 'have deleted';
+
+    const STORAGE = '/storage/';
+
+    /** @var int Define user attribute */
+    const IS_ADMIN = 0;
 }

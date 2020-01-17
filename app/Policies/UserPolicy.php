@@ -8,8 +8,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
-
-    const IS_ADMIN = 0;
     /**
      * Determine whether the user can view any models.
      *
@@ -53,7 +51,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return (int)auth()->user()->can_change_username == self::IS_ADMIN || $user->id == $model->id;
+        return $user->isAdmin() || $user->id == $model->id;
     }
 
     /**

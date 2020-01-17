@@ -35,7 +35,7 @@
                 @foreach($users as $user)
                     <li>
                         <a href="/admin/user/{{ $user->id }}">
-                            <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}"
+                            <img src="{{ $user->getAvatar() }}"
                                  alt="user-img" class="img-circle" />
                             <span>{{ $user->name }}
                                 @if ($user->isOnline())
