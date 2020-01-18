@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->smallInteger('account_type');
             $table->smallInteger('can_change_username')->default(0);
+            $table->smallInteger('login_with_social_account')->default(0);
             $table->string('username')->unique()->index()->nullable(true);
             $table->string('name')->nullable(true);
             $table->string('email')->nullable(true)->unique();

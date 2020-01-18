@@ -2,6 +2,7 @@
 <!-- All Jquery -->
 <!-- ============================================================== -->
 <script src="{{ asset('adminhtml/js/adminjs.js') }}"></script>
+<script src="{{ asset('adminhtml/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <!-- Menu Plugin JavaScript -->
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
 {{-- Bootstrap select --}}

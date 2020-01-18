@@ -38,6 +38,7 @@ class SocialAccountService
                     'email' => $providerUser->getEmail(),
                     'account_type' => $accountType,
                     'can_change_username' => 1,
+                    'login_with_social_account' => 1,
                     'name' => $providerUser->getName(),
                     'password' => bcrypt(rand(1, 10000)),
                     'state' => $state

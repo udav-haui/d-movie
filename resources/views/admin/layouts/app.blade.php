@@ -24,11 +24,11 @@
     <!-- ============================================================== -->
     <!-- Preloader -->
     <!-- ============================================================== -->
-    <div class="preloader">
-        <svg class="circular" viewBox="25 25 50 50">
-            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-        </svg>
-    </div>
+{{--    <div class="preloader">--}}
+{{--        <svg class="circular" viewBox="25 25 50 50">--}}
+{{--            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />--}}
+{{--        </svg>--}}
+{{--    </div>--}}
     <div id="app">
         <!-- ============================================================== -->
         <!-- Wrapper -->
@@ -52,6 +52,7 @@
             <div id="page-wrapper">
                 <main class="container-fluid">
                     @include('admin.layouts.components.titlebar')
+                    @include('admin.layouts.components.normal_notifications')
                     @yield('content')
                     @include('admin.layouts.components.rightsidebar')
                 </main>

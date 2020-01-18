@@ -47,9 +47,6 @@
                     <blockquote class="m-t-30">
                         {{ $user->description ?? __('This user have not say anything!') }}
                     </blockquote>
-                    @if (session('error'))
-                        <div class="alert alert-danger text-center">{{ session('error') }}</div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -57,19 +54,19 @@
         <div class="col-md-8 col-xs-12">
             <div class="white-box">
                 <ul class="nav nav-tabs tabs customtab">
-                    <li class="tab active">
+                    <li class="tab @error('change_info'){{ $message }}@enderror">
                         <a href="#settings" data-toggle="tab" aria-expanded="true">
                             <span class="visible-xs"><i class="fa fa-cog"></i></span>
                             <span class="hidden-xs">{{ __('Settings') }}</span>
                         </a>
                     </li>
-                    <li class="tab">
+                    <li class="tab @if (session('change_pass')) {{ session('change_pass') }} @endif @error('change_pass'){{ $message }}@enderror">
                         <a href="#change_pass" data-toggle="tab" aria-expanded="false">
                             <span class="visible-xs"><i class="fa fa-lock"></i></span>
                             <span class="hidden-xs">{{ __('Change password') }}</span>
                         </a>
                     </li>
-                    <li class="tab">
+                    <li class="tab @error('change_avatar'){{ $message }}@enderror">
                         <a href="#change_avatar" data-toggle="tab" aria-expanded="false">
                             <span class="visible-xs"><i class="fa fa-user"></i></span>
                             <span class="hidden-xs">{{ __('Avatar') }}</span>
@@ -77,7 +74,7 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="settings">
+                    <div class="tab-pane @error('change_info'){{ $message }}@enderror" id="settings">
                         <form class="form-horizontal form-material" id="user_data_form"
                               method="POST"
                               action="{{ route('user.update', ['user' => $user]) }}">
@@ -92,9 +89,9 @@
                                         </label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
-                                                   class="form-control form-control-line @error('username') invalid @enderror @if($user->can_change_username == 0) disabled @endif"
+                                                   class="form-control form-control-line @error('username') invalid @enderror @if(!auth()->user()->isAdmin() && !$user->canChangePassword()) disabled @endif"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   {{ $user->can_change_username == '1' ? '' : 'disabled' }} />
+                                                   {{ auth()->user()->isAdmin() || $user->canChangePassword() ? '' : 'disabled' }} />
                                             @error('username')
                                                 <span class="error text-danger">{{ $message }}</span>
                                             @enderror
@@ -197,10 +194,12 @@
                             </div>
                         </form>
                     </div>
-                    <div class="tab-pane" id="change_pass">
-                        <form class="form-horizontal form-material">
+                    <div class="tab-pane @if (session('change_pass')) {{ session('change_pass') }} @endif @error('change_pass'){{ $message }}@enderror" id="change_pass">
+                        <form class="form-horizontal form-material"
+                              method="POST"
+                              action="{{ route('user.changePassword', ['user' => $user->id]) }}">
                             @csrf
-                            @if (!auth()->user()->isAdmin() || (auth()->user()->isAdmin() && auth()->user()->id == $user->id))
+                            @if ((!$user->loginWithSocialAcc() && !auth()->user()->isAdmin())|| (auth()->user()->isAdmin() && auth()->user()->id == $user->id))
                             <div class="form-group">
                                 <label class="col-md-12 cursor-pointer"
                                        for="current_password">
@@ -210,22 +209,28 @@
                                     <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
                                            placeholder="{{ __('Input your current password') }}"
                                            autocomplete="current_password" />
+                                    @error('current_password')
+                                        <span class="error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             @endif
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="new_password">{{ __('New Password') }}</label>
+                                <label class="col-md-12 cursor-pointer" for="password">{{ __('New Password') }}</label>
                                 <div class="col-md-12">
-                                    <input name="new_password" id="new_password" type="password" class="form-control form-control-line"
+                                    <input name="password" id="password" type="password" class="form-control form-control-line"
                                            placeholder="{{ __('Input your new password') }}"
-                                           autocomplete="new_password" />
+                                           autocomplete="new-password" />
+                                    @error('password')
+                                        <span class="error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-12 cursor-pointer" for="repeat_password">{{ __('Repeat Password') }}</label>
+                                <label class="col-md-12 cursor-pointer" for="password-confirm">{{ __('Repeat Password') }}</label>
                                 <div class="col-md-12">
-                                    <input name="repeat_password" id="repeat_password" type="password" class="form-control form-control-line"
-                                           placeholder="{{ __('Re-input your new password') }}" autocomplete="repeat_password"/>
+                                    <input name="password_confirmation" id="password-confirm" type="password" class="form-control form-control-line"
+                                           placeholder="{{ __('Re-input your new password') }}" autocomplete="new-password"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -235,7 +240,7 @@
                         </div>
                         </form>
                     </div>
-                    <div class="tab-pane" id="change_avatar">
+                    <div class="tab-pane @error('change_avatar'){{ $message }}@enderror" id="change_avatar">
                         <form class="form-horizontal form-material"
                               method="POST"
                               action="{{ route('user.setAvatar', ['user' => $user->id]) }}"
@@ -245,6 +250,12 @@
                             <div class="form-group">
                                 <div class="white-box">
                                     <h3 class="box-title">{{ __('Upload avatar') }}</h3>
+                                    @error('avatar')
+                                    <div class="alert alert-danger alert-dismissable">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                     <input name="avatar" type="file"
                                            class="avatar-dropify"
                                            data-height="350"
@@ -275,7 +286,7 @@
 @endsection
 @section('titlebar.breadcrumb')
     <li><a href="/admin">{{ __('Dashboard') }}</a></li>
-    <li><a href="/admin/users">{{ __('User') }}</a></li>
+    <li><a href="/admin/user">{{ __('User') }}</a></li>
     <li class="active">{{ $user->name }}</li>
 @endsection
 @section('bottom.js')
@@ -284,3 +295,4 @@
 @section('head.css')
     <link rel="stylesheet" href="{{ asset('adminhtml/css/profile.css') }}">
 @endsection
+

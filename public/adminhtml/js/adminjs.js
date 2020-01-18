@@ -37629,7 +37629,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/adminjs.js */"./resources/js/adminjs.js");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\adminjs.js */"./resources/js/adminjs.js");
 
 
 /***/ })

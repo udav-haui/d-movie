@@ -191,13 +191,13 @@
                         <div class="dw-user-box">
                             <div class="u-img"><img src="{{ auth()->user()->getAvatar() }}" alt="user" /></div>
                             <div class="u-text">
-                                <h4>{{ auth()->user()->name }}</h4>
-                                <p class="text-muted">{{ auth()->user()->email }}</p>
-                                <a href="/admin/user/{{ auth()->user()->id }}" class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a></div>
+                                <h4 class="dot-dot-dot" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</h4>
+                                <p class="text-muted dot-dot-dot" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</p>
+                                <a href="/admin/user/{{ auth()->user()->id }}"
+                                   class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a>
+                            </div>
                         </div>
                     </li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#"><i class="ti-settings"></i> Account Setting</a></li>
                     <li role="separator" class="divider"></li>
                     <li>
                         <a href="javascript:void(0);"

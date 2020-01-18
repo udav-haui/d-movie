@@ -47,13 +47,13 @@
 
                 <div class="form-group m-t-40">
                     <div class="col-xs-12">
-                        <input name="email" class="form-control" type="email" required="" placeholder="{{ __('Email or Username') }}"
-                               value="{{ old('email') }}" autofocus autocomplete="email">
-                        @error('email')
-                            <span class="invalid-feedback text-danger font-size-1-55" role="alert">
-                                <strong>{{ $message }}</strong>
+                        <input name="login" class="form-control" type="text" required="" placeholder="{{ __('Email or Username') }}"
+                               value="{{ old('username') ?: old('email') }}" autofocus autocomplete="email username">
+                        @if ($errors->has('username') || $errors->has('email'))
+                            <span class="col-xs-12 error text-danger">
+                                <strong>{{ $errors->first('username') ?: $errors->first('email') }}</strong>
                             </span>
-                        @enderror
+                        @endif
                     </div>
                 </div>
                 <div class="form-group">
@@ -61,12 +61,10 @@
                         <input name="password" class="form-control" type="password" required="" placeholder="{{ __('Password') }}"
                                autocomplete="current-password"
                         >
-                        @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
                     </div>
+                    @error('password')
+                    <span class="col-xs-12 error text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class="form-group">
                     <div class="col-md-12">

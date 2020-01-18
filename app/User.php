@@ -72,9 +72,52 @@ class User extends Authenticatable
         return Cache::has('active-user-' . $this->id);
     }
 
+    /**
+     * Check if is admin
+     *
+     * @return bool
+     */
     public function isAdmin()
     {
         return $this->account_type == Data::IS_ADMIN;
+    }
+
+    /**
+     * User has permission
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function canAccess($key)
+    {
+        $role = $this->role;
+        if ($role) {
+            $permission = $role->permissions->where('permission_code', $key)->get(1);
+            if ($permission) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if user can change username
+     *
+     * @return bool
+     */
+    public function canChangePassword()
+    {
+        return $this->can_change_username == 1;
+    }
+
+    /**
+     * Check if user is login with social account
+     *
+     * @return bool
+     */
+    public function loginWithSocialAcc()
+    {
+        return $this->login_with_social_account == 1;
     }
 
     /**

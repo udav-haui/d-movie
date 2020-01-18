@@ -4,7 +4,10 @@
 }
 $placeHolderColor: #01a4a099;
 $inputColor: #0375b4;
+$mainColor2: #006ca3;
 $mainColor: #01a5a0;
+$secondColor: #00bd95;
+$secondColor2: #00c193;
 
 body {
     font-family: Nunito, sans-serif !important;
@@ -65,5 +68,62 @@ blockquote {
 .disabled {
     background-color: #eee !important;
     padding-left: 15px !important;
+}
+.alert-success {
+    background: $secondColor2;
+    border-color: $secondColor2;
+}
+.alert-dismissable .close, .alert-dismissible .close {
+    opacity: .6;
+}
+.dropdown-user {
+    li {
+        .dw-user-box {
+            .u-img {
+                width: 35%;
+            }
+            .u-text {
+                width: calc(100% - 35% - 10px);
+            }
+        }
+    }
+}
+.dot-dot-dot {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+.dmovie-btn {
+    border-radius: 0;
+    font-weight: 600;
+    font-size: 1.75rem;
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.dmovie-btn-success {
+    background: $secondColor2;
+    color: #fff;
+    border-color: $secondColor2;
+    &:hover {
+        color: #fafafa;
+        border-color: $secondColor2;
+        background: $secondColor;
+    }
+}
+.dmovie-table {
+    border-color: $mainColor2 !important;
+    tr {
+        background: $mainColor2;
+        th {
+            color: #fff;
+            font-weight: 700;
+            border: none !important;
+            border-right: 1px solid #f2f2f29e !important;
+        }
+        th:nth-last-child(1) {
+            border-right: none !important;
+        }
+    }
 }
 // Profile page

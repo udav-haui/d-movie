@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Cache;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -135,10 +136,88 @@ class UserController extends Controller
     public function setAvatar(User $user)
     {
         try {
-            $this->userService->setAvatar($user);
+            $validator = Validator::make(
+                request()->all(),
+                [
+                    'avatar' => 'required|image'
+                ],
+                [
+                    'avatar.image' => __('Please input correct type of :attribute.'),
+                    'avatar.required' => __('Please select a file.')
+                ],
+                [
+                    'avatar' => __('Avatar')
+                ]
+            );
+            if ($validator->fails()) {
+                $validator->errors()->add('change_avatar', 'active');
+                return back()->withErrors($validator->errors()->getMessages());
+            } else {
+                $this->userService->setAvatar($user);
+                return back()->with('success', __('Avatar updated success.'));
+            }
         } catch (\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }
-        return redirect()->back();
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        $roles = [
+            'current_password' => [
+                'required'
+            ],
+            'password' => [
+                'required',
+                'min:8',
+                'confirmed'
+            ],
+        ];
+        if (!request()->has('current_password')) {
+            unset($roles['current_password']);
+        }
+        return Validator::make(
+            $data,
+            $roles,
+            [
+                'current_password.required' => __('You must input :attribute'),
+                'password.required' => __('You must input :attribute'),
+                'password.min' => __('You can not input less than :min character'),
+                'password.confirmed' => __('The :attribute does not match.')
+            ],
+            [
+                'current_password' => __('Current Password'),
+                'password' => __('Password'),
+                'password_confirmation' => __('Password confirmation')
+            ]
+        );
+    }
+
+    /**
+     * Change user password
+     *
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function changePassword(User $user)
+    {
+        $validator = $this->validator(request()->all());
+        if ($validator->fails()) {
+            $validator->errors()->add('change_pass', 'active');
+            return back()->withErrors($validator->errors()->getMessages());
+        } else {
+            try {
+                $this->userService->changePassword($user);
+            } catch (\Exception $exception) {
+                return back()->with('change_pass', 'active')->withError($exception->getMessage())->withInput();
+            }
+            return back()->with('success', __('Password have successfully updated.'));
+        }
     }
 }

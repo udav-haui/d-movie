@@ -75,3 +75,67 @@ blockquote {
   padding-left: 15px !important;
 }
 
+.alert-success {
+  background: #00c193;
+  border-color: #00c193;
+}
+
+.alert-dismissable .close,
+.alert-dismissible .close {
+  opacity: 0.6;
+}
+
+.dropdown-user li .dw-user-box .u-img {
+  width: 35%;
+}
+
+.dropdown-user li .dw-user-box .u-text {
+  width: calc(100% - 35% - 10px);
+}
+
+.dot-dot-dot {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.dmovie-btn {
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 1.75rem;
+  text-transform: uppercase;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.dmovie-btn-success {
+  background: #00c193;
+  color: #fff;
+  border-color: #00c193;
+}
+
+.dmovie-btn-success:hover {
+  color: #fafafa;
+  border-color: #00c193;
+  background: #00bd95;
+}
+
+.dmovie-table {
+  border-color: #006ca3 !important;
+}
+
+.dmovie-table tr {
+  background: #006ca3;
+}
+
+.dmovie-table tr th {
+  color: #fff;
+  font-weight: 700;
+  border: none !important;
+  border-right: 1px solid #f2f2f29e !important;
+}
+
+.dmovie-table tr th:nth-last-child(1) {
+  border-right: none !important;
+}
+

@@ -8,7 +8,9 @@ use App\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class UserService
@@ -66,14 +68,14 @@ class UserService
      * Update user avatar
      *
      * @param User $user
-     * @return bool
+     * @return \Illuminate\Http\RedirectResponse|bool
      * @throws AuthorizationException
      * @throws Exception
      */
     public function setAvatar(User $user)
     {
         if (auth()->user()->can('update', $user)) {
-            if (request()->has('avatar')) {
+            try {
                 if ($user->avatar) {
                     Storage::delete('/public/' . $user->avatar);
                 }
@@ -81,14 +83,59 @@ class UserService
                 $data = [
                     'avatar' => $avtPath
                 ];
-                try {
-                    $user->update($data);
-                    return true;
-                } catch (Exception $exception) {
-                    Storage::delete('/public/' . $avtPath);
-                    throw new Exception(__('Something wrong!!!'));
+                if ($user->update($data)) {
+                    auth()->user()->logs()->create([
+                        'short_message' => Data::UPDATE_MSG,
+                        'message' => $user,
+                        'action' => Data::UPDATE,
+                        'target_model' => User::class,
+                        'target_id' => $user->id
+                    ]);
                 }
+                return true;
+            } catch (Exception $exception) {
+                Storage::delete('/public/' . $avtPath);
+                throw new Exception(__('Something wrong!!!'));
             }
+        }
+        throw new AuthorizationException(__('You can not do that :)'));
+    }
+
+    /**
+     * Update user password
+     *
+     * @param User $user
+     * @return bool
+     * @throws AuthorizationException
+     * @throws Exception
+     */
+    public function changePassword(User $user)
+    {
+        if (auth()->user()->can('update', $user)) {
+            if (request()->has('current_password')) {
+                $currentPassword = request('current_password');
+                if (Hash::check($currentPassword, $user->getAuthPassword())) {
+                    $user->update([
+                        'password' => Hash::make(request('password'))
+                    ]);
+                } else {
+                    throw new Exception(__('Current password is not correct.'));
+                }
+            } else {
+                $data = request()->all();
+                $data['password'] = Hash::make($data['password']);
+                unset($data['password_confirmation']);
+                $data['login_with_social_account'] = 0;
+                $user->update($data);
+            }
+            auth()->user()->logs()->create([
+                'short_message' => Data::UPDATE_MSG,
+                'message' => $user,
+                'action' => Data::UPDATE,
+                'target_model' => User::class,
+                'target_id' => $user->id
+            ]);
+            return true;
         }
         throw new AuthorizationException(__('You can not do that :)'));
     }
