@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
+    protected $guarded = [];
+
     /**
      * A permission belong to a role
      *

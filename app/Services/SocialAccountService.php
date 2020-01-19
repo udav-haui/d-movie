@@ -47,7 +47,7 @@ class SocialAccountService
 
             $account->user()->associate($user);
             $account->save();
-            return $user;
+            return false;
         }
     }
 }

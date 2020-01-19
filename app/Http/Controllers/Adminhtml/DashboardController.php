@@ -23,10 +23,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        /**
-         * After access to admin page will put a prefix to session
-         */
-        Session::put('prefix', request()->route()->getPrefix());
         return view('admin.dashboard');
     }
 }

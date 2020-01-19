@@ -7,7 +7,6 @@
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
 {{-- Bootstrap select --}}
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('adminhtml/assets/plugins/bower_components/custom-select/custom-select.min.js') }}" type="text/javascript"></script>
 <!--Wave Effects -->
 <script src="{{ asset('adminhtml/assets/js/waves.js') }}"></script>
 <!-- Date Picker Plugin JavaScript -->

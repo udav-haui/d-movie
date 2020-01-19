@@ -3,10 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect('/admin/login');
-});
-Route::group(['middleware' => 'locale'], function () {
+Route::group(['middleware' => ['locale', 'prefix']], function () {
     Route::get('/switch-language/{lang}', 'LanguageController@switch')
         ->name('switch-language');
 
@@ -19,10 +16,13 @@ Route::group(['middleware' => 'locale'], function () {
             /**
              * USER SESSION
              */
+            Route::get('user/getUsers', 'Auth\UserController@getUsers')->name('user.getUsers');
             Route::resource('user', 'Auth\UserController');
             /**
              * ROLE SESSION
              */
+            Route::post('roles/assign', 'RoleController@doAssign')->name('roles.doAssign');
+            Route::get('roles/assign', 'RoleController@showAssignForm')->name('roles.assignForm');
             Route::resource('roles', 'RoleController');
             /**
              * Api method

@@ -54,7 +54,7 @@
         <div class="col-md-8 col-xs-12">
             <div class="white-box">
                 <ul class="nav nav-tabs tabs customtab">
-                    <li class="tab @error('change_info'){{ $message }}@enderror">
+                    <li class="tab @if (session('change_info')) {{ session('change_info') }} @endif @error('change_info'){{ $message }}@enderror">
                         <a href="#settings" data-toggle="tab" aria-expanded="true">
                             <span class="visible-xs"><i class="fa fa-cog"></i></span>
                             <span class="hidden-xs">{{ __('Settings') }}</span>
@@ -93,7 +93,7 @@
                                                    value="{{ old('username', $user->username) }}" name="username"
                                                    {{ auth()->user()->isAdmin() || $user->canChangePassword() ? '' : 'disabled' }} />
                                             @error('username')
-                                                <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -105,7 +105,7 @@
                                                    value="{{ old('name', $user->name) }}" name="name"
                                             />
                                             @error('name')
-                                            <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                                                    name="email"
                                                    id="example-email" value="{{ old('email', $user->email) }}"/>
                                             @error('email')
-                                                <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                                    class="form-control form-control-line @error('phone') invalid @enderror"
                                                    value="{{ old('phone', $user->phone) }}" />
                                             @error('phone')
-                                            <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -140,7 +140,7 @@
                                                    placeholder="{{ __('Provide your address...') }}"
                                                    value="{{ old('address', $user->address) }}" />
                                             @error('address')
-                                            <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@
                                                 <span class="input-group-addon"><i class="icon-calender"></i></span>
                                             </div>
                                             @error('dob')
-                                            <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@
                                                       class="form-control form-control-line @error('description') invalid @enderror"
                                                       placeholder="{{ __('Say something about your-self...') }}">{{ old('description', $user->description) }}</textarea>
                                             @error('description')
-                                            <span class="error text-danger">{{ $message }}</span>
+                                                <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -206,11 +206,12 @@
                                     {{ __('Current Password') }}
                                 </label>
                                 <div class="col-md-12">
-                                    <input name="current_password" id="current_password" type="password" class="form-control form-control-line"
+                                    <input name="current_password" id="current_password" type="password"
+                                           class="form-control form-control-line @error('current_password') invalid @enderror"
                                            placeholder="{{ __('Input your current password') }}"
                                            autocomplete="current_password" />
                                     @error('current_password')
-                                        <span class="error text-danger">{{ $message }}</span>
+                                        <span class="error text-danger  dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
@@ -218,11 +219,12 @@
                             <div class="form-group">
                                 <label class="col-md-12 cursor-pointer" for="password">{{ __('New Password') }}</label>
                                 <div class="col-md-12">
-                                    <input name="password" id="password" type="password" class="form-control form-control-line"
+                                    <input name="password" id="password" type="password"
+                                           class="form-control form-control-line @error('password') invalid @enderror"
                                            placeholder="{{ __('Input your new password') }}"
                                            autocomplete="new-password" />
                                     @error('password')
-                                        <span class="error text-danger">{{ $message }}</span>
+                                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>

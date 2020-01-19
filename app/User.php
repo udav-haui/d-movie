@@ -92,7 +92,7 @@ class User extends Authenticatable
     {
         $role = $this->role;
         if ($role) {
-            $permission = $role->permissions->where('permission_code', $key)->get(1);
+            $permission = $role->permissions->where('permission_code', $key)->first();
             if ($permission) {
                 return true;
             }
@@ -118,6 +118,16 @@ class User extends Authenticatable
     public function loginWithSocialAcc()
     {
         return $this->login_with_social_account == 1;
+    }
+
+    /**
+     * Check if user is active
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->state === 1;
     }
 
     /**

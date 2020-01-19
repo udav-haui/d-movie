@@ -18,7 +18,7 @@ class RolePolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return $user->isAdmin();
     }
 
     /**
@@ -41,31 +41,29 @@ class RolePolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can update the role.
      *
      * @param  \App\User  $user
-     * @param  \App\Role  $role
      * @return mixed
      */
-    public function update(User $user, Role $role)
+    public function update(User $user)
     {
-        //
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can delete the role.
      *
      * @param  \App\User  $user
-     * @param  \App\Role  $role
      * @return mixed
      */
-    public function delete(User $user, Role $role)
+    public function delete(User $user)
     {
-        //
+        return $user->isAdmin();
     }
 
     /**

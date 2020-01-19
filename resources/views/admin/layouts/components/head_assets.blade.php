@@ -8,8 +8,6 @@
 <link href="{{ asset('adminhtml/assets/css/animate.css') }}" rel="stylesheet">
 <!-- Date picker plugins css -->
 <link href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
-{{--Cútom select--}}
-<link href="{{ asset('adminhtml/assets/plugins/bower_components/custom-select/custom-select.css') }}" rel="stylesheet" type="text/css" />
 <!-- Calendar CSS -->
 <link href="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
 <!-- Custom CSS -->

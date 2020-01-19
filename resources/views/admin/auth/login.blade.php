@@ -45,13 +45,21 @@
                    class="text-center db"><img src="{{ asset('images/logo/logo-dm-trim.png') }}"
                                                alt="D-Movie" width="64px"/></a>
 
+                @if (session('error'))
+                    <div class="form-group alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="form-group m-t-40">
                     <div class="col-xs-12">
-                        <input name="login" class="form-control" type="text" required="" placeholder="{{ __('Email or Username') }}"
+                        <input name="login"
+                               class="form-control @if ($errors->has('username') || $errors->has('email')) invalid @endif"
+                               type="text" required="" placeholder="{{ __('Email or Username') }}"
                                value="{{ old('username') ?: old('email') }}" autofocus autocomplete="email username">
                         @if ($errors->has('username') || $errors->has('email'))
-                            <span class="col-xs-12 error text-danger">
-                                <strong>{{ $errors->first('username') ?: $errors->first('email') }}</strong>
+                            <span class="error text-danger dmovie-error-box">
+                                {{ $errors->first('username') ?: $errors->first('email') }}
                             </span>
                         @endif
                     </div>

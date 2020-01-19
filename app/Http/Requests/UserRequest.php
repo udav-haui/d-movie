@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\User;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -44,6 +45,11 @@ class UserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Define message for validate request
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
@@ -65,6 +71,11 @@ class UserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Define name of attribute
+     *
+     * @return array
+     */
     public function attributes()
     {
         return [
@@ -74,5 +85,17 @@ class UserRequest extends FormRequest
             'phone' => __('Phone'),
             'dob' => __('Date of birth')
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt
+     *
+     * @param Validator $validator
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $validator->getMessageBag()->add('change_info', 'active');
+        parent::failedValidation($validator);
     }
 }

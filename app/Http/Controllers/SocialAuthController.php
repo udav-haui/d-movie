@@ -40,7 +40,14 @@ class SocialAuthController extends Controller
             $prefix == '/admin' ? 1 : 2,
             $prefix == '/admin' ? -1 : 1
         );
-        auth()->login($user, true);
-        return redirect($prefix . '/');
+        if (!$user) {
+            return redirect('/admin/login')
+                ->with('error', __('Please wait until we activate your account, thank you!'));
+        } elseif ($user->isActive()) {
+            auth()->login($user, true);
+            return redirect($prefix . '/');
+        }
+        return redirect('/admin/login')
+            ->with('error', __('Your account has not been activated.'));
     }
 }

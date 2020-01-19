@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+    protected $guarded = [];
     /**
      * Define role permission
      */
@@ -13,7 +14,7 @@ class Role extends Model
     const ROLE_CREATE = 'role-create';
     const ROLE_EDIT = 'role-edit';
     const ROLE_DELETE = 'role-delete';
-
+    const REDIRECT = '/admin/roles';
     /**
      * A role has manny user use it
      *

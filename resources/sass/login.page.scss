@@ -114,3 +114,17 @@ body {
 .select-none {
     user-select: none !important;
 }
+.dmovie-error-box {
+    display: block;
+    width: 100%;
+    padding: 7px 5px;
+    border: 1px solid red;
+    margin-top: 5px;
+    background: #ffe2d973;
+    font-weight: 300;
+}
+.invalid {
+    outline: red solid 1px !important;
+    padding: 0px 10px !important;
+    background-image: none !important;
+}

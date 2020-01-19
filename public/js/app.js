@@ -12907,10 +12907,21 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/sass/role-create.scss":
+/*!*****************************************!*\
+  !*** ./resources/sass/role-create.scss ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ 0:
-/*!***********************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/login.page.scss ./resources/sass/admincss.scss ./resources/sass/profile.scss ***!
-  \***********************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/login.page.scss ./resources/sass/admincss.scss ./resources/sass/profile.scss ./resources/sass/role-create.scss ***!
+  \*********************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12918,7 +12929,8 @@ __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\app.js */"./resources/
 __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\app.scss */"./resources/sass/app.scss");
 __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\login.page.scss */"./resources/sass/login.page.scss");
 __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\admincss.scss */"./resources/sass/admincss.scss");
-module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\profile.scss */"./resources/sass/profile.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\profile.scss */"./resources/sass/profile.scss");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\role-create.scss */"./resources/sass/role-create.scss");
 
 
 /***/ })

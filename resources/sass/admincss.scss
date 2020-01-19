@@ -1,3 +1,4 @@
+@import url('~select2/dist/css/select2.min.css');
 @font-face {
     font-family: Nunito;
     src: url("fonts/Nunito-Regular.ttf");
@@ -100,6 +101,9 @@ blockquote {
     text-transform: uppercase;
     padding-top: 10px;
     padding-bottom: 10px;
+    .btn-label {
+        background: transparent;
+    }
 }
 .dmovie-btn-success {
     background: $secondColor2;
@@ -125,5 +129,28 @@ blockquote {
             border-right: none !important;
         }
     }
+}
+.dmovie-error-box {
+    display: block;
+    width: 100%;
+    padding: 7px 5px;
+    border: 1px solid red;
+    margin-top: 5px;
+    background: #ffe2d973;
+    font-weight: 300;
+}
+.dmovie-fix-top-block {
+    position: fixed;
+    z-index: 999;
+}
+.display-none {
+    display: none !important;
+}
+.dmovie-swal {
+    width: 640px !important;
+
+}
+.swal2-popup {
+    font-size: 1.6rem !important;
 }
 // Profile page

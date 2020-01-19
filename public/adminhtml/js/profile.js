@@ -9,7 +9,9 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
-    $('.gender-selector').select2();
+    $('.gender-selector').select2({
+        width: '100%'
+    });
 
     /**
      * Datetime picker

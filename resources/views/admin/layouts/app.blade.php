@@ -10,15 +10,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo/logo-dm-512.png') }}">
     <title>@yield('app.title')</title>
     <meta name="description" content="@yield('app.description')">
-    <!-- Scripts -->
-{{--    <script src="{{ asset('js/app.js') }}" defer></script>--}}
-
+    @routes()
     <!-- Styles -->
 {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
 
     @include('admin.layouts.components.head_assets')
     @yield('head.css')
     @yield('head.js')
+    <!-- Scripts -->
+{{--    <script src="{{ asset('js/app.js') }}" defer></script>--}}
 </head>
 <body class="fix-header">
     <!-- ============================================================== -->
@@ -70,6 +70,13 @@
 
     @include('admin.layouts.components.bottom_assets')
     @yield('bottom.js')
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
 </body>
 </html>
 

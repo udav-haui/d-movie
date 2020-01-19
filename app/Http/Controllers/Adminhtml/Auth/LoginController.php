@@ -7,6 +7,8 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -77,7 +79,6 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        \Session::put('prefix', request()->route()->getPrefix());
         return view('admin.auth.login');
     }
 
@@ -102,5 +103,70 @@ class LoginController extends Controller
                 'password' => __('Password')
             ]
         );
+    }
+
+    /**
+     * Send response when login failed
+     *
+     * @param Request $request
+     * @throws ValidationException
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        throw ValidationException::withMessages([
+            $this->username() => [__('These credentials do not match our records.')],
+        ]);
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+         return $request->only($this->username(), 'password');
+//        return [
+//            $this->username() => $request->{$this->username()},
+//            'password' => $request->password,
+//            'state' => 1
+//        ];
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if (!$user->isActive()) {
+            $this->guard()->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+
+            return $this->loggedOut($request) ?: back()
+                ->with('error', __('Your account has not been activated.'));
+        }
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+        $prefix = Session::get('prefix');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return $this->loggedOut($request) ?: redirect($prefix . '/login');
     }
 }

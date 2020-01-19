@@ -20,14 +20,39 @@
 @endsection
 
 @section('content')
-    <div class="row bg-title">
-        <div class="col-md-2 col-xs-12 pull-right">
-            <a href="/admin/roles/create"
-               class="btn btn-block btn-default dmovie-btn dmovie-btn-success p-t-20 p-b-20">
-                {{ __('New Role') }}
-            </a>
+    @can('create', \App\Role::class)
+        <div class="row bg-title" id="dmovie-fix-top-block">
+            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
+                <a href="/admin/roles/create"
+                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
+                    {{ __('New Role') }}
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
+                <a href="{{ route('roles.assignForm') }}"
+                   class="btn btn-block btn-default waves-effect waves-light dmovie-btn"
+                   type="button">
+                    <span class="btn-label">
+                        <i class="fa fa-user-plus"></i>
+                    </span>{{ __('Assign user') }}
+                </a>
+            </div>
         </div>
+    @endcan
+    <div class="alert alert-danger alert-dismissable error-block display-none">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+
     </div>
+    <div class="alert alert-success alert-dismissable success-block display-none">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+
+    </div>
+    <input class="lang-text display-none"
+           swl-title-text="{{ __('Are you sure?') }}"
+           swl-text-text="{{ __('This may affect to all user are being assigned. You not need to delete it, just edit.') }}"
+           swl-icon-text="warning"
+           swl-confirmButtonText="{{ __('Still delete it!') }}"
+           swl-cancelButtonText="{{ __('Oke, I got it!') }}" />
     <div class="row">
         <div class="col-md-12 table-responsive">
             <table id="roles_data" class="display nowrap dmovie-table"
@@ -37,7 +62,9 @@
                    info="{{ __('Showing page _PAGE_ of _PAGES_') }}"
                    infoEmpty="{{ __('No records available') }}"
                    infoFiltered="{{ __('(filtered from _MAX_ total records)') }}"
-                   search="{{ __('Search') }}">
+                   search="{{ __('Search') }}"
+                   prevBtn="{{ __('Previous') }}"
+                   nextBtn="{{ __('Next') }}">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -58,16 +85,23 @@
                         <td scope="id">{{ $role->id }}</td>
                         <td scope="name">{{ $role->role_name }}</td>
                         <td scope="task">
-                            <a type="button"
-                               class="col-md-6 col-xs-12 btn dmovie-btn dmovie-btn-success"
-                               title="{{ __('Edit') }}">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <button type="button"
-                                    class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
-                                    title="{{ __('Delete') }}">
-                                <i class="fa fa-times"></i>
-                            </button>
+                            @can('update', \App\Role::class)
+                                <a href="{{ route('roles.edit', ['role' => $role->id]) }}"
+                                    type="button"
+                                   class="col-md-6 col-xs-12 btn dmovie-btn dmovie-btn-success"
+                                   title="{{ __('Edit') }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            @endcan
+                            @can('delete', \App\Role::class)
+                                <button id="deleteRoleBtn" type="button"
+                                        class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
+                                        title="{{ __('Delete') }}"
+                                        data-id="{{ $role->id }}"
+                                        url="{{ route('roles.destroy', ['role' => $role->id]) }}">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach

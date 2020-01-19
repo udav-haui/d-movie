@@ -110,10 +110,10 @@ class UserController extends Controller
         // $this->authorize('update', $user);
         try {
             $this->userService->update($request, $user);
+            return back()->with('success', __('User info have updated.'));
         } catch (AuthorizationException $exception) {
-            return back()->withError($exception->getMessage())->withInput();
+            return back()->with('change_info', 'active')->withError($exception->getMessage())->withInput();
         }
-        return redirect()->back();
     }
 
     /**
@@ -219,5 +219,10 @@ class UserController extends Controller
             }
             return back()->with('success', __('Password have successfully updated.'));
         }
+    }
+
+    public function getUsers()
+    {
+        dd(1);
     }
 }
