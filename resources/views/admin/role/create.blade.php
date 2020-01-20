@@ -75,7 +75,7 @@
                 <div class="col-sm-2">
                     <input name="role_name"
                            type="text"
-                           class="form-control @error('role_name') invalid @enderror"
+                           class="form-control @error('role_name') invalid @enderror dmovie-textbox-border"
                            id="role_name"
                            placeholder="{{ __('Role name') }}" />
                     @error('role_name')

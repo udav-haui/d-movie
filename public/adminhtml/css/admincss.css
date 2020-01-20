@@ -201,8 +201,21 @@ blockquote {
   height: 30px !important;
 }
 
-.dmovie-select2-selection-border {
+.h-32 {
+  height: 32px !important;
+}
+
+.dmovie-select2-selection-border,
+.dmovie-textbox-border {
   border-color: #32a3a3 !important;
   border-radius: 0 !important;
+}
+
+.select2-container .select2-selection--single {
+  height: 32px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 32px !important;
 }
 

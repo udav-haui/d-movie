@@ -95,6 +95,13 @@ class RoleService
         }
     }
 
+    /**
+     * Delete a role
+     *
+     * @param Role $role
+     * @return bool
+     * @throws \Exception
+     */
     public function delete(Role $role)
     {
         try {
@@ -115,5 +122,15 @@ class RoleService
         } catch (\Exception $exception) {
             throw new \Exception(__('Ooops, something wrong appended.' . $exception->getMessage()));
         }
+    }
+
+    /**
+     * Get list roles
+     *
+     * @return Role[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function fetch()
+    {
+        return Role::all();
     }
 }

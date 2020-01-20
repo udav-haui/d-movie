@@ -120,5 +120,10 @@
     "Oke, I got it!": "Ok, tôi hiểu rồi!",
     "Assign user": "Cấp quyền người dùng",
     "Can not upload your image! Sorry!": "Không thể tải ảnh của bạn lên! Xin lỗi!",
-    "Something happen when we store you avatar.": "Có lỗi xảy ra khi lưu ảnh của bạn."
+    "Something happen when we store you avatar.": "Có lỗi xảy ra khi lưu ảnh của bạn.",
+    "You must select at least a :attribute": "Bạn phải chọn ít nhất một :attribute",
+    "Chose one or some users.": "Chọn một vài người dùng.",
+    "Chose a role.": "Chọn một tập quyền.",
+    "You must select a :attribute.": "Bạn phải chọn một :attribute.",
+    "Unnamed": "Chưa đặt tên"
 }

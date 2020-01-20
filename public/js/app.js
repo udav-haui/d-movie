@@ -12925,12 +12925,12 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/html/d-movie/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/app.scss */"./resources/sass/app.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/login.page.scss */"./resources/sass/login.page.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/admincss.scss */"./resources/sass/admincss.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/profile.scss */"./resources/sass/profile.scss");
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/sass/role-create.scss */"./resources/sass/role-create.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\login.page.scss */"./resources/sass/login.page.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\admincss.scss */"./resources/sass/admincss.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\profile.scss */"./resources/sass/profile.scss");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\role-create.scss */"./resources/sass/role-create.scss");
 
 
 /***/ })

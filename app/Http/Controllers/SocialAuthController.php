@@ -37,8 +37,8 @@ class SocialAuthController extends Controller
         $user = $service->createOrGetUser(
             $providerUser,
             $provider,
-            $prefix == '/admin' ? 1 : 2,
-            $prefix == '/admin' ? -1 : 1
+            $prefix == '/admin' ? \App\User::NORMAL_USER : \App\User::CUSTOMER,
+            $prefix == '/admin' ? \App\User::NOT_ACTIVATE : \App\User::ACTIVE
         );
         if (!$user) {
             return redirect('/admin/login')

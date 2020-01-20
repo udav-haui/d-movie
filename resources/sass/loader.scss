@@ -1,0 +1,110 @@
+svg {
+    width: 0;
+    height: 0;
+}
+
+.container {
+    margin: 40px auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.goo1,
+.goo2 {
+    -webkit-filter: url(#goo);
+}
+
+.container div {
+    background: #000e;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+
+}
+
+.goo1 {
+    min-width: 700px;
+    min-height: 300px;
+    position: relative;
+}
+
+.goo1 > div {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform-origin: -50% -50%;
+    animation: circle 2.5s infinite cubic-bezier(.57, 0, .52, 1);
+}
+
+.goo1 > div:nth-child(1) {
+    animation-delay: .25s;
+}
+
+.goo1 > div:nth-child(2) {
+    animation-delay: .5s;
+}
+
+.goo1 > div:nth-child(3) {
+    animation-delay: .75s;
+}
+
+.goo1 > div:nth-child(4) {
+    animation-delay: 1s;
+}
+
+.goo1 > div:nth-child(5) {
+    animation-delay: 1.25s
+}
+
+.goo2 > div {
+    transform: translateX(0);
+    animation: sideways 2.5s infinite ease;
+}
+
+.goo2 > div:nth-child(1) {
+    animation-delay: .25s;
+}
+
+.goo2 > div:nth-child(2) {
+    animation-delay: .5s;
+}
+
+.goo2 > div:nth-child(3) {
+    animation-delay: .75s;
+}
+
+.goo2 > div:nth-child(4) {
+    animation-delay: 1s;
+}
+
+.goo2 > div:nth-child(5) {
+    animation-delay: 1.25s
+}
+
+.goo2 {
+    padding-left:40px;
+    width: 200px;
+    height:100px;
+}
+
+@keyframes circle {
+    50% {
+        width: 25px;
+        height: 25px;
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sideways {
+    33% {
+        transform: translateX(50px);
+    }
+    66% {
+        transform: translateX(-50px);
+    }
+}

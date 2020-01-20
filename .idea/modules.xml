@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/d-movie.iml" filepath="$PROJECT_DIR$/.idea/d-movie.iml" />
-      <module fileurl="file://G:/magento/.idea/magento.iml" filepath="G:/magento/.idea/magento.iml" />
     </modules>
   </component>
 </project>

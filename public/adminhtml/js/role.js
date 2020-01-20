@@ -63,9 +63,9 @@ $(document).ready(function () {
                 success: function (res) {
                     if (res.status === 200) {
                         row.remove().draw();
-                        $('.success-block').removeClass('display-none').append(res.message);
+                        window.parent.successMessage(res.message);
                     } else {
-                        $('.error-block').removeClass('display-none').append(res.message);
+                        window.parent.errorMessage(res.message);
                     }
                 }
             });

@@ -22,6 +22,8 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             /**
              * ROLE SESSION
              */
+            Route::get('roles/fetch', 'RoleController@fetch')->name('roles.getRoles');
+            Route::get('roles/{role}/get', 'RoleController@get')->name('roles.getRole');
             Route::post('roles/assign', 'RoleController@doAssign')->name('roles.doAssign');
             Route::get('roles/assign', 'RoleController@showAssignForm')->name('roles.assignForm');
             Route::resource('roles', 'RoleController');

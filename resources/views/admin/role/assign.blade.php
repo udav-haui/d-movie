@@ -14,7 +14,8 @@
 @endsection
 @section('bottom.js')
 {{--    <script src="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.js') }}"></script>--}}
-    <script src="{{ asset('adminhtml/js/assign.js') }}"></script>
+<script src="{{ asset('adminhtml/js/assign.js') }}"></script>
+<script src="{{ asset('adminhtml/assets/plugins/select2/i18n/' . Session::get('locale', config('app.locale')) . '.js') }}"></script>
 @endsection
 @section('head.css')
 {{--    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.css') }}">--}}
@@ -49,12 +50,17 @@
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 
     </div>
-    <input class="lang-text display-none"
+{{--    Send data text to js file --}}
+    <input type="hidden" class="lang-text"
            swl-title-text="{{ __('Are you sure?') }}"
            swl-text-text="{{ __('This may affect to all user are being assigned. You not need to delete it, just edit.') }}"
            swl-icon-text="warning"
            swl-confirmButtonText="{{ __('Still delete it!') }}"
-           swl-cancelButtonText="{{ __('Oke, I got it!') }}" />
+           swl-cancelButtonText="{{ __('Oke, I got it!') }}"
+           placeholderUsersText="{{ __('Chose one or some users.') }}"
+           placeholderRoleText="{{ __('Chose a role.') }}"
+           unnamed="{{ __('Unnamed') }}"/>
+{{--    ./ end send text --}}
     <div class="row">
         <form id="assign-form"
               class="col-md-12 form-horizontal"
@@ -64,74 +70,21 @@
             <div class="form-group">
                 <label for="user_id_select2" class="col-sm-5 control-label">{{ __('User') }} <strong class="text-danger">*</strong></label>
                 <div class="col-sm-2">
-                    <select id="user_id_select2" multiple name="user_ids[]" class="form-control user_id_select2 @error('user_id') invalid @enderror">
-                        <option>Select</option>
-                        <optgroup label="Alaskan/Hawaiian Time Zone">
-                            <option value="AK">Alaska</option>
-                            <option value="HI">Hawaii</option>
-                        </optgroup>
-                        <optgroup label="Pacific Time Zone">
-                            <option value="CA">California</option>
-                            <option value="NV">Nevada</option>
-                            <option value="OR">Oregon</option>
-                            <option value="WA">Washington</option>
-                        </optgroup>
-                        <optgroup label="Mountain Time Zone">
-                            <option value="AZ">Arizona</option>
-                            <option value="CO">Colorado</option>
-                            <option value="ID">Idaho</option>
-                            <option value="MT">Montana</option>
-                            <option value="NE">Nebraska</option>
-                            <option value="NM">New Mexico</option>
-                            <option value="ND">North Dakota</option>
-                            <option value="UT">Utah</option>
-                            <option value="WY">Wyoming</option>
-                        </optgroup>
-                        <optgroup label="Central Time Zone">
-                            <option value="AL">Alabama</option>
-                            <option value="AR">Arkansas</option>
-                            <option value="IL">Illinois</option>
-                            <option value="IA">Iowa</option>
-                            <option value="KS">Kansas</option>
-                            <option value="KY">Kentucky</option>
-                            <option value="LA">Louisiana</option>
-                            <option value="MN">Minnesota</option>
-                            <option value="MS">Mississippi</option>
-                            <option value="MO">Missouri</option>
-                            <option value="OK">Oklahoma</option>
-                            <option value="SD">South Dakota</option>
-                            <option value="TX">Texas</option>
-                            <option value="TN">Tennessee</option>
-                            <option value="WI">Wisconsin</option>
-                        </optgroup>
-                        <optgroup label="Eastern Time Zone">
-                            <option value="CT">Connecticut</option>
-                            <option value="DE">Delaware</option>
-                            <option value="FL">Florida</option>
-                            <option value="GA">Georgia</option>
-                            <option value="IN">Indiana</option>
-                            <option value="ME">Maine</option>
-                            <option value="MD">Maryland</option>
-                            <option value="MA">Massachusetts</option>
-                            <option value="MI">Michigan</option>
-                            <option value="NH">New Hampshire</option>
-                            <option value="NJ">New Jersey</option>
-                            <option value="NY">New York</option>
-                            <option value="NC">North Carolina</option>
-                            <option value="OH">Ohio</option>
-                            <option value="PA">Pennsylvania</option>
-                            <option value="RI">Rhode Island</option>
-                            <option value="SC">South Carolina</option>
-                            <option value="VT">Vermont</option>
-                            <option value="VA">Virginia</option>
-                            <option value="WV">West Virginia</option>
-                        </optgroup>
+                    <select id="user_id_select2" multiple name="user_ids[]" class="form-control user_id_select2 @error('user_ids') invalid @enderror">
                     </select>
-                    @error('user_id')
-                    <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                    @error('user_ids')
+                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                     @enderror
                 </div>
-                <input id="permissions" type="hidden" name="permissions">
+            </div>
+            <div class="form-group">
+                <label for="role_select2" class="col-sm-5 control-label">{{ __('Role') }} <strong class="text-danger">*</strong></label>
+                <div class="col-sm-2">
+                    <select id="role_select2" oldRoleId="{{ old('role') }}" name="role" class="form-control @error('role') invalid @enderror"></select>
+                    @error('role')
+                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                    @enderror
+                </div>
             </div>
         </form>
     </div>

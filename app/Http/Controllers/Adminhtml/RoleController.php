@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adminhtml;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Role;
 use App\Services\RoleService;
@@ -155,9 +156,36 @@ class RoleController extends Controller
         return view('admin.role.assign');
     }
 
-    public function doAssign()
+    /**
+     * Assign list user to a role
+     *
+     * @param AssignRequest $request
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function doAssign(AssignRequest $request)
     {
         $this->authorize('viewAny', Role::class);
         dd(request()->all());
+    }
+
+    /**
+     * Fetch all role
+     *
+     * @return Role[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\JsonResponse
+     */
+    public function fetch()
+    {
+        return request()->ajax() ?
+            response()->json([
+                'data' => $this->roleService->fetch()
+            ]) : $this->roleService->fetch();
+    }
+
+    public function get(Role $role)
+    {
+        return request()->ajax() ?
+            response()->json([
+                'data' => $role
+            ]) : $role;
     }
 }
