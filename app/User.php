@@ -15,6 +15,17 @@ class User extends Authenticatable
 
     protected $guarded = [];
     const TABLE_NAME = 'users';
+    /**
+     * Determine account type
+     */
+    const ADMIN = 0,
+        NORMAL_USER = 1,
+        CUSTOMER = 2;
+    /**
+     * Determine account state
+     */
+    const ACTIVE = 1,
+        NOT_ACTIVATE = -1;
 
     /**
      * The attributes that are mass assignable.

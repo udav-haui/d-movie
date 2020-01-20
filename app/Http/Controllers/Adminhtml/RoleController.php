@@ -157,6 +157,7 @@ class RoleController extends Controller
 
     public function doAssign()
     {
+        $this->authorize('viewAny', Role::class);
         dd(request()->all());
     }
 }

@@ -182,7 +182,9 @@
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
-                    <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" width="36" class="img-circle">
+                    <div class="dmovie-img-cover-container">
+                        <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" class="img-circle dmovie-img-cover">
+                    </div>
                     <b class="hidden-xs">{{ auth()->user()->name }}</b>
                     <span class="caret"></span>
                 </a>

@@ -5,7 +5,9 @@
         <ul class="nav" id="side-menu">
             <li class="user-pro">
                 <a href="#" class="waves-effect {{ request()->segment(2) != 'user' ? '' : 'active' }}">
-                    <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" class="img-circle">
+                    <div class="dmovie-img-cover-container h-30">
+                        <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" class="img-circle dmovie-img-cover">
+                    </div>
                     <span class="hide-menu"> {{ auth()->user()->name }}
                         <span class="fa arrow"></span>
                     </span>

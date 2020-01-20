@@ -74,6 +74,7 @@
     "Password confirmation": "Mật khẩu nhập lại",
     "Upload avatar": "Cập nhật ảnh đại diện",
     "Something wrong!!!": "Có lỗi sảy ra!!!",
+    "Something wrong: ": "Có lỗi sảy ra: ",
     "Drag and drop a file here or click": "Kéo thả hoặc click vào đây",
     "Drag and drop or click to replace": "Kéo thả hoặc click để thay thế",
     "Remove": "Loại bỏ",
@@ -117,5 +118,7 @@
     "This may affect to all user are being assigned. You not need to delete it, just edit.": "Điều này có thể ảnh hưởng đến các người dùng đang được chỉ định quyền này. Bạn không cần thiết phải xoá nó, chỉ cần sửa là được.",
     "Still delete it!": "Vẫn xoá!",
     "Oke, I got it!": "Ok, tôi hiểu rồi!",
-    "Assign user": "Cấp quyền người dùng"
+    "Assign user": "Cấp quyền người dùng",
+    "Can not upload your image! Sorry!": "Không thể tải ảnh của bạn lên! Xin lỗi!",
+    "Something happen when we store you avatar.": "Có lỗi xảy ra khi lưu ảnh của bạn."
 }

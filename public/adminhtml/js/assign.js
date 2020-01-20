@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     selectedUser.select2({
         placeholder: placeholderText,
+        containerCssClass: 'dmovie-select2-selection-border',
         pagination: {
             more: true,
         },
@@ -19,16 +20,12 @@ $(document).ready(function () {
                 };
             },
             processResults: function (data) {
-                console.log(data);
                 return {
                     results: $.map(data.data, function (val, i) {
-                        /**
-                         * Nếu data có root thì ko thêm vào list
-                         */
-                        return val.role != 1 ? {
+                        return {
                             id: val.id,
-                            text: val.name == null ? `ID: ${val.id} - Chưa cập nhật tên` : val.name
-                        } : null;
+                            text: val.name == null || val.name === '' ? `ID: ${val.id} - Chưa cập nhật tên` : val.name
+                        };
                     })
                 }
             }

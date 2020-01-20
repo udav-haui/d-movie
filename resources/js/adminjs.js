@@ -3,7 +3,7 @@ require('./bootstrap');
 require('jquery-slimscroll');
 require('@progress/kendo-ui');
 window.Swal = window.Swal = require('sweetalert2');
-require('select2');
+require('select2/dist/js/select2.full');
 jQuery(document).ready(function ($) {
     "use strict";
     $('#user-profile').on('click', function () {

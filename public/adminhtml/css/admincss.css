@@ -171,3 +171,38 @@ blockquote {
   font-size: 1.6rem !important;
 }
 
+.alert-danger {
+  color: red;
+  background: #ff4b4b2b;
+}
+
+.alert-success {
+  color: forestgreen;
+  border-color: forestgreen;
+  background: #228b221f;
+}
+
+.dmovie-img-cover-container {
+  max-width: 36px;
+  max-height: 36px;
+  width: 36px;
+  height: 36px;
+  display: inline-block;
+}
+
+.dmovie-img-cover {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.h-30 {
+  height: 30px !important;
+}
+
+.dmovie-select2-selection-border {
+  border-color: #32a3a3 !important;
+  border-radius: 0 !important;
+}
+

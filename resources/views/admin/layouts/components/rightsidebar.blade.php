@@ -35,8 +35,10 @@
                 @foreach($users as $user)
                     <li>
                         <a href="/admin/user/{{ $user->id }}">
-                            <img src="{{ $user->getAvatar() }}"
-                                 alt="user-img" class="img-circle" />
+                            <div class="dmovie-img-cover-container h-30">
+                                <img src="{{ $user->getAvatar() }}"
+                                     alt="user-img" class="img-circle dmovie-img-cover" />
+                            </div>
                             <span>{{ $user->name }}
                                 @if ($user->isOnline())
                                     <small class="text-success">online</small>

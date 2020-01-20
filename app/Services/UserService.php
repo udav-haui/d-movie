@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
 
 /**
  * Class UserService
@@ -79,7 +80,11 @@ class UserService
                 if ($user->avatar) {
                     Storage::delete('/public/' . $user->avatar);
                 }
-                $avtPath = request('avatar')->store('uploads', 'public');
+                try {
+                    $avtPath = request('avatar')->store('uploads', 'public');
+                } catch (Exception $fileException) {
+                    throw new Exception(__('Không thể tải ảnh của bạn lên! Xin lỗi!'));
+                }
                 $data = [
                     'avatar' => $avtPath
                 ];
@@ -91,11 +96,13 @@ class UserService
                         'target_model' => User::class,
                         'target_id' => $user->id
                     ]);
+                } else {
+                    Storage::delete('/public/' . $avtPath);
+                    throw new Exception(__('Something happen when we store you avatar.'));
                 }
                 return true;
             } catch (Exception $exception) {
-                Storage::delete('/public/' . $avtPath);
-                throw new Exception(__('Something wrong!!!'));
+                throw new Exception(__('Something wrong: ') . $exception->getMessage());
             }
         }
         throw new AuthorizationException(__('You can not do that :)'));

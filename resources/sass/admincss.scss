@@ -9,6 +9,9 @@ $mainColor2: #006ca3;
 $mainColor: #01a5a0;
 $secondColor: #00bd95;
 $secondColor2: #00c193;
+$errorBackground: #ff4b4b2b;
+$sucessBackground: #228b221f;
+$borderColor: #32a3a3;
 
 body {
     font-family: Nunito, sans-serif !important;
@@ -152,5 +155,33 @@ blockquote {
 }
 .swal2-popup {
     font-size: 1.6rem !important;
+}
+.alert-danger {
+    color: red;
+    background: $errorBackground;
+}
+.alert-success {
+    color: forestgreen;
+    border-color: forestgreen;
+    background: $sucessBackground;
+}
+.dmovie-img-cover-container {
+    max-width: 36px;
+    max-height: 36px;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+}
+.dmovie-img-cover {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.h-30 {
+    height: 30px !important;
+}
+.dmovie-select2-selection-border {
+    border-color: $borderColor !important;
+    border-radius: 0 !important;
 }
 // Profile page

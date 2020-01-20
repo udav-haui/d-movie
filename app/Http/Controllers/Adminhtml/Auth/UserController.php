@@ -157,7 +157,7 @@ class UserController extends Controller
                 return back()->with('success', __('Avatar updated success.'));
             }
         } catch (\Exception $exception) {
-            return back()->withError($exception->getMessage())->withInput();
+            return back()->with('change_avatar', 'active')->withError($exception->getMessage())->withInput();
         }
     }
 
@@ -223,6 +223,14 @@ class UserController extends Controller
 
     public function getUsers()
     {
-        dd(1);
+        $name = request()->name;
+        if ($name) {
+            echo $name;
+        } else {
+            $users = User::whereAccountType(User::NORMAL_USER)->whereState(User::ACTIVE)->get();
+            return response()->json([
+                'data'=> $users
+            ]);
+        }
     }
 }

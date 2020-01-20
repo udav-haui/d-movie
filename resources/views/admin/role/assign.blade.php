@@ -24,8 +24,9 @@
     @can('create', \App\Role::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
             <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="/admin/roles/create"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
+                <a href="javascript:void(0);"
+                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success"
+                   onclick="event.preventDefault(); $('#assign-form').submit();">
                     {{ __('Save') }}
                 </a>
             </div>
@@ -63,7 +64,7 @@
             <div class="form-group">
                 <label for="user_id_select2" class="col-sm-5 control-label">{{ __('User') }} <strong class="text-danger">*</strong></label>
                 <div class="col-sm-2">
-                    <select id="user_id_select2" name="user_ids" class="form-control user_id_select2 @error('user_id') invalid @enderror">
+                    <select id="user_id_select2" multiple name="user_ids[]" class="form-control user_id_select2 @error('user_id') invalid @enderror">
                         <option>Select</option>
                         <optgroup label="Alaskan/Hawaiian Time Zone">
                             <option value="AK">Alaska</option>

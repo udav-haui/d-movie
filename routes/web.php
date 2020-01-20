@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['locale', 'prefix']], function () {
     Route::get('/switch-language/{lang}', 'LanguageController@switch')
         ->name('switch-language');
+    Route::get('/', 'Frontend\HomeController@index')->name('frontend.dashboard');
 
     Route::group([
         'namespace' => 'Adminhtml',

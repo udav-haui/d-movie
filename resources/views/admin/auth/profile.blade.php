@@ -15,7 +15,7 @@
                     <div class="overlay-box">
                         <div class="user-content">
                             <a href="javascript:void(0)">
-                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" class="thumb-lg img-circle" alt="img">
+                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" class="thumb-lg img-circle dmovie-img-cover" alt="img">
                             </a>
                             <h4 class="text-white">{{ $user->name ?? __('Not update') }}</h4>
                             <h5 class="text-white">{{ $user->email ?? __('Not update') }}</h5>
@@ -66,7 +66,7 @@
                             <span class="hidden-xs">{{ __('Change password') }}</span>
                         </a>
                     </li>
-                    <li class="tab @error('change_avatar'){{ $message }}@enderror">
+                    <li class="tab @if (session('change_avatar')) {{ session('change_avatar') }} @endif @error('change_avatar'){{ $message }}@enderror">
                         <a href="#change_avatar" data-toggle="tab" aria-expanded="false">
                             <span class="visible-xs"><i class="fa fa-user"></i></span>
                             <span class="hidden-xs">{{ __('Avatar') }}</span>
@@ -74,7 +74,7 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane @error('change_info'){{ $message }}@enderror" id="settings">
+                    <div class="tab-pane @if (session('change_info')) {{ session('change_info') }} @endif @error('change_info'){{ $message }}@enderror" id="settings">
                         <form class="form-horizontal form-material" id="user_data_form"
                               method="POST"
                               action="{{ route('user.update', ['user' => $user]) }}">
@@ -148,12 +148,14 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
                                         <label class="col-md-12" for="gender">{{ __('Gender') }}</label>
-                                        <select name="gender" id="gender" class="col-md-12 gender-selector bs-select-hidden" data-style="form-control">
-                                            <option value="-1" {{ old('gender', $user->gender) ? '' : 'selected' }}>{{ __('Select your gender') }}</option>
-                                            <option value="0" {{ old('gender', $user->gender) != 0 ? '' : 'selected' }}>{{ __('Male') }}</option>
-                                            <option value="1" {{ old('gender', $user->gender) != 1 ? '' : 'selected' }}>{{ __('Female') }}</option>
-                                            <option value="2" {{ old('gender', $user->gender) != 2 ? '' : 'selected' }}>{{ __('Other') }}</option>
-                                        </select>
+                                        <div class="col-md-12">
+                                            <select name="gender" id="gender" class="gender-selector bs-select-hidden" data-style="form-control">
+                                                <option value="-1" {{ old('gender', $user->gender) ? '' : 'selected' }}>{{ __('Select your gender') }}</option>
+                                                <option value="0" {{ old('gender', $user->gender) != 0 ? '' : 'selected' }}>{{ __('Male') }}</option>
+                                                <option value="1" {{ old('gender', $user->gender) != 1 ? '' : 'selected' }}>{{ __('Female') }}</option>
+                                                <option value="2" {{ old('gender', $user->gender) != 2 ? '' : 'selected' }}>{{ __('Other') }}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="form-group cold-md-12">
                                         <label class="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }} <strong class="text-danger">*</strong></label>
@@ -242,7 +244,7 @@
                         </div>
                         </form>
                     </div>
-                    <div class="tab-pane @error('change_avatar'){{ $message }}@enderror" id="change_avatar">
+                    <div class="tab-pane @if (session('change_avatar')) {{ session('change_avatar') }} @endif @error('change_avatar'){{ $message }}@enderror" id="change_avatar">
                         <form class="form-horizontal form-material"
                               method="POST"
                               action="{{ route('user.setAvatar', ['user' => $user->id]) }}"
