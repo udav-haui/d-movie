@@ -7,6 +7,7 @@ use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Role;
 use App\Services\RoleService;
+use Config;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -181,11 +182,103 @@ class RoleController extends Controller
             ]) : $this->roleService->fetch();
     }
 
+    /**
+     * Get a role
+     *
+     * @param Role $role
+     * @return Role|\Illuminate\Http\JsonResponse
+     */
     public function get(Role $role)
     {
         return request()->ajax() ?
             response()->json([
                 'data' => $role
             ]) : $role;
+    }
+
+    public function momoTest()
+    {
+        try {
+            $endpoint = config('app.momo.endpoint');
+            $partnerCode = config('app.momo.partner_code');
+            $accessKey = config('app.momo.access_key');
+            $secretKey = config('app.momo.secret_key');
+            $amount = '3000000';
+            $requestId = time() . '';
+            $orderId = time() . '';
+            $orderInfo = 'Test thanh toán momo';
+            $returnUrl = 'https://dmovie.vn/admin/momo/callback';
+            $notifyurl = 'https://dmovie.vn';
+            $extraData = '';
+            $requestType = config('app.momo.request_type');
+
+            $rawHash = "partnerCode=" . $partnerCode .
+                "&accessKey=" . $accessKey .
+                "&requestId=" . $requestId .
+                "&amount=" . $amount.
+                "&orderId=" . $orderId .
+                "&orderInfo=" . $orderInfo .
+                "&returnUrl=" . $returnUrl .
+                "&notifyUrl=" . $notifyurl .
+                "&extraData=" . "";
+            $signature = hash_hmac("sha256", $rawHash, $secretKey);
+            $data = [
+                'partnerCode' => $partnerCode,
+                'accessKey' => $accessKey,
+                'requestId' => $requestId,
+                'amount' => $amount,
+                'orderId' => $orderId,
+                'orderInfo' => $orderInfo,
+                'returnUrl' => $returnUrl,
+                'notifyUrl' => $notifyurl,
+                'extraData' => $extraData,
+                'requestType' => $requestType,
+                'signature' => $signature
+            ];
+            $jsonResult = $this->execPostRequest($endpoint, json_encode($data));
+            $result = json_decode($jsonResult, true);
+            return redirect($result['payUrl']);
+        } catch (\Exception $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
+        // $client = new \GuzzleHttp\Client();
+//        $res = $client->post('https://test-payment.momo.vn/gw_payment/transactionProcessor', [
+//            'partnerCode' => $partnerCode,
+//            'accessKey' => $accessKey,
+//            'requestId' => $requestId,
+//            'amount' => $amount,
+//            'orderId' => $orderId,
+//            'orderInfo' => $orderInfo,
+//            'returnUrl' => $returnUrl,
+//            'notifyUrl' => $notifyurl,
+//            'extraData' => $extraData,
+//            'requestType' => $requestType,
+//            'signature' => $signature
+//        ]);
+        // $jsonResult = $client->post('https://test-payment.momo.vn/gw_payment/transactionProcessor', json_encode($data));
+    }
+
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)));
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+
+    public function momoCallback()
+    {
+        dd(request()->all());
     }
 }

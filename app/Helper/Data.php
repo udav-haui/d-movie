@@ -14,8 +14,19 @@ class Data
     const UPDATE_MSG = 'have updated';
     const DELETE_MSG = 'have deleted';
 
+    /**
+     * Define storage path
+     *
+     * @var string
+     */
     const STORAGE = '/storage/';
 
-    /** @var int Define user attribute */
-    const IS_ADMIN = 0;
+    /**
+     * Define URL path
+     *
+     * @var string
+     */
+    const ADMIN_LOGIN_PATH = '/admin/login',
+        ADMIN_PATH = '/admin',
+        CUSTOMER_LOGIN_PATH = '/login';
 }

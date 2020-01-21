@@ -1,5 +1,5 @@
 function loginWithSocial(provider) {
-    window.location.replace('/redirect/' + provider);
+    window.location.replace('redirect/' + provider);
 }
 /* ===== Login and Recover Password ===== */
 

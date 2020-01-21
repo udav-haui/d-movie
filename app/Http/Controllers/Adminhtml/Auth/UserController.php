@@ -227,7 +227,7 @@ class UserController extends Controller
         if ($name) {
             echo $name;
         } else {
-            $users = User::whereAccountType(User::NORMAL_USER)->whereState(User::ACTIVE)->get();
+            $users = User::whereAccountType(User::STAFF)->whereState(User::ACTIVE)->get();
             return response()->json([
                 'data'=> $users
             ]);

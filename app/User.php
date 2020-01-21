@@ -15,18 +15,22 @@ class User extends Authenticatable
 
     protected $guarded = [];
     const TABLE_NAME = 'users';
+
     /**
      * Determine account type
      */
     const ADMIN = 0,
-        NORMAL_USER = 1,
+        STAFF = 1,
         CUSTOMER = 2;
+
     /**
      * Determine account state
      */
     const ACTIVE = 1,
         NOT_ACTIVATE = -1;
 
+    const FIRST_LOGIN_WITH_SOCIAL_ACCOUNT = 1,
+        CAN_CHANGE_USERNAME = 1;
     /**
      * The attributes that are mass assignable.
      *
@@ -90,7 +94,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->account_type == Data::IS_ADMIN;
+        return $this->account_type === self::ADMIN;
     }
 
     /**
@@ -116,9 +120,9 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function canChangePassword()
+    public function canChangeUsername()
     {
-        return $this->can_change_username == 1;
+        return $this->can_change_username == self::CAN_CHANGE_USERNAME;
     }
 
     /**
@@ -128,7 +132,7 @@ class User extends Authenticatable
      */
     public function loginWithSocialAcc()
     {
-        return $this->login_with_social_account == 1;
+        return $this->login_with_social_account == self::FIRST_LOGIN_WITH_SOCIAL_ACCOUNT;
     }
 
     /**
@@ -138,7 +142,7 @@ class User extends Authenticatable
      */
     public function isActive()
     {
-        return $this->state === 1;
+        return $this->state === self::ACTIVE;
     }
 
     /**

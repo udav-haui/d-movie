@@ -89,9 +89,9 @@
                                         </label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
-                                                   class="form-control form-control-line @error('username') invalid @enderror @if(!auth()->user()->isAdmin() && !$user->canChangePassword()) disabled @endif"
+                                                   class="form-control form-control-line @error('username') invalid @enderror @if(!auth()->user()->isAdmin() && !$user->canChangeUsername()) disabled @endif"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   {{ auth()->user()->isAdmin() || $user->canChangePassword() ? '' : 'disabled' }} />
+                                                   {{ auth()->user()->isAdmin() || $user->canChangeUsername() ? '' : 'disabled' }} />
                                             @error('username')
                                                 <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
@@ -281,6 +281,20 @@
             </div>
         </div>
             @endcan
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="{{ route('momo.testing') }}" method="post">
+                @csrf
+                <div class="form-group">
+                    <input name="amount" type="text" class="form-control" placeholder="amount" />
+                </div>
+                <button type="submit"
+                        id="momo-payment-test-d" class="btn btn-block dmovie-btn-success">
+                    Continue
+                </button>
+            </form>
+        </div>
     </div>
     <!-- /.row -->
 

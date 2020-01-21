@@ -37,7 +37,13 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
         Route::post('login', 'Auth\LoginController@login');
         Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+        Route::get('callback/{provider}', 'SocialAuthController@callback');
+        Route::get('redirect/{provider}', 'SocialAuthController@redirect');
+
+        /**
+         * MoMo testing
+         */
+        Route::post('test', 'RoleController@momoTest')->name('momo.testing');
+        Route::get('momo/callback', 'RoleController@momoCallback')->name('momo.callback');
     });
 });
-Route::get('/callback/{provider}', 'SocialAuthController@callback');
-Route::get('/redirect/{provider}', 'SocialAuthController@redirect');

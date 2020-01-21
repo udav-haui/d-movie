@@ -1,6 +1,17 @@
 $(document).ready(function () {
     console.log('jQuery loaded');
 
+    $('#momo-payment-test').on('click', function () {
+        $.ajax({
+            url: route('momo.testing'),
+            type: 'POST',
+            dataType: 'application/json; charset=UTF-8',
+            success: function (res) {
+                console.log(res);
+            },
+        });
+    });
+
     /**
      * Change tab active
      */
