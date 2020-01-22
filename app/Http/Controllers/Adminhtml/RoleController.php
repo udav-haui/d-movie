@@ -161,21 +161,30 @@ class RoleController extends Controller
      * Assign list user to a role
      *
      * @param AssignRequest $request
+     * @return \Illuminate\Http\RedirectResponse|void
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function doAssign(AssignRequest $request)
     {
         $this->authorize('viewAny', Role::class);
-        dd(request()->all());
+        try {
+            $this->roleService->doAssign($request);
+            return back()->with('success', __('Succ'));
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
      * Fetch all role
      *
      * @return Role[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Exception
      */
     public function fetch()
     {
+        $this->authorize('viewAny', Role::class);
         return request()->ajax() ?
             response()->json([
                 'data' => $this->roleService->fetch()
@@ -187,15 +196,22 @@ class RoleController extends Controller
      *
      * @param Role $role
      * @return Role|\Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function get(Role $role)
     {
+        $this->authorize('viewAny', Role::class);
         return request()->ajax() ?
             response()->json([
                 'data' => $role
             ]) : $role;
     }
 
+    /**
+     * Make a payment by momo
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function momoTest()
     {
         try {
@@ -208,7 +224,7 @@ class RoleController extends Controller
             $orderId = time() . '';
             $orderInfo = 'Test thanh toán momo';
             $returnUrl = 'https://dmovie.vn/admin/momo/callback';
-            $notifyurl = 'https://dmovie.vn';
+            $notifyurl = 'https://dmovie.vn/admin/momo/notify';
             $extraData = '';
             $requestType = config('app.momo.request_type');
 
@@ -241,24 +257,16 @@ class RoleController extends Controller
         } catch (\Exception $exception) {
             return back()->with('error', $exception->getMessage());
         }
-        // $client = new \GuzzleHttp\Client();
-//        $res = $client->post('https://test-payment.momo.vn/gw_payment/transactionProcessor', [
-//            'partnerCode' => $partnerCode,
-//            'accessKey' => $accessKey,
-//            'requestId' => $requestId,
-//            'amount' => $amount,
-//            'orderId' => $orderId,
-//            'orderInfo' => $orderInfo,
-//            'returnUrl' => $returnUrl,
-//            'notifyUrl' => $notifyurl,
-//            'extraData' => $extraData,
-//            'requestType' => $requestType,
-//            'signature' => $signature
-//        ]);
-        // $jsonResult = $client->post('https://test-payment.momo.vn/gw_payment/transactionProcessor', json_encode($data));
     }
 
-    function execPostRequest($url, $data)
+    /**
+     * Send post request to endpoint url with json data
+     *
+     * @param string $url
+     * @param array $data
+     * @return bool|string
+     */
+    public function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");

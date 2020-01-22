@@ -143,6 +143,16 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        if ($user->isCustomerAccount()) {
+            $this->guard()->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+
+            return $this->loggedOut($request) ?: back()
+                ->with('error', __('You can not login in here.'));
+        }
         if (!$user->isActive()) {
             $this->guard()->logout();
 

@@ -37,7 +37,7 @@ $(document).ready(function () {
             },
             success: function () {
                 $('.dmovie-users-select2').LoadingOverlay("hide");
-            }
+            },
         }
     });
     invalidClass = selectedRole.hasClass('invalid') ? 'invalid border-none' : '';

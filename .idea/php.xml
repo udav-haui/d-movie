@@ -117,6 +117,10 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
       <path value="$PROJECT_DIR$/vendor/highideas/laravel-users-online" />
       <path value="$PROJECT_DIR$/vendor/tightenco/ziggy" />
+      <path value="$PROJECT_DIR$/vendor/bramus/monolog-colored-line-formatter" />
+      <path value="$PROJECT_DIR$/vendor/bramus/ansi-php" />
+      <path value="$PROJECT_DIR$/vendor/mservice/payment" />
+      <path value="$PROJECT_DIR$/vendor/phpseclib/phpseclib" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

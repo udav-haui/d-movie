@@ -284,7 +284,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ route('momo.testing') }}" method="post">
+            <form action="{{ route('momo.testing') }}"
+                  method="post"
+                  target="_blank">
                 @csrf
                 <div class="form-group">
                     <input name="amount" type="text" class="form-control" placeholder="amount" />

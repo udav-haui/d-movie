@@ -3,10 +3,17 @@
 namespace App\Services;
 
 use App\Helper\Data;
+use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Permission;
 use App\Role;
+use App\User;
 
+/**
+ * Class RoleService
+ *
+ * @package App\Services
+ */
 class RoleService
 {
     /**
@@ -132,5 +139,32 @@ class RoleService
     public function fetch()
     {
         return Role::all();
+    }
+
+    /*
+     * Assign a role to list users
+     */
+    public function doAssign(AssignRequest $request)
+    {
+        $role = $this->getRole($request->role);
+        $uids = $request->user_ids;
+        foreach ($uids as $uid) {
+            $user = User::find($uid);
+            $role->user()->associate($user);
+            $role->save();
+            auth()->user()->logs()->create([
+                'short_message' => Data::ASSIGN_MSG,
+                'message' => $user,
+                'action' => Data::ASSIGN,
+                'target_model' => User::class,
+                'target_id' => $user->id
+            ]);
+        }
+        return $this;
+    }
+
+    public function getRole($roleId)
+    {
+        return Role::findOrFail($roleId);
     }
 }
