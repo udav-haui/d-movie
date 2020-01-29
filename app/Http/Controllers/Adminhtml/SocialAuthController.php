@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adminhtml;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\SocialAccountTrait;
+use App\Repositories\Interfaces\SocialAccountRepositoryInterface;
 use Socialite;
 
 class SocialAuthController extends Controller
@@ -12,13 +13,23 @@ class SocialAuthController extends Controller
 
     /**
      * SocialAuthController constructor.
+     *
+     * @param SocialAccountRepositoryInterface $socialAccountRepository
      */
-    public function __construct()
-    {
+    public function __construct(
+        SocialAccountRepositoryInterface $socialAccountRepository
+    ) {
+        $this->socialAccountRepository = $socialAccountRepository;
         $this->accountType = \App\User::STAFF;
-        $this->state = \App\User::NOT_ACTIVATE;
+        $this->state = \App\User::NOT_VERIFY_BY_ADMIN;
     }
 
+    /**
+     * Set callback url for provider
+     *
+     * @param string $provider
+     * @return string
+     */
     public function setRedirectUrl($provider)
     {
         return 'https://dmovie.vn/admin/callback/' . $provider;

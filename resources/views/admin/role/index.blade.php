@@ -12,11 +12,9 @@
     <li class="active">{{ __('Roles Manage') }}</li>
 @endsection
 @section('bottom.js')
-    <script src="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('adminhtml/js/role.js') }}"></script>
+   <script src="{{ asset('adminhtml/js/role.js') }}"></script>
 @endsection
 @section('head.css')
-    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.css') }}">
 @endsection
 
 @section('content')
@@ -39,15 +37,8 @@
             </div>
         </div>
     @endcan
-    <div class="alert alert-danger alert-dismissable error-block display-none">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-
-    </div>
-    <div class="alert alert-success alert-dismissable success-block display-none">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-
-    </div>
     <input class="lang-text display-none"
+           main-lang="{{ str_replace('_', '-', app()->getLocale()) }}"
            swl-title-text="{{ __('Are you sure?') }}"
            swl-text-text="{{ __('This may affect to all user are being assigned. You not need to delete it, just edit.') }}"
            swl-icon-text="warning"
@@ -56,15 +47,8 @@
     <div class="row">
         <div class="col-md-12 table-responsive">
             <table id="roles_data" class="display nowrap dmovie-table"
-                   cellspacing="0" width="100%"
-                   lengthMenu="{{ __('Display _MENU_ records per page') }}"
-                   zeroRecords="{{ __('Nothing found - sorry') }}"
-                   info="{{ __('Showing page _PAGE_ of _PAGES_') }}"
-                   infoEmpty="{{ __('No records available') }}"
-                   infoFiltered="{{ __('(filtered from _MAX_ total records)') }}"
-                   search="{{ __('Search') }}"
-                   prevBtn="{{ __('Previous') }}"
-                   nextBtn="{{ __('Next') }}">
+                   cellspacing="0"
+                   width="100%">
                 <thead>
                 <tr>
                     <th>#</th>

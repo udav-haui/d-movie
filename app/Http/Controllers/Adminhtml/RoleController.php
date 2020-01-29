@@ -5,26 +5,36 @@ namespace App\Http\Controllers\Adminhtml;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Role;
-use App\Services\RoleService;
+use App\Repositories\RoleRepository;
 use Config;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
     /**
-     * @var RoleService
+     * @var RoleRepositoryInterface
      */
-    private $roleService;
+    private $roleRepository;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
 
     /**
      * RoleController constructor.
-     * @param RoleService $roleService
+     * @param RoleRepositoryInterface $roleRepository
+     * @param UserRepositoryInterface $userRepository
      */
     public function __construct(
-        RoleService $roleService
+        RoleRepositoryInterface $roleRepository,
+        UserRepositoryInterface $userRepository
     ) {
-        $this->roleService = $roleService;
+        $this->roleRepository = $roleRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -66,8 +76,8 @@ class RoleController extends Controller
         $this->authorize('create', Role::class);
 
         try {
-            $this->roleService->store($request);
-            return redirect(Role::REDIRECT)->with('success', __('Role have created success!'));
+            $this->roleRepository->store($request);
+            return redirect(route('roles.index'))->with('success', __('Role have created success!'));
         } catch (\Exception $exception) {
             return back()->withErrors($exception->getMessage());
         }
@@ -94,13 +104,23 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $this->authorize('update', Role::class);
+
         $permissions = $role->permissions->toArray();
         $permissionsArr = [];
         foreach ($permissions as $permission) {
             $permissionsArr[] = $permission['permission_code'];
         }
         $permissionsString = implode(',', $permissionsArr);
-        return view('admin.role.edit', compact('role', 'permissionsString'));
+        $users = $this->userRepository->getActiveUsers();
+        $relatedUsersCollect = $role->users;
+        $relatedUsers = [];
+        foreach ($relatedUsersCollect as $user) {
+            $relatedUsers[] = $user->id;
+        }
+        return view(
+            'admin.role.edit',
+            compact('role', 'permissionsString', 'users', 'relatedUsers')
+        );
     }
 
     /**
@@ -108,15 +128,16 @@ class RoleController extends Controller
      *
      * @param RoleRequest $request
      * @param Role $role
-     * @return void
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(RoleRequest $request, Role $role)
     {
         $this->authorize('update', Role::class);
         try {
-            if ($this->roleService->update($request, $role)) {
-                return redirect(Role::REDIRECT)->with('success', __('Role have updated success.'));
+            if ($this->roleRepository->update($request, $role)) {
+                return redirect(route('roles.index'))
+                    ->with('success', __('Role have updated success.'));
             }
         } catch (\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
@@ -128,11 +149,14 @@ class RoleController extends Controller
      *
      * @param Role $role
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Role $role)
     {
+        $this->authorize('delete', Role::class);
+
         try {
-            $this->roleService->delete($role);
+            $this->roleRepository->delete($role);
             return response()->json([
                 'status' => 200,
                 'message' => __('Role have deleted success.')
@@ -154,6 +178,7 @@ class RoleController extends Controller
     public function showAssignForm()
     {
         $this->authorize('viewAny', Role::class);
+
         return view('admin.role.assign');
     }
 
@@ -167,11 +192,14 @@ class RoleController extends Controller
     public function doAssign(AssignRequest $request)
     {
         $this->authorize('viewAny', Role::class);
+
         try {
-            $this->roleService->doAssign($request);
-            return back()->with('success', __('Succ'));
+            $this->roleRepository->doAssign($request);
+            return redirect()->route('roles.index')
+                ->with('success', __('Assign role to user successfully.'));
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            return redirect()->route('roles.index')
+                ->with('error', $e->getMessage());
         }
     }
 
@@ -185,10 +213,11 @@ class RoleController extends Controller
     public function fetch()
     {
         $this->authorize('viewAny', Role::class);
+
         return request()->ajax() ?
             response()->json([
-                'data' => $this->roleService->fetch()
-            ]) : $this->roleService->fetch();
+                'data' => $this->roleRepository->fetch()
+            ]) : $this->roleRepository->fetch();
     }
 
     /**

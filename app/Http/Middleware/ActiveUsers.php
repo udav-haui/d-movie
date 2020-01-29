@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
@@ -18,6 +19,10 @@ class ActiveUsers
     public function handle($request, Closure $next)
     {
         if (auth()->check()) {
+            if (!auth()->user()->isActive()) {
+                auth()->guard()->logout();
+                return redirect(route('login'))->with('error', __('Your session has timed out.'));
+            }
             $expireTime = Carbon::now()->addMinutes(5);
             Cache::put('active-user-' . auth()->user()->id, true, $expireTime);
         }

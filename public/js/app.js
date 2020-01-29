@@ -12885,6 +12885,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/sass/datatables.scss":
+/*!****************************************!*\
+  !*** ./resources/sass/datatables.scss ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ "./resources/sass/login.page.scss":
 /*!****************************************!*\
   !*** ./resources/sass/login.page.scss ***!
@@ -12919,18 +12930,19 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ 0:
-/*!*********************************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/login.page.scss ./resources/sass/admincss.scss ./resources/sass/profile.scss ./resources/sass/role-create.scss ***!
-  \*********************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/login.page.scss ./resources/sass/admincss.scss ./resources/sass/profile.scss ./resources/sass/role-create.scss ./resources/sass/datatables.scss ***!
+  \******************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/html/d-movie/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/app.scss */"./resources/sass/app.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/login.page.scss */"./resources/sass/login.page.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/admincss.scss */"./resources/sass/admincss.scss");
-__webpack_require__(/*! /var/www/html/d-movie/resources/sass/profile.scss */"./resources/sass/profile.scss");
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/sass/role-create.scss */"./resources/sass/role-create.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\js\app.js */"./resources/js/app.js");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\login.page.scss */"./resources/sass/login.page.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\admincss.scss */"./resources/sass/admincss.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\profile.scss */"./resources/sass/profile.scss");
+__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\role-create.scss */"./resources/sass/role-create.scss");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\datatables.scss */"./resources/sass/datatables.scss");
 
 
 /***/ })

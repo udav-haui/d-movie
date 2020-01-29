@@ -1,10 +1,10 @@
-window.$ = window.jQuery = require('jquery');
 require('./bootstrap');
 require('jquery-slimscroll');
 require('@progress/kendo-ui');
 window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
+require('datatables.net-dt');
 jQuery(document).ready(function ($) {
     "use strict";
     /**
@@ -19,36 +19,48 @@ jQuery(document).ready(function ($) {
     /**
      * /end
      */
-    $('#user-profile').on('click', function () {
-        $(this).attr('href', '/admin/user/' + $(this).attr('data-id'));
+    /**
+     * Back top top func
+     */
+    jQuery(window).scroll(function(){
+        if(jQuery(window).scrollTop() <= 0){
+            jQuery('#rocketmeluncur').slideUp(500);
+        }else{
+            jQuery('#rocketmeluncur').slideDown(500);
+        }
+        let ftrocketmeluncur = jQuery("#ft")[0] ? jQuery("#ft")[0] : jQuery(document.body)[0];
+        let scrolltoprocketmeluncur = $('#rocketmeluncur');
+        let viewPortHeightrocketmeluncur = parseInt(document.documentElement.clientHeight);
+        let scrollHeightrocketmeluncur = parseInt(document.body.getBoundingClientRect().top);
+        let basewrocketmeluncur = parseInt(ftrocketmeluncur.clientWidth);
+        let swrocketmeluncur = scrolltoprocketmeluncur.clientWidth;
+        if (basewrocketmeluncur < 1000) {
+            let leftrocketmeluncur = parseInt(fetchOffset(ftrocketmeluncur)['left']);
+            leftrocketmeluncur = leftrocketmeluncur < swrocketmeluncur ? leftrocketmeluncur * 2 - swrocketmeluncur : leftrocketmeluncur;
+            scrolltoprocketmeluncur.style.left = ( basewrocketmeluncur + leftrocketmeluncur ) + 'px';
+        } else {
+            // scrolltoprocketmeluncur.css({
+            //     'left':'auto',
+            //     'right':'10px'
+            // });
+        }
     });
-    let actionBlock = $('#dmovie-fix-top-block').offset();
-    if (actionBlock !== undefined) {
-        $(window).bind('scroll', function () {
-            let topNavHeight = $('.navbar-header').outerHeight();
-            let lefSideBar = $('.sidebar').outerWidth();
-            //console.log($(window).height());
-            // console.log($(window).scrollTop());
-            //console.log(actionNav.top);
-            // var navHeight = $(window).height() - 102;$('.active-nav').height() +
-            // console.log(navHeight);
-            let fixedPoint = $(window).scrollTop() + topNavHeight - actionBlock.top;
 
-            if (fixedPoint >= 0) {
-                $('#dmovie-fix-top-block').addClass('dmovie-fix-top-block').css({
-                    'top': topNavHeight,
-                    'width': 'calc(100% - ' + lefSideBar + 'px)'
-                });
-                //$('.active-nav').removeClass('ml-3 mr-3');
-            }
-            else {
-                $('#dmovie-fix-top-block').removeClass('dmovie-fix-top-block').css('width', 'auto');
-                //$('.active-nav').addClass('ml-3 mr-3');
-            }
+    jQuery('#rocketmeluncur').click(function(){
+        jQuery("html, body").animate({ scrollTop: '0px',display:'none'},{
+            duration: 600,
+            easing: 'linear'
         });
-    }
-});
 
+        var self = this;
+        this.className += ' '+"launchrocket";
+        setTimeout(function(){
+            self.className = 'showrocket';
+        },800)
+    });
+    // .////////////////////////////////
+});
+let disMissBtn = `<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>`;
 /**
  * Show success message
  *
@@ -57,7 +69,7 @@ jQuery(document).ready(function ($) {
 window.successMessage = function (msg) {
     let successMsgBlock = $('.success-block') || null;
     if (successMsgBlock !== null) {
-        successMsgBlock.removeClass('display-none').append(msg);
+        successMsgBlock.removeClass('display-none').html(disMissBtn + msg);
     }
 };
 
@@ -69,9 +81,22 @@ window.successMessage = function (msg) {
 window.errorMessage = function (msg) {
     let errorMsgBlock = $('.error-block') || null;
     if (errorMsgBlock !== null) {
-        errorMsgBlock.removeClass('display-none').append(msg);
+        errorMsgBlock.removeClass('display-none').html(disMissBtn + msg);
     }
 };
+
+/**
+ * Show warning message
+ *
+ * @param msg
+ */
+window.warningMessage = function (msg) {
+    let warningMsgBlock = $('.warning') || null;
+    if (warningMsgBlock !== null) {
+        warningMsgBlock.removeClass('display-none').html(disMissBtn + msg);
+    }
+};
+
 
 /**
  * Show loader
@@ -80,8 +105,9 @@ window.errorMessage = function (msg) {
  * @constructor
  */
 window.showLoader = function (type = 1) {
+    let show = 1;
     let page = $('#page-wrapper');
-    type === 1 ? page.LoadingOverlay("show", {
+    type === show ? page.LoadingOverlay("show", {
         imageColor: '#6e6e6ee6',
         imageResizeFactor: 0.45,
         imageAnimation: '1750ms'
@@ -91,3 +117,40 @@ window.showLoader = function (type = 1) {
         imageAnimation: '1750ms'
     });
 };
+
+/** Show loading for specifier block */
+window.showLoading = function (selector) {
+    selector.LoadingOverlay('show');
+};
+window.hideLoading = function (selector) {
+    selector.LoadingOverlay('hide');
+};
+/** ./END SHOW LOADING FOR BLOCK */
+
+window.showYesNoModal = function (
+    title,
+    text,
+    icon,
+    confirmButtonText,
+    cancelButtonText,
+    callback,
+    confirmButtonColor = '#3085d6',
+    cancelButtonColor = '#d33',
+) {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonColor: confirmButtonColor,
+        cancelButtonColor: cancelButtonColor,
+        confirmButtonText: confirmButtonText,
+        cancelButtonText: cancelButtonText,
+        width: '640px'
+    }).then((result) => {
+        if (result.value) {
+            callback();
+        }
+    })
+};
+

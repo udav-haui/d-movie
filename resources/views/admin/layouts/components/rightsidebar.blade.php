@@ -28,13 +28,9 @@
             </ul>
             <ul class="m-t-20 chatonline">
                 <li><b>{{ __('Users') }}</b></li>
-                <?php
-                    $userService = new \App\Services\UserService;
-                    $users = $userService->getListUsers();
-                ?>
-                @foreach($users as $user)
+                @foreach($activeUsers as $user)
                     <li>
-                        <a href="/admin/user/{{ $user->id }}">
+                        <a href="{{ route('users.show', ['user' => $user->getAuthIdentifier()]) }}">
                             <div class="dmovie-img-cover-container h-30">
                                 <img src="{{ $user->getAvatar() }}"
                                      alt="user-img" class="img-circle dmovie-img-cover" />

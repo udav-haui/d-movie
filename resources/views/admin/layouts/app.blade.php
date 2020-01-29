@@ -66,6 +66,8 @@
         <!-- ============================================================== -->
         <!-- End Wrapper -->
         <!-- ============================================================== -->
+{{--        <button id="back-to-top-button"></button>--}}
+        <a href="javascript:void(0);" id="rocketmeluncur" class="showrocket" ><i></i></a>
     </div>
 
     @include('admin.layouts.components.bottom_assets')

@@ -4,7 +4,7 @@
             <h3><span class="fa-fw open-close"><i class="ti-menu hidden-xs"></i><i class="ti-close visible-xs"></i></span> <span class="hide-menu">Navigation</span></h3> </div>
         <ul class="nav" id="side-menu">
             <li class="user-pro">
-                <a href="#" class="waves-effect {{ request()->segment(2) != 'user' ? '' : 'active' }}">
+                <a href="#" class="waves-effect">
                     <div class="dmovie-img-cover-container h-30">
                         <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" class="img-circle dmovie-img-cover">
                     </div>
@@ -12,9 +12,12 @@
                         <span class="fa arrow"></span>
                     </span>
                 </a>
-                <ul class="nav nav-second-level collapse {{ request()->segment(2) != 'user' ? '' : 'show' }}" aria-expanded="false">
+                <ul class="nav nav-second-level collapse"
+                    aria-expanded="false">
                     <li>
-                        <a href="javascript:void(0)" id="user-profile" data-id="{{ auth()->user()->id }}" class="{{ request()->segment(2) != 'user' ? '' : 'active' }}">
+                        <a href="{{ route('users.show', ['user' => auth()->user()->getAuthIdentifier()]) }}"
+                           id="user-profile"
+                           class="{{ request()->segment(2) != 'user' ? '' : 'active' }}">
                             <i class="ti-user"></i>
                             <span class="hide-menu">{{ __('My Profile') }}</span>
                         </a>
@@ -31,9 +34,16 @@
                 </ul>
             </li>
             @can('viewAny', \App\Role::class)
-                <li> <a href="/admin/roles" class="waves-effect">
+                <li> <a href="{{ route('roles.index') }}" class="waves-effect">
                         <i  class="mdi mdi-settings fa-fw"></i>
                         <span class="hide-menu">{{ __('Roles Manage') }}</span>
+                    </a>
+                </li>
+            @endcan
+            @can('viewAny', \App\User::class)
+                <li> <a href="{{ route('users.index') }}" class="waves-effect">
+                        <i  class="mdi mdi-account-multiple fa-fw"></i>
+                        <span class="hide-menu">{{ __('User Manage') }}</span>
                     </a>
                 </li>
             @endcan
@@ -45,28 +55,7 @@
                 </ul>
             </li>
             <li> <a href="#" class="waves-effect"><i class="mdi mdi-format-color-fill fa-fw"></i> <span class="hide-menu">UI Elements<span class="fa arrow"></span> <span class="label label-rouded label-info pull-right">20</span> </span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="panels-wells.html"><i data-icon="&#xe026;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Panels and Wells</span></a></li>
-                    <li><a href="panel-ui-block.html"><i data-icon="&#xe025;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Panels With BlockUI</span></a></li>
-                    <li><a href="buttons.html"><i class="ti-layout-menu fa-fw"></i> <span class="hide-menu">Buttons</span></a></li>
-                    <li><a href="sweatalert.html"><i class="ti-alert fa-fw"></i> <span class="hide-menu">Sweat alert</span></a></li>
-                    <li><a href="typography.html"><i data-icon="k" class="linea-icon linea-software fa-fw"></i> <span class="hide-menu">Typography</span></a></li>
-                    <li><a href="grid.html"><i data-icon="&#xe009;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Grid</span></a></li>
-                    <li><a href="tabs.html"><i  class="ti-layers fa-fw"></i> <span class="hide-menu">Tabs</span></a></li>
-                    <li><a href="tab-stylish.html"><i class=" ti-layers-alt fa-fw"></i> <span class="hide-menu">Stylish Tabs</span></a></li>
-                    <li><a href="modals.html"><i data-icon="&#xe026;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Modals</span></a></li>
-                    <li><a href="progressbars.html"><i class="ti-line-double fa-fw"></i> <span class="hide-menu">Progress Bars</span></a></li>
-                    <li><a href="notification.html"><i class="ti-info-alt fa-fw"></i> <span class="hide-menu">Notifications</span></a></li>
-                    <li><a href="carousel.html"><i class="ti-layout-slider fa-fw"></i> <span class="hide-menu">Carousel</span></a></li>
-                    <li><a href="list-style.html"><i data-icon="&#xe00b;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">List & Media object</span></a></li>
-                    <li><a href="user-cards.html"><i class="ti-user fa-fw"></i> <span class="hide-menu">User Cards</span></a></li>
-                    <li><a href="timeline.html"><i data-icon="/" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Timeline</span></a></li>
-                    <li><a href="timeline-horizontal.html"><i class="ti-layout-list-thumb fa-fw"></i> <span class="hide-menu">Horizontal Timeline</span></a></li>
-                    <li><a href="nestable.html"><i class="ti-layout-accordion-separated fa-fw"></i> <span class="hide-menu">Nesteble</span></a></li>
-                    <li><a href="range-slider.html"><i class=" ti-layout-slider-alt fa-fw"></i> <span class="hide-menu">Range Slider</span></a></li>
-                    <li><a href="tooltip-stylish.html"><i class="ti-comments-smiley fa-fw"></i> <span class="hide-menu">Stylish Tooltip</span></a></li>
-                    <li><a href="bootstrap.html"><i class="ti-rocket fa-fw"></i> <span class="hide-menu">Bootstrap UI</span></a></li>
-                </ul>
+
             </li>
             <li> <a href="#" class="waves-effect"><i class="mdi mdi-content-copy fa-fw"></i> <span class="hide-menu">Sample Pages<span class="fa arrow"></span><span class="label label-rouded label-warning pull-right">30</span></span></a>
                 <ul class="nav nav-second-level">

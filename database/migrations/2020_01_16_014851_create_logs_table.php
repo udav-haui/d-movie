@@ -21,7 +21,8 @@ class CreateLogsTable extends Migration
             $table->string('target_model');
             $table->bigInteger('target_id');
             $table->bigInteger('user_id')->index()->unsigned();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

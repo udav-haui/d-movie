@@ -1,20 +1,24 @@
 $(document).ready(function () {
-    let langText = $('.lang-text');
-    let rolesDataTable = $('#roles_data');
-    let lengthMenu = rolesDataTable.attr('lengthMenu'),
-        zeroRecords = rolesDataTable.attr('zeroRecords'),
-        info = rolesDataTable.attr('info'),
-        inforEmpty = rolesDataTable.attr('infoEmpty'),
-        infoFiltered = rolesDataTable.attr('infoFiltered'),
-        search = rolesDataTable.attr('search'),
-        prevBtn = rolesDataTable.attr('prevBtn'),
-        nextBtn = rolesDataTable.attr('nextBtn'),
-        title = langText.attr('swl-title-text'),
+    let langText = $('.lang-text'),
+        roles = 'roles';
+    let rolesDataTable = $(`#${roles}_data`);
+    let title = langText.attr('swl-title-text'),
         text = langText.attr('swl-text-text'),
         icon = langText.attr('swl-icon-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
-        cancelButtonText = langText.attr('swl-cancelButtonText');
+        cancelButtonText = langText.attr('swl-cancelButtonText'),
+        mainLang = langText.attr('main-lang');
     rolesDataTable.DataTable({
+        initComplete: function (settings, json) {
+            let dataWrapper = $(`#${roles}_data_wrapper`),
+                selectDropdown = dataWrapper.find(`#${roles}_data_length`),
+                inputFilter = dataWrapper.find(`#${roles}_data_filter`),
+                dropdown = selectDropdown.find(`select`) || null,
+                filterInput = inputFilter.find(`input`) || null;
+            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
+            filterInput.addClass('dmovie-textbox-border h-32 p-l-10');
+            // console.log(dropdown);
+        },
         columnDefs: [
             {
                 targets: 0,
@@ -29,17 +33,8 @@ $(document).ready(function () {
                 orderable: false
             }
         ],
-        language: {
-            "lengthMenu": lengthMenu,
-            "zeroRecords": zeroRecords,
-            "info": info,
-            "infoEmpty": inforEmpty,
-            "infoFiltered": infoFiltered,
-            'search': search,
-            'paginate': {
-                previous: prevBtn,
-                next: nextBtn
-            }
+        oLanguage: {
+            sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
         }
     });
 
@@ -52,7 +47,7 @@ $(document).ready(function () {
         let tr = self.closest('tr');
         let row = $('#roles_data').DataTable().row(tr);
         let roleId = self.attr('data-id');
-        showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
+        window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
             $.ajax({
                 url: url,
                 method: 'DELETE',
@@ -73,30 +68,4 @@ $(document).ready(function () {
     });
 });
 
-function showYesNoModal(
-    title,
-    text,
-    icon,
-    confirmButtonText,
-    cancelButtonText,
-    callback,
-    confirmButtonColor = '#3085d6',
-    cancelButtonColor = '#d33',
-) {
-    Swal.fire({
-        title: title,
-        text: text,
-        icon: icon,
-        showCancelButton: true,
-        confirmButtonColor: confirmButtonColor,
-        cancelButtonColor: cancelButtonColor,
-        confirmButtonText: confirmButtonText,
-        cancelButtonText: cancelButtonText,
-        width: '640px'
-    }).then((result) => {
-        if (result.value) {
-            callback();
-        }
-    })
-}
 

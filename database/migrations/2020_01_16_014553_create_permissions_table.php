@@ -17,7 +17,8 @@ class CreatePermissionsTable extends Migration
             $table->smallIncrements('id');
             $table->string('permission_code')->index();
             $table->smallInteger('role_id')->index();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

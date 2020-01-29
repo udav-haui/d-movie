@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      *
@@ -16,19 +17,61 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->isAdmin() || $user->canAccess(\App\User::VIEW);
+    }
+
+    /**
+     * Determine whether the both user has CREATE, EDIT permission can change the model.
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function changeByCE(User $user)
+    {
+        return $user->isAdmin() ||
+            $user->canAccess(\App\User::CREATE) ||
+            $user->canAccess(\App\User::EDIT);
+    }
+
+    /**
+     * Determine whether the user can change it'self model.
+     *
+     * @param \App\User $user
+     * @param User $model
+     * @return mixed
+     */
+    public function canSelfUpdate(User $user, User $model)
+    {
+        return $user->isAdmin() ||
+            $user->canAccess(\App\User::EDIT) ||
+            $user->getAuthIdentifier() === $model->getAuthIdentifier();
+    }
+
+    /**
+     * Determine whether the user can change it'self model.
+     *
+     * @param \App\User $user
+     * @param User $model
+     * @return mixed
+     */
+    public function cannotSelfUpdate(User $user, User $model)
+    {
+        return $user->isAdmin() ||
+            ($user->canAccess(\App\User::EDIT) &&
+            $user->getAuthIdentifier() !== $model->getAuthIdentifier());
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param \App\User $user
+     * @param \App\User $model
      * @return mixed
      */
     public function view(User $user, User $model)
     {
-        //
+        return $user->isAdmin() ||
+            $user->canAccess(\App\User::VIEW);
     }
 
     /**
@@ -39,31 +82,30 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->isAdmin() || $user->canAccess(\App\User::CREATE);
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
      * @return mixed
      */
-    public function update(User $user, User $model)
+    public function update(User $user)
     {
-        return $user->isAdmin() || $user->id == $model->id;
+        return $user->isAdmin() ||
+            $user->canAccess(\App\User::EDIT);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user)
     {
-        //
+        return $user->isAdmin() || $user->canAccess(\App\User::DELETE);
     }
 
     /**

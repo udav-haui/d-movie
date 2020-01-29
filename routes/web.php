@@ -17,8 +17,11 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             /**
              * USER SESSION
              */
-            Route::get('user/getUsers', 'Auth\UserController@getUsers')->name('user.getUsers');
-            Route::resource('user', 'Auth\UserController');
+            Route::get('users/getActiveUsers', 'Auth\UserController@getActiveUsers')->name('users.getActiveUsers');
+            Route::get('users/getUsers', 'Auth\UserController@findUserByNameOrMailOrUsername')->name('users.getUsers');
+            Route::put('users/manageUpdate/{user}', 'Auth\UserController@manageUpdate')->name('users.manageUpdate');
+            Route::post('users/changeState', 'Auth\UserController@changeState')->name('users.changeState');
+            Route::resource('users', 'Auth\UserController');
             /**
              * ROLE SESSION
              */
@@ -30,9 +33,9 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             /**
              * Api method
              */
-            Route::put('user-change-avatar/{user}', 'Auth\UserController@setAvatar')->name('user.setAvatar');
+            Route::put('user-change-avatar/{user}', 'Auth\UserController@setAvatar')->name('users.setAvatar');
             Route::post('user-change-password/{user}', 'Auth\UserController@changePassword')
-                ->name('user.changePassword');
+                ->name('users.changePassword');
         });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
         Route::post('login', 'Auth\LoginController@login');
@@ -47,3 +50,5 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
         Route::get('momo/callback', 'RoleController@momoCallback')->name('momo.callback');
     });
 });
+//
+//Route::get('/get-user', 'Adminhtml\RoleController@test_get');

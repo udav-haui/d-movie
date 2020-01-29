@@ -5,5 +5,6 @@
     "/adminhtml/css/login.page.css": "/adminhtml/css/login.page.css",
     "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css",
     "/adminhtml/css/profile.css": "/adminhtml/css/profile.css",
-    "/adminhtml/css/role-create.css": "/adminhtml/css/role-create.css"
+    "/adminhtml/css/role-create.css": "/adminhtml/css/role-create.css",
+    "/adminhtml/css/datatables.css": "/adminhtml/css/datatables.css"
 }

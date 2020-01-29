@@ -2,65 +2,103 @@
 
 namespace App\Http\Controllers\Adminhtml\Auth;
 
-use App\Helper\Data;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserRequest;
-use App\Log;
-use App\Services\UserService;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
-use Carbon\Carbon;
 use Cache;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     /**
-     * @var UserService
+     * @var UserRepositoryInterface
      */
-    private $userService;
+    private $userRepository;
+    /**
+     * @var RoleRepositoryInterface
+     */
+    private $roleRepository;
 
     /**
      * UserController constructor.
      *
-     * @param UserService $userService
+     * @param UserRepositoryInterface $userRepository
+     * @param RoleRepositoryInterface $roleRepository
      */
     public function __construct(
-        UserService $userService
+        UserRepositoryInterface $userRepository,
+        RoleRepositoryInterface $roleRepository
     ) {
-        $this->userService = $userService;
+        $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws AuthorizationException
      */
     public function index()
     {
-        return redirect('/admin');
+        $this->authorize('viewAny', User::class);
+
+        $users = $this->userRepository->all();
+        return view('admin.user.index', compact('users'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws AuthorizationException
      */
     public function create()
     {
-        //
+        $this->authorize('create', User::class);
+
+        $roles = $this->roleRepository->all();
+        return view('admin.user.create', compact('roles'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        //
+        $this->authorize('create', User::class);
+
+        $fields = [
+            'account_type' => User::STAFF,
+            'can_change_username' => User::CAN_CHANGE_USERNAME,
+            'login_with_social_account' => User::NORMAL_LOGIN,
+            'username' => $request->username,
+            'name' => $request->name ?? null,
+            'email' => $request->email ?? null,
+            'password' => Hash::make($request->password),
+            'gender' => $request->gender,
+            'phone' => $request->phone ?? null,
+            'address' => $request->address,
+            'dob' => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
+            'state' => User::ACTIVE,
+            'description' => $request->description ?? null,
+            'role_id' => $request->role ?? null
+        ];
+
+        $this->userRepository->create($fields);
+
+        return redirect(route('users.index'))->with('success', __('User has created success.'));
     }
 
     /**
@@ -87,14 +125,15 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the user.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        $roles = $this->roleRepository->all();
+        return view('admin.user.edit', compact('user', 'roles'));
     }
 
     /**
@@ -107,24 +146,118 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        // $this->authorize('update', $user);
+        $this->authorize('canSelfUpdate', $user);
+
         try {
-            $this->userService->update($request, $user);
+            $this->userRepository->update($request, $user);
             return back()->with('success', __('User info have updated.'));
         } catch (AuthorizationException $exception) {
-            return back()->with('change_info', 'active')->withError($exception->getMessage())->withInput();
+            return back()->with('change_info', 'active')
+                ->withError($exception->getMessage())->withInput();
         }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param UpdateUserRequest $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function manageUpdate(UpdateUserRequest $request, User $user)
+    {
+        $this->authorize('update', $user);
+
+        $fields = [
+            'username' => $request->username,
+            'name' => $request->name ?? null,
+            'email' => $request->email ?? null,
+            'gender' => $request->gender,
+            'phone' => $request->phone ?? null,
+            'address' => $request->address,
+            'dob' => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
+            'description' => $request->description ?? null,
+            'role_id' => $request->role ?? null
+        ];
+
+        if ($request->has('changePass')) {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'password' => 'required|min:6'
+                ],
+                [
+                    'password.required' => __('You must input :attribute'),
+                    'password.min' => __(':attribute need at least :min character')
+                ],
+                [
+                    'password' => __('Password')
+                ]
+            );
+            if ($validator->fails()) {
+                return back()->withErrors($validator->getMessageBag())->withInput();
+            }
+            $fields['password'] = Hash::make($request->password);
+        }
+        try {
+            $this->userRepository->update($request, $user, $fields);
+            return redirect(route('users.index'))->with('success', __('User info have updated.'));
+        } catch (\Exception $exception) {
+            return back()->with('error', __('User info have updated.'))->withInput();
+        }
+    }
+
+    /**
+     * Update user state
+     */
+    public function changeState()
+    {
+        $this->authorize('update', User::class);
+
+        /** @var int $userId */
+        $userId = request()->user;
+
+        /** @var User $user */
+        $user = $this->userRepository->get($userId);
+        $this->userRepository->update(request(), $user, ['state' => request('state')]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => __('User\'s state changed!')
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws AuthorizationException
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $this->authorize('delete', User::class);
+
+        try {
+            if ($this->userRepository->destroy($user)) {
+                return request()->ajax() ? response()->json([
+                    'status' => 200,
+                    'message' => __('The user has been deleted.')
+                ]) : back()->with('success', __('The user has been deleted.'));
+            } else {
+                return request()->ajax() ? response()->json([
+                    'status' => 400,
+                    'message' => __('Ooops, something wrong appended.')
+                ]) : back()->with('error', __('Ooops, something wrong appended.'));
+            }
+        } catch (\Exception $exception) {
+            return request()->ajax() ? response()->json([
+                'status' => 400,
+                'message' => $exception->getMessage()
+            ]) : back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
@@ -153,7 +286,7 @@ class UserController extends Controller
                 $validator->errors()->add('change_avatar', 'active');
                 return back()->withErrors($validator->errors()->getMessages());
             } else {
-                $this->userService->setAvatar($user);
+                $this->userRepository->setAvatar($user);
                 return back()->with('success', __('Avatar updated success.'));
             }
         } catch (\Exception $exception) {
@@ -213,7 +346,7 @@ class UserController extends Controller
             return back()->withErrors($validator->errors()->getMessages());
         } else {
             try {
-                $this->userService->changePassword($user);
+                $this->userRepository->changePassword($user);
             } catch (\Exception $exception) {
                 return back()->with('change_pass', 'active')->withError($exception->getMessage())->withInput();
             }
@@ -221,16 +354,30 @@ class UserController extends Controller
         }
     }
 
-    public function getUsers()
+    /**
+     * Get list staff and active users by username, email or name
+     *
+     * @return \App\Repositories\Collection|\Illuminate\Http\JsonResponse
+     */
+    public function findUserByNameOrMailOrUsername()
     {
         $name = request()->name;
         if ($name) {
-            echo $name;
+            $users = $this->userRepository->findUserByNameOrMailOrUsername($name);
         } else {
-            $users = User::whereAccountType(User::STAFF)->whereState(User::ACTIVE)->get();
-            return response()->json([
-                'data'=> $users
-            ]);
+            $users = $this->userRepository->fetchAllStaff();
         }
+        return request()->ajax() ? response()->json([
+            'data'=> $users
+        ]) : $users;
+    }
+
+    public function getActiveUsers()
+    {
+        $field = request()->all();
+        $users = $this->userRepository->getListActiveUser($field);
+        return request()->ajax() ? response()->json([
+            'data' => $users
+        ]) : $users;
     }
 }

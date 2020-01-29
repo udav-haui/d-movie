@@ -31,7 +31,8 @@ class CreateUsersTable extends Migration
             $table->string('description')->nullable(true);
             $table->smallInteger('role_id')->unsigned()->index()->nullable(true);
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

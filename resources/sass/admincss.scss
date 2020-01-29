@@ -1,4 +1,6 @@
 @import url('~select2/dist/css/select2.min.css');
+@import url('~datatables.net-dt/css/jquery.dataTables.min.css');
+@import url('~datatables.net-select-dt/css/select.dataTables.min.css');;
 @font-face {
     font-family: Nunito;
     src: url("fonts/Nunito-Regular.ttf");
@@ -16,6 +18,13 @@ $borderColor: #32a3a3;
 body {
     font-family: Nunito, sans-serif !important;
 }
+
+
+// Back to top
+
+@import url('back-to-top-rocket.css');
+
+// .///////////////
 
 .logo-img {
     position: relative;
@@ -63,11 +72,6 @@ blockquote {
     border-left: none !important;
     font-size: 1.35rem;
     font-style: italic;
-}
-.invalid {
-    outline: red solid 1px !important;
-    padding: 0px 10px !important;
-    background-image: none !important;
 }
 .disabled {
     background-color: #eee !important;
@@ -119,8 +123,19 @@ blockquote {
     }
 }
 .dmovie-table {
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-right-width: 1px;
     border-color: $mainColor2 !important;
     tr {
+        td{
+            border-right: 1px dotted $mainColor2;
+            cursor: pointer;
+        }
+        td:nth-last-child(1) {
+            border: 0;
+        }
         background: $mainColor2;
         th {
             color: #fff;
@@ -184,20 +199,63 @@ blockquote {
     height: 32px !important;
 }
 .dmovie-select2-selection-border, .dmovie-textbox-border {
-    border-color: $borderColor !important;
+    border-color: $borderColor;
+    border-radius: 0 !important;
+}
+.dmovie-background-main {
+    background: $mainColor !important;
+}
+.dmovie-border-main {
+    border-color: $mainColor !important;
+}
+.dmovie-background-main-2 {
+    background: $mainColor2 !important;
+}
+.dmovie-border-main-2 {
+    border-color: $mainColor2 !important;
+}
+
+.border-radius-0 {
     border-radius: 0 !important;
 }
 // Profile page
 // Override css
+.dataTables_wrapper {
+    .dataTables_paginate {
+        .paginate_button {
+            border-radius: 0 !important;
+        }
+        .paginate_button.current, {
+            background: $mainColor !important;
+            border-color: $mainColor !important;
+            &:hover {
+                background: $mainColor !important;
+                border-color: $mainColor !important;
+            }
+        }
+        .paginate_button:hover {
+            background: $mainColor2 !important;
+            border-color: $mainColor2 !important;
+        }
+        .paginate_button.disabled:hover {
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+    }
+}
+
 .select2-container {
     .select2-selection--single {
-        height: 32px !important;
+        height: 38px !important;
     }
 }
 .select2-container--default {
     .select2-selection--single {
+        .select2-selection__arrow {
+            height: 34px;
+        }
         .select2-selection__rendered {
-            line-height: 32px !important;
+            line-height: 38px !important;
         }
     }
 }
@@ -221,4 +279,56 @@ blockquote {
             }
         }
     }
+}
+
+.dmovie-checkbox {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    label {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        border: 1px solid;
+        position: relative;
+    }
+    label:after {
+        content: "\F12C";
+        //content: "\f00c";
+        //font-family: 'FontAwesome';
+        font-family: "Material Design Icons";
+        color: #313131;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 24%;
+        left: 47%;
+        font-size: 1.9rem;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity .25s ease-out;
+    }
+    input:checked + label:after {
+        opacity: 1;
+    }
+}
+
+.margin-0-auto {
+    margin: 0 auto;
+}
+.width-100 {
+    width: 100%;
+}
+.invalid {
+    outline: red solid 1px !important;
+    padding: 0px 10px !important;
+    background-image: none !important;
+    border-color: transparent;
+    &:focus {
+        border-color: transparent;
+    }
+}
+.select-none {
+    user-select: none !important;
 }

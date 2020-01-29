@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Services;
+namespace App\Repositories;
 
-use App\Helper\Data;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Permission;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Role;
 use App\User;
 
 /**
- * Class RoleService
+ * Class RoleRepository
  *
  * @package App\Services
  */
-class RoleService
+class RoleRepository implements RoleRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * Store new roles
      *
@@ -30,26 +32,14 @@ class RoleService
                 'role_name' => $request->role_name
             ]);
             if ($role) {
-                auth()->user()->logs()->create([
-                    'short_message' => Data::CREATE_MSG,
-                    'message' => $role,
-                    'action' => Data::CREATE,
-                    'target_model' => Role::class,
-                    'target_id' => $role->id
-                ]);
+                $this->createLog($role, Role::class);
                 if ($request->permissions != null) {
                     $permissions = explode(',', $request->permissions);
                     foreach ($permissions as $permission) {
-                        $CreatedPermission = $role->permissions()->create([
+                        $createdPermission = $role->permissions()->create([
                             'permission_code' => $permission
                         ]);
-                        auth()->user()->logs()->create([
-                            'short_message' => Data::CREATE_MSG,
-                            'message' => $CreatedPermission,
-                            'action' => Data::CREATE,
-                            'target_model' => Permission::class,
-                            'target_id' => $CreatedPermission->id
-                        ]);
+                        $this->createLog($createdPermission, Permission::class);
                     }
                 }
                 return true;
@@ -74,26 +64,39 @@ class RoleService
                 'role_name' => $request->role_name
             ]);
             if ($updatedRole) {
-                auth()->user()->logs()->create([
-                    'short_message' => Data::UPDATE_MSG,
-                    'message' => $role,
-                    'action' => Data::UPDATE,
-                    'target_model' => Role::class,
-                    'target_id' => $role->id
-                ]);
+                $this->updateLog($role, Role::class);
+
                 $role->permissions()->delete();
+
+                /** @var array $permissions */
                 $permissions = explode(',', $request->permissions);
+
                 foreach ($permissions as $permission) {
                     $updatedPermission = $role->permissions()->create([
                         'permission_code' => $permission
                     ]);
-                    auth()->user()->logs()->create([
-                        'short_message' => Data::CREATE_MSG,
-                        'message' => $updatedPermission,
-                        'action' => Data::CREATE,
-                        'target_model' => Permission::class,
-                        'target_id' => $updatedPermission->id
-                    ]);
+
+                    $this->createLog($updatedPermission, Permission::class);
+                }
+                /** @var \Illuminate\Database\Eloquent\Collection $relatedUsers */
+                $relatedUsers = $role->users;
+
+                // Dissociate all current related user
+                foreach ($relatedUsers as $user) {
+                    $user->role()->dissociate();
+                    $user->save();
+                }
+
+                if ($request->has('users')) {
+
+                    /** @var array $userIds */
+                    $userIds = $request->users;
+
+                    foreach ($userIds as $id) {
+                        $user = User::find($id);
+
+                        $this->assignUser($role, $user);
+                    }
                 }
                 return true;
             }
@@ -116,13 +119,7 @@ class RoleService
             $oldRole = $role;
             if ($role) {
                 if ($role->delete()) {
-                    auth()->user()->logs()->create([
-                        'short_message' => Data::DELETE_MSG,
-                        'message' => $oldRole,
-                        'action' => Data::DELETE,
-                        'target_model' => Role::class,
-                        'target_id' => $oldRole->id
-                    ]);
+                    $this->deleteLog($oldRole, Role::class);
                 }
                 return true;
             }
@@ -138,33 +135,64 @@ class RoleService
      */
     public function fetch()
     {
-        return Role::all();
+        $name = request('role_name');
+        if (!$name) {
+            return Role::all();
+        } else {
+            return Role::where('role_name', 'like', '%' . $name . '%')->get();
+        }
     }
 
-    /*
-     * Assign a role to list users
+    /**
+     * @param AssignRequest $request
      */
     public function doAssign(AssignRequest $request)
     {
+        /** @var Role $role */
         $role = $this->getRole($request->role);
+
+        /** @var array $uids */
         $uids = $request->user_ids;
+
         foreach ($uids as $uid) {
+            /** @var User $user */
             $user = User::find($uid);
-            $role->user()->associate($user);
-            $role->save();
-            auth()->user()->logs()->create([
-                'short_message' => Data::ASSIGN_MSG,
-                'message' => $user,
-                'action' => Data::ASSIGN,
-                'target_model' => User::class,
-                'target_id' => $user->id
-            ]);
+
+            $this->assignUser($role, $user);
         }
-        return $this;
     }
 
+    /**
+     * Assign a role to a user
+     *
+     * @param Role $role
+     * @param User $user
+     */
+    public function assignUser(Role $role, User $user)
+    {
+        $user->role()->associate($role);
+
+        $user->save();
+
+        $this->assignLog($user, User::class);
+    }
+
+    /**
+     * @param int $roleId
+     * @return Role
+     */
     public function getRole($roleId)
     {
         return Role::findOrFail($roleId);
+    }
+
+    /**
+     * Get all role
+     *
+     * @return Role[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function all()
+    {
+        return Role::all();
     }
 }

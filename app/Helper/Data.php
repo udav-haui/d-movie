@@ -14,7 +14,7 @@ class Data
     const UPDATE_MSG = 'have updated';
     const DELETE_MSG = 'have deleted';
 
-    const ASSIGN_MSG = 'have sissigned';
+    const ASSIGN_MSG = 'have assigned';
     const ASSIGN = 'assign';
 
     /**

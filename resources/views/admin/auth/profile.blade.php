@@ -9,7 +9,7 @@
     <!-- /.row -->
     <!-- .row -->
     <div class="row">
-        <div class="@can('update', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
+        <div class="@can('canSelfUpdate', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
             <div class="white-box">
                 <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/icons/wall.jpg') }}">
                     <div class="overlay-box">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        @can('update', $user)
+        @can('canSelfUpdate', $user)
         <div class="col-md-8 col-xs-12">
             <div class="white-box">
                 <ul class="nav nav-tabs tabs customtab">
@@ -77,7 +77,7 @@
                     <div class="tab-pane @if (session('change_info')) {{ session('change_info') }} @endif @error('change_info'){{ $message }}@enderror" id="settings">
                         <form class="form-horizontal form-material" id="user_data_form"
                               method="POST"
-                              action="{{ route('user.update', ['user' => $user]) }}">
+                              action="{{ route('users.update', ['user' => $user]) }}">
                             @csrf
                             {{ method_field('PUT') }}
                             <div class="row">
@@ -89,9 +89,10 @@
                                         </label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
-                                                   class="form-control form-control-line @error('username') invalid @enderror @if(!auth()->user()->isAdmin() && !$user->canChangeUsername()) disabled @endif"
+                                                   class="form-control form-control-line @error('username') invalid @enderror
+                                                   @cannot('update', $user) disabled @endcannot"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   {{ auth()->user()->isAdmin() || $user->canChangeUsername() ? '' : 'disabled' }} />
+                                                   @cannot('update', $user) disabled @endcannot />
                                             @error('username')
                                                 <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror
@@ -149,7 +150,9 @@
                                     <div class="form-group">
                                         <label class="col-md-12" for="gender">{{ __('Gender') }}</label>
                                         <div class="col-md-12">
-                                            <select name="gender" id="gender" class="gender-selector bs-select-hidden" data-style="form-control">
+                                            <select name="gender" id="gender"
+                                                    class="gender-selector bs-select-hidden"
+                                                    data-style="form-control">
                                                 <option value="-1" {{ old('gender', $user->gender) ? '' : 'selected' }}>{{ __('Select your gender') }}</option>
                                                 <option value="0" {{ old('gender', $user->gender) != 0 ? '' : 'selected' }}>{{ __('Male') }}</option>
                                                 <option value="1" {{ old('gender', $user->gender) != 1 ? '' : 'selected' }}>{{ __('Female') }}</option>
@@ -199,7 +202,7 @@
                     <div class="tab-pane @if (session('change_pass')) {{ session('change_pass') }} @endif @error('change_pass'){{ $message }}@enderror" id="change_pass">
                         <form class="form-horizontal form-material"
                               method="POST"
-                              action="{{ route('user.changePassword', ['user' => $user->id]) }}">
+                              action="{{ route('users.changePassword', ['user' => $user->id]) }}">
                             @csrf
                             @if ((!$user->loginWithSocialAcc() && !auth()->user()->isAdmin())|| (auth()->user()->isAdmin() && auth()->user()->id == $user->id))
                             <div class="form-group">
@@ -247,7 +250,7 @@
                     <div class="tab-pane @if (session('change_avatar')) {{ session('change_avatar') }} @endif @error('change_avatar'){{ $message }}@enderror" id="change_avatar">
                         <form class="form-horizontal form-material"
                               method="POST"
-                              action="{{ route('user.setAvatar', ['user' => $user->id]) }}"
+                              action="{{ route('users.setAvatar', ['user' => $user->id]) }}"
                               enctype="multipart/form-data">
                             {{ method_field('PUT') }}
                             @csrf
@@ -306,7 +309,7 @@
 @endsection
 @section('titlebar.breadcrumb')
     <li><a href="/admin">{{ __('Dashboard') }}</a></li>
-    <li><a href="/admin/user">{{ __('User') }}</a></li>
+    <li><a href="{{ route('users.index') }}">{{ __('User') }}</a></li>
     <li class="active">{{ $user->name }}</li>
 @endsection
 @section('bottom.js')

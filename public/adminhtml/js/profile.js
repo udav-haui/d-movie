@@ -19,8 +19,9 @@ $(document).ready(function () {
         $('.customtab li.active').removeClass('active');
         $(this).addClass('active');
     });
-
+    let dmovieUserSelectClass = 'dmovie-users-select2';
     $('.gender-selector').select2({
+        containerCssClass: dmovieUserSelectClass + ' dmovie-select2-selection-border ',
         width: '100%'
     });
 

@@ -8,12 +8,22 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
     use Notifiable;
 
     protected $guarded = [];
+
+    /**
+     * Define role permission
+     */
+    const VIEW = 'user-view';
+    const CREATE = 'user-create';
+    const EDIT = 'user-edit';
+    const DELETE = 'user-delete';
+
     const TABLE_NAME = 'users';
 
     /**
@@ -27,32 +37,17 @@ class User extends Authenticatable
      * Determine account state
      */
     const ACTIVE = 1,
+        NOT_VERIFY_BY_ADMIN = 0,
         NOT_ACTIVATE = -1;
 
     const FIRST_LOGIN_WITH_SOCIAL_ACCOUNT = 1,
-        CAN_CHANGE_USERNAME = 1;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-//    protected $fillable = [
-//        'account_type',
-//        'can_change_username',
-//        'username',
-//        'name',
-//        'email',
-//        'password',
-//        'gender',
-//        'phone',
-//        'address',
-//        'avatar',
-//        'dob',
-//        'state',
-//        'description',
-//        'role_id'
-//    ];
+        CAN_CHANGE_USERNAME = 1,
+        NORMAL_LOGIN = 0;
 
+    /** Other */
+    const MALE = 0,
+        FEMALE = 1,
+        OTHER = 2;
     /**
      * Get user date of birth
      *
@@ -116,6 +111,27 @@ class User extends Authenticatable
     }
 
     /**
+     * Get user gender
+     *
+     * @return array|string|null
+     */
+    public function getGender()
+    {
+        return $this->getAttribute('gender') === self::MALE ? __('Male') :
+            ($this->getAttribute('gender') === self::FEMALE ? __('Female') : __('Other'));
+    }
+
+    /**
+     * Get name of user
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getAttribute('name') ?? __('<i class=\'text-warning\'>Not update</i>');
+    }
+
+    /**
      * Check if user can change username
      *
      * @return bool
@@ -123,6 +139,38 @@ class User extends Authenticatable
     public function canChangeUsername()
     {
         return $this->can_change_username == self::CAN_CHANGE_USERNAME;
+    }
+
+    /**
+     * Get username of user
+     *
+     * @return array|mixed|string|null
+     */
+    public function getUserName()
+    {
+        return $this->username ?? __('<i class=\'text-warning\'>Not update</i>');
+    }
+    /**
+     * Get user status
+     *
+     * @return array|string|null
+     */
+    public function getStatus()
+    {
+        return $this->state === self::ACTIVE ?
+            "Active" :
+            ($this->state === self::NOT_VERIFY_BY_ADMIN ?
+                "Not verify" :
+                "Not active");
+    }
+    /**
+     * Get assigned role to user
+     *
+     * @return string
+     */
+    public function getRoleName()
+    {
+        return $this->role->role_name ?? __('No role assigned!');
     }
 
     /**
@@ -143,6 +191,36 @@ class User extends Authenticatable
     public function isActive()
     {
         return $this->state === self::ACTIVE;
+    }
+
+    /**
+     * Check if user is customer
+     *
+     * @return bool
+     */
+    public function isCustomerAccount()
+    {
+        return $this->attributes['account_type'] === self::CUSTOMER;
+    }
+
+    /**
+     * Check if user is staff
+     *
+     * @return bool
+     */
+    public function isStaffAccount()
+    {
+        return $this->attributes['account_type'] === self::STAFF;
+    }
+
+    /**
+     * Delete user avatar in storage
+     *
+     * @return bool
+     */
+    public function deleteAvatarFile()
+    {
+        return Storage::delete('/public/' . $this->avatar);
     }
 
     /**

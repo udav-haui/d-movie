@@ -195,7 +195,7 @@
                             <div class="u-text">
                                 <h4 class="dot-dot-dot" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</h4>
                                 <p class="text-muted dot-dot-dot" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</p>
-                                <a href="/admin/user/{{ auth()->user()->id }}"
+                                <a href="{{ route('users.show', ['user' => auth()->user()->getAuthIdentifier()]) }}"
                                    class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a>
                             </div>
                         </div>

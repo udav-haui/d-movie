@@ -5,20 +5,23 @@ $(document).ready(function () {
         placeholderUsersText = langText.attr('placeholderUsersText'),
         placeholderRoleText = langText.attr('placeholderRoleText'),
         unnamed = langText.attr('unnamed'),
-        oldRoleId = selectedRole.attr('oldRoleId') || null;
+        oldRoleId = selectedRole.attr('oldRoleId') || null,
+        dmovieUserSelectClass = 'dmovie-users-select2',
+        dmovieRoleSelectClass = 'dmovie-role-select2';
     let invalidClass = selectedUser.hasClass('invalid') ? 'invalid border-none' : '';
     selectedUser.select2({
         placeholder: placeholderUsersText,
-        containerCssClass: 'dmovie-users-select2 dmovie-select2-selection-border ' + invalidClass,
+        containerCssClass: dmovieUserSelectClass + ' dmovie-select2-selection-border ' + invalidClass,
         pagination: {
             more: true,
         },
         ajax: {
-            url: route('user.getUsers'),
+            url: route('users.getUsers'),
             type: 'get',
             dataType: 'json',
+            delay: 250,
             beforeSend: function () {
-                $('.dmovie-users-select2').LoadingOverlay("show");
+                window.parent.showLoading($('.' + dmovieUserSelectClass));
             },
             data: function (params) {
                 return {
@@ -36,8 +39,11 @@ $(document).ready(function () {
                 }
             },
             success: function () {
-                $('.dmovie-users-select2').LoadingOverlay("hide");
+                window.parent.hideLoading($('.' + dmovieUserSelectClass));
             },
+            error: function (res) {
+                window.parent.hideLoading($('.' + dmovieUserSelectClass));
+            }
         }
     });
     invalidClass = selectedRole.hasClass('invalid') ? 'invalid border-none' : '';
@@ -58,7 +64,7 @@ $(document).ready(function () {
     }
     selectedRole.select2({
         placeholder: placeholderRoleText,
-        containerCssClass: 'dmovie-role-select2 dmovie-select2-selection-border ' + invalidClass,
+        containerCssClass: dmovieRoleSelectClass + ' dmovie-select2-selection-border ' + invalidClass,
         pagination: {
             more: true,
         },
@@ -66,11 +72,15 @@ $(document).ready(function () {
             url: route('roles.getRoles'),
             type: 'get',
             dataType: 'json',
+            delay: 250,
             beforeSend: function () {
-                $('.dmovie-role-select2').LoadingOverlay('show');
+                window.parent.showLoading($('.' + dmovieRoleSelectClass));
             },
             success: function () {
-                $('.dmovie-role-select2').LoadingOverlay('hide');
+                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
+            },
+            error: function () {
+                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
             },
             data: function (params) {
                 return {
