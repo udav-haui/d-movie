@@ -5,6 +5,7 @@ window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('datatables.net-dt');
+require('datatables.net-select-dt');
 jQuery(document).ready(function ($) {
     "use strict";
     /**

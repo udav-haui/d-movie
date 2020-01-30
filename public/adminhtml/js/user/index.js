@@ -1,14 +1,14 @@
 jQuery(document).ready(function ($) {
     let langText = $('.lang-text'),
         table = 'users';
-    let rolesDataTable = $(`#${table}_data`);
+    let dataTable = $(`#${table}_data`);
     let title = langText.attr('swl-title-text'),
         text = langText.attr('swl-text-text'),
         icon = langText.attr('swl-icon-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
         cancelButtonText = langText.attr('swl-cancelButtonText'),
         mainLang = langText.attr('main-lang');
-    rolesDataTable.DataTable({
+    var dt = dataTable.DataTable({
         initComplete: function (settings, json) {
             let dataWrapper = $(`#${table}_data_wrapper`),
                 selectDropdown = dataWrapper.find(`#${table}_data_length`),
@@ -17,7 +17,6 @@ jQuery(document).ready(function ($) {
                 filterInput = inputFilter.find(`input`) || null;
             dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
             filterInput.addClass('dmovie-textbox-border h-32 p-l-10');
-            // console.log(dropdown);
         },
         columnDefs: [
             {
@@ -40,6 +39,16 @@ jQuery(document).ready(function ($) {
             sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
         }
     });
+
+    /**
+     * Select all
+     */
+    $('#checkbox-all').on('click', function () {
+        let rows = dt.rows({ 'search': 'applied' }).nodes();
+        console.log(rows.length);
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    });
+    /* ./ EnD */
 
     /**
      * Delete a user
@@ -72,6 +81,50 @@ jQuery(document).ready(function ($) {
             });
         } );
     });
+
+    /**
+     * Delete users action
+     */
+    let deleteUsersBtn = $('._delete-users');
+    if (deleteUsersBtn.length > 0) {
+        let swalText = deleteUsersBtn.attr('swl-title');
+        deleteUsersBtn.on('click', function () {
+            window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                let count = 0;
+                dt.$(`td[scope="checkbox"]`).each(function () {
+                    let checkbox = $(this).find('input');
+                    if (checkbox.is(':checked')) {
+                        let userId = checkbox.val();
+                        let tr = checkbox.closest('tr'),
+                            row = dt.row(tr);
+                        $(document).ajaxStart(function () {
+                            window.parent.showLoading(dataTable);
+                        });
+                        $.ajax({
+                            url: route('users.destroy', {user: userId}).url(),
+                            method: 'DELETE',
+                            datatype: 'json',
+                            success: function (res) {
+                                if (res.status === 200) {
+                                    row.remove().draw();
+                                }
+                            }
+                        });
+                        $(document).ajaxStop(function () {
+                            window.parent.hideLoading(dataTable);
+                        });
+                        count++;
+                    }
+                });
+                $(document).ajaxSuccess(function () {
+                    let message = langText.attr('users-deleted');
+                    window.parent.successMessage(message + count + ' users.');
+                });
+            });
+        });
+    }
+    /** ./end */
+
 });
 
 /**

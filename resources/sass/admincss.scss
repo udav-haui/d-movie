@@ -244,6 +244,14 @@ blockquote {
     }
 }
 
+table.dataTable {
+    thead {
+        th:first-child {
+            padding: 8px 10px;
+        }
+    }
+}
+
 .select2-container {
     .select2-selection--single {
         height: 38px !important;
@@ -312,6 +320,19 @@ blockquote {
     input:checked + label:after {
         opacity: 1;
     }
+}
+.selected-item-label {
+    span {
+        padding: 6px 12px;
+    }
+}
+
+.float-left {
+    float: left !important;
+}
+
+.background-fff {
+    background: #fff !important;
 }
 
 .margin-0-auto {

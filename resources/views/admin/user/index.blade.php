@@ -12,8 +12,10 @@
     {{ __('User Manage') }}
     @endsection
 @section('head.css')
+{{--    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.css') }}">--}}
 @endsection
 @section('bottom.js')
+{{--    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.min.js') }}"></script>--}}
     <script src="{{ asset('adminhtml/js/user/index.js') }}"></script>
 @endsection
 @section('content')
@@ -33,7 +35,29 @@
            swl-text-text="{{ __('Do you want to destroy this user?') }}"
            swl-icon-text="warning"
            swl-confirmButtonText="{{ __('Ok') }}"
-           swl-cancelButtonText="{{ __('Cancel') }}" />
+           swl-cancelButtonText="{{ __('Cancel') }}" users-deleted="{{ __('Deleted: ') }}"/>
+    <div class="row m-b-15">
+        <div class="col-md-12">
+            <div class="btn-group">
+                <button
+                    aria-expanded="false"
+                    data-toggle="dropdown"
+                    class="btn btn-default btn-outline dropdown-toggle waves-effect waves-light border-radius-0"
+                    type="button"> {{ __('Action') }}
+                    <span class="caret"></span>
+                </button>
+                <ul role="menu" class="dropdown-menu border-radius-0">
+                    <li><a href="javascript:void(0);"
+                           class="_delete-users"
+                           swl-title="{{ __('Do you want to destroy this user?') }}">{{ __('Delete') }}</a></li>
+                    <li><a href="javascript:void(0);">{{ __('Set state') }}</a></li>
+                    <li><a href="javascript:void(0);">{{ __('Set role') }}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12 table-responsive">
             <table id="users_data" class="display nowrap dmovie-table"
@@ -41,7 +65,13 @@
                    width="100%">
                 <thead>
                 <tr>
-                    <th class="no-sort"></th>
+                    <th class="no-sort">
+                        <div class="dmovie-checkbox dmovie-checkbox-custom">
+                            <input value="0" id="checkbox-all" type="checkbox"
+                                   class="display-none user-checkbox">
+                            <label for="checkbox-all" class="cursor-pointer background-fff"></label>
+                        </div>
+                    </th>
                     <th>#</th>
                     <th>{{ __('Username') }}</th>
                     <th>{{ __('Name') }}</th>
@@ -68,7 +98,7 @@
                     <tr>
                         <td scope="checkbox">
                             <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input data-id="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
+                                <input value="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
                                        class="display-none user-checkbox">
                                 <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
                             </div>
