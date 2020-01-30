@@ -1,3 +1,5 @@
+var selectedUsers = [],
+    selectedRowsCount = $('.selected-rows-label');
 jQuery(document).ready(function ($) {
     let langText = $('.lang-text'),
         table = 'users';
@@ -7,7 +9,9 @@ jQuery(document).ready(function ($) {
         icon = langText.attr('swl-icon-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
         cancelButtonText = langText.attr('swl-cancelButtonText'),
-        mainLang = langText.attr('main-lang');
+        mainLang = langText.attr('main-lang'),
+        errorTitle = langText.attr('swl-error-title'),
+        errorText = langText.attr('swl-error-text-must-select-one-record');
     var dt = dataTable.DataTable({
         initComplete: function (settings, json) {
             let dataWrapper = $(`#${table}_data_wrapper`),
@@ -40,13 +44,37 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    /** Init number of selected rows */
+    appendToSeletedLabel();
+
+    dt.$(`td[scope="checkbox"]`).on('change', function () {
+        let checkbox = $(this).find('input[type="checkbox"]');
+        if (checkbox.prop('checked')) {
+            selectedUsers.push(checkbox.val());
+        } else {
+            let userId = checkbox.val();
+            selectedUsers = window.parent.removeAElement(selectedUsers, userId);
+        }
+        appendToSeletedLabel(selectedUsers.length);
+    });
+
     /**
      * Select all
      */
     $('#checkbox-all').on('click', function () {
         let rows = dt.rows({ 'search': 'applied' }).nodes();
-        console.log(rows.length);
+        let check = $('input[type="checkbox"]', rows);
         $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        check.each(function () {
+            let uid = $(this).val();
+            if (check.is(':checked')) {
+                selectedUsers.push(uid);
+            } else {
+                selectedUsers = window.parent.removeAElement(selectedUsers, uid);
+            }
+        });
+
+        appendToSeletedLabel(selectedUsers.length);
     });
     /* ./ EnD */
 
@@ -89,38 +117,48 @@ jQuery(document).ready(function ($) {
     if (deleteUsersBtn.length > 0) {
         let swalText = deleteUsersBtn.attr('swl-title');
         deleteUsersBtn.on('click', function () {
-            window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
-                let count = 0;
-                dt.$(`td[scope="checkbox"]`).each(function () {
-                    let checkbox = $(this).find('input');
-                    if (checkbox.is(':checked')) {
-                        let userId = checkbox.val();
-                        let tr = checkbox.closest('tr'),
-                            row = dt.row(tr);
-                        $(document).ajaxStart(function () {
-                            window.parent.showLoading(dataTable);
-                        });
-                        $.ajax({
-                            url: route('users.destroy', {user: userId}).url(),
-                            method: 'DELETE',
-                            datatype: 'json',
-                            success: function (res) {
-                                if (res.status === 200) {
-                                    row.remove().draw();
+            if (selectedUsers.length > 0) {
+                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                    let count = 0;
+                    dt.$(`td[scope="checkbox"]`).each(function () {
+                        let checkbox = $(this).find('input');
+                        if (checkbox.is(':checked')) {
+                            let userId = checkbox.val();
+                            let tr = checkbox.closest('tr'),
+                                row = dt.row(tr);
+                            $(document).ajaxStart(function () {
+                                window.parent.showLoading(dataTable);
+                            });
+                            $.ajax({
+                                url: route('users.destroy', {user: userId}).url(),
+                                method: 'DELETE',
+                                datatype: 'json',
+                                success: function (res) {
+                                    if (res.status === 200) {
+                                        selectedUsers = removeAElement(selectedUsers, userId);
+
+                                        row.remove().draw();
+                                    }
                                 }
-                            }
-                        });
-                        $(document).ajaxStop(function () {
-                            window.parent.hideLoading(dataTable);
-                        });
-                        count++;
-                    }
+                            });
+                            $(document).ajaxStop(function () {
+                                window.parent.hideLoading(dataTable);
+                            });
+                            count++;
+                        }
+                    });
+                    $(document).ajaxSuccess(function () {
+                        let message = langText.attr('users-deleted');
+
+                        window.parent.successMessage(message + count + ' users.');
+
+                        appendToSeletedLabel(selectedUsers.length);
+                    });
                 });
-                $(document).ajaxSuccess(function () {
-                    let message = langText.attr('users-deleted');
-                    window.parent.successMessage(message + count + ' users.');
-                });
-            });
+            } else {
+                /** If not select any row, then show a alert */
+                window.parent.normalAlert(errorTitle, errorText);
+            }
         });
     }
     /** ./end */
@@ -201,4 +239,13 @@ function changeStatus(recordRow ,uid, title, notActive, notVerify, isActive) {
     });
 }
 
-
+/**
+ * Append number of selected rows to showable section
+ *
+ * @param number
+ */
+function appendToSeletedLabel(number = 0) {
+    if (selectedRowsCount.length > 0) {
+        selectedRowsCount.text(number);
+    }
+}

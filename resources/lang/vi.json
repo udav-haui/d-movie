@@ -163,5 +163,9 @@
     "Set state": "Đặt trạng thái",
     "Set role": "Đặt quyền",
     "Do you want to destroy this user?": "Bạn có muốn xoá các người dùng này không?",
-    "Deleted: ": "Đã xóa: "
+    "Deleted: ": "Đã xóa: ",
+    "Selected": "Đã chọn",
+    "rows": "dòng",
+    "Oops...": "Úi...",
+    "You must select at least a record.": "Bạn phải chọn ít nhất một bản ghi để thao tác."
 }

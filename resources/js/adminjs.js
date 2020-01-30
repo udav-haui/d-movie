@@ -155,3 +155,29 @@ window.showYesNoModal = function (
     })
 };
 
+/**
+ * Show normal alert
+ *
+ * @param title
+ * @param text
+ */
+window.normalAlert = function (title, text) {
+    Swal.fire({
+        icon: 'error',
+        title: title,
+        text: text
+    })
+};
+
+/**
+ * Remove element
+ *
+ * @param arr
+ * @param value
+ * @returns {*}
+ */
+window.removeAElement = function (arr, value) {
+    return arr.filter(function(ele) {
+        return ele !== value;
+    });
+}

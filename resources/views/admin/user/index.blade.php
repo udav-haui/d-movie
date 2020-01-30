@@ -35,9 +35,12 @@
            swl-text-text="{{ __('Do you want to destroy this user?') }}"
            swl-icon-text="warning"
            swl-confirmButtonText="{{ __('Ok') }}"
-           swl-cancelButtonText="{{ __('Cancel') }}" users-deleted="{{ __('Deleted: ') }}"/>
+           swl-cancelButtonText="{{ __('Cancel') }}"
+           users-deleted="{{ __('Deleted: ') }}"
+           swl-error-title="{{ __('Oops...') }}"
+           swl-error-text-must-select-one-record="{{ __('You must select at least a record.') }}"/>
     <div class="row m-b-15">
-        <div class="col-md-12">
+        <div class="col-md-1">
             <div class="btn-group">
                 <button
                     aria-expanded="false"
@@ -56,6 +59,9 @@
                     <li><a href="#">Separated link</a></li>
                 </ul>
             </div>
+        </div>
+        <div class="col-md-2 selected-rows-label-container m-l-10">
+            {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
         </div>
     </div>
     <div class="row">
