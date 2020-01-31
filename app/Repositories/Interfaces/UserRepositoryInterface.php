@@ -125,9 +125,10 @@ interface UserRepositoryInterface
      * Create new user
      *
      * @param array $fields
+     * @param int $createLog
      * @return User
      */
-    public function create($fields);
+    public function create($fields, $createLog = 1);
 
     /**
      * Format a date to insert to db

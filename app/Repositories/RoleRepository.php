@@ -163,6 +163,19 @@ class RoleRepository implements RoleRepositoryInterface
     }
 
     /**
+     * Assign single role to user
+     */
+    public function doSingleAssign()
+    {
+        $roleId = request()->role;
+        $role = Role::find($roleId);
+
+        $userId = request()->user;
+        $user = User::find($userId);
+
+        $this->assignUser($role, $user);
+    }
+    /**
      * Assign a role to a user
      *
      * @param Role $role

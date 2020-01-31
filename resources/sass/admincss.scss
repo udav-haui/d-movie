@@ -198,10 +198,6 @@ blockquote {
 .h-32 {
     height: 32px !important;
 }
-.dmovie-select2-selection-border, .dmovie-textbox-border {
-    border-color: $borderColor;
-    border-radius: 0 !important;
-}
 .dmovie-background-main {
     background: $mainColor !important;
 }
@@ -228,6 +224,7 @@ blockquote {
         .paginate_button.current, {
             background: $mainColor !important;
             border-color: $mainColor !important;
+            color: #f2f2f2 !important;
             &:hover {
                 background: $mainColor !important;
                 border-color: $mainColor !important;
@@ -270,6 +267,7 @@ table.dataTable {
 .select2-container--open {
     .select2-dropdown {
         border-radius: 0;
+        z-index: 1061;
         .select2-results {
             .select2-results__options {
                 &::-webkit-scrollbar-track {
@@ -297,7 +295,7 @@ table.dataTable {
         width: 20px;
         height: 20px;
         margin: 0;
-        border: 1px solid;
+        border: 1px solid $borderColor;
         position: relative;
     }
     label:after {
@@ -329,6 +327,11 @@ table.dataTable {
 }
 
 
+.dmovie-select2-selection-border, .dmovie-textbox-border {
+    border-color: $borderColor;
+    border-radius: 0 !important;
+}
+
 .float-left {
     float: left !important;
 }
@@ -354,4 +357,10 @@ table.dataTable {
 }
 .select-none {
     user-select: none !important;
+}
+.z-index-99999 {
+    z-index: 99999 !important;
+}
+.dmovie-border {
+    border: 1px solid $borderColor !important;
 }

@@ -98,6 +98,60 @@ window.warningMessage = function (msg) {
     }
 };
 
+/**
+ * Get role list bind to select2
+ *
+ * @param selector
+ * @param placeholderRoleText
+ * @param dmovieRoleSelectClass
+ * @param invalidClass
+ * @param unnamed
+ */
+window.loadRoleSelect2 = function (
+    selector = $('#role_select2'),
+    placeholderRoleText = 'Select role',
+    dmovieRoleSelectClass = 'dmovie-role-select2',
+    invalidClass = '',
+    unnamed = 'Unnamed'
+) {
+    selector.select2({
+        placeholder: placeholderRoleText,
+        containerCssClass: dmovieRoleSelectClass + ' dmovie-select2-selection-border ' + invalidClass,
+        pagination: {
+            more: true,
+        },
+        ajax: {
+            url: route('roles.getRoles'),
+            type: 'get',
+            dataType: 'json',
+            delay: 250,
+            beforeSend: function () {
+                window.parent.showLoading($('.' + dmovieRoleSelectClass));
+            },
+            success: function () {
+                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
+            },
+            error: function () {
+                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
+            },
+            data: function (params) {
+                return {
+                    role_name: params.term,
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data.data, function (val, i) {
+                        return {
+                            id: val.id,
+                            text: val.role_name == null || val.role_name === '' ? `ID: ${val.id} - ${unnamed}` : val.role_name
+                        };
+                    })
+                }
+            }
+        }
+    });
+};
 
 /**
  * Show loader
@@ -158,14 +212,14 @@ window.showYesNoModal = function (
 /**
  * Show normal alert
  *
- * @param title
- * @param text
+ * @param errorTitle
+ * @param errorText
  */
-window.normalAlert = function (title, text) {
+window.normalAlert = function (errorTitle, errorText) {
     Swal.fire({
         icon: 'error',
-        title: title,
-        text: text
+        title: errorTitle,
+        text: errorText
     })
 };
 
@@ -180,4 +234,4 @@ window.removeAElement = function (arr, value) {
     return arr.filter(function(ele) {
         return ele !== value;
     });
-}
+};

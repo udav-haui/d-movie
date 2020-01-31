@@ -29,6 +29,7 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             Route::get('roles/{role}/get', 'RoleController@get')->name('roles.getRole');
             Route::post('roles/assign', 'RoleController@doAssign')->name('roles.doAssign');
             Route::get('roles/assign', 'RoleController@showAssignForm')->name('roles.assignForm');
+            Route::post('roles/singAssign', 'RoleController@doSingleAssign')->name('roles.doSingAssign');
             Route::resource('roles', 'RoleController');
             /**
              * Api method

@@ -280,13 +280,17 @@ class UserRepository implements UserRepositoryInterface
      * Create new user
      *
      * @param array $fields
+     * @param int $createLog
      * @return User
      */
-    public function create($fields)
+    public function create($fields, $createLog = 1)
     {
+        $isCreateLog = 1;
         $userId = User::query()->insertGetId($fields);
         $user = User::find($userId);
-        $this->createLog($user, User::class);
+
+        $createLog !== $isCreateLog ?: $this->createLog($user, User::class);
+
         return $user;
     }
 

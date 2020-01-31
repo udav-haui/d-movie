@@ -56,6 +56,11 @@ interface RoleRepositoryInterface
     public function doAssign(AssignRequest $request);
 
     /**
+     * Assign single role to user
+     */
+    public function doSingleAssign();
+
+    /**
      * Assign a role to a user
      *
      * @param Role $role

@@ -106,7 +106,7 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
                         $insertFields
                     );
 
-                $user = $this->userRepository->create($insertFields);
+                $user = $this->userRepository->create($insertFields, 0);
             }
 
             $account->user()->associate($user);

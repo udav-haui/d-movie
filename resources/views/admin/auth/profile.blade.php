@@ -90,9 +90,9 @@
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
                                                    class="form-control form-control-line @error('username') invalid @enderror
-                                                   @cannot('update', $user) disabled @endcannot"
+                                                   @cannot('canSelfUpdate', $user) disabled @endcannot"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   @cannot('update', $user) disabled @endcannot />
+                                                   @cannot('canSelfUpdate', $user) disabled @endcannot />
                                             @error('username')
                                                 <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror

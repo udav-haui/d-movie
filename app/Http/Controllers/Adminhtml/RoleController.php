@@ -195,11 +195,41 @@ class RoleController extends Controller
 
         try {
             $this->roleRepository->doAssign($request);
+
             return redirect()->route('roles.index')
                 ->with('success', __('Assign role to user successfully.'));
         } catch (\Exception $e) {
             return redirect()->route('roles.index')
                 ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Single assign role to user
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function doSingleAssign()
+    {
+        $this->authorize('viewAny', Role::class);
+
+        try {
+            $this->roleRepository->doSingleAssign();
+
+            return request()->ajax() ?
+                response()->json([
+                    'status' => 200,
+                    'message' => __('Assign role to user successfully.')
+                ]) :
+                back()->with('success', __('Assign role to user successfully.'));
+        } catch (\Exception $e) {
+            return request()->ajax() ?
+                response()->json([
+                    'status' => 404,
+                    'message' => $e->getMessage()
+                ]) :
+                back()->with('error', $e->getMessage());
         }
     }
 

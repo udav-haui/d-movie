@@ -62,41 +62,7 @@ $(document).ready(function () {
             }
         });
     }
-    selectedRole.select2({
-        placeholder: placeholderRoleText,
-        containerCssClass: dmovieRoleSelectClass + ' dmovie-select2-selection-border ' + invalidClass,
-        pagination: {
-            more: true,
-        },
-        ajax: {
-            url: route('roles.getRoles'),
-            type: 'get',
-            dataType: 'json',
-            delay: 250,
-            beforeSend: function () {
-                window.parent.showLoading($('.' + dmovieRoleSelectClass));
-            },
-            success: function () {
-                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
-            },
-            error: function () {
-                window.parent.hideLoading($('.' + dmovieRoleSelectClass));
-            },
-            data: function (params) {
-                return {
-                    role_name: params.term,
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data.data, function (val, i) {
-                        return {
-                            id: val.id,
-                            text: val.role_name == null || val.role_name === '' ? `ID: ${val.id} - ${unnamed}` : val.role_name
-                        };
-                    })
-                }
-            }
-        }
-    });
+
+    window.parent.loadRoleSelect2(selectedRole, placeholderRoleText, dmovieRoleSelectClass, invalidClass, unnamed);
+
 });

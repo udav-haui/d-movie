@@ -115,7 +115,8 @@
                 </div>
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" placeholder="{{ __('Email') }}">
+                        <input class="form-control" style="border-radius: 0;" type="text" required="" placeholder="{{ __
+                        ('Email') }}">
                     </div>
                 </div>
                 <div class="form-group text-center mr--15 ml--15 m-b-0">

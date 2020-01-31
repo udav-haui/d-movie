@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
                 dropdown = selectDropdown.find(`select`) || null,
                 filterInput = inputFilter.find(`input`) || null;
             dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-            filterInput.addClass('dmovie-textbox-border h-32 p-l-10');
+            filterInput.addClass('dmovie-border h-32 p-l-10');
         },
         columnDefs: [
             {
@@ -209,6 +209,75 @@ jQuery(document).ready(function ($) {
     }
     /** ./ END */
 
+    /**
+     * Assign role to selected users
+     */
+    let assignRoleBtn = $('._assign-role-users');
+    if (assignRoleBtn.length > 0) {
+        let swalText = assignRoleBtn.attr('swl-text');
+        assignRoleBtn.on(
+            'click',
+            function () {
+                let self = assignRoleBtn;
+                if (selectedUsers.length > 0) {
+                    window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                        let htmlText = `<div class="col-md-12">
+                                            <select id="role_select2" oldRoleId="0" name="role" class="form-control"></select>
+                                            <span class="error text-danger dmovie-error-box display-none"></span>
+                                        </div>`,
+                            sl2Placeholder = self.attr('sl2-placeholder'),
+                            selectRole = null;
+                        Swal.fire({
+                            title: sl2Placeholder,
+                            html: htmlText,
+                            showCancelButton: true,
+                            cancelButtonText: cancelButtonText,
+                            customClass: {
+                                popup: 'border-radius-0'
+                            },
+                            focusConfirm: false,
+                            onOpen: function () {
+                                let dmovieRoleSelectClass = 'dmovie-role-select2',
+                                    unnamed = self.attr('unnamed');
+                                selectRole = $('#role_select2');
+                                /** Init list role */
+                                window.parent.loadRoleSelect2(selectRole, sl2Placeholder, dmovieRoleSelectClass, '',unnamed);
+
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                let roleId = selectRole.val();
+
+                                if (roleId !== null) {
+                                    let roleName = selectRole.text();
+                                    dt.$('input[type="checkbox"]').each(function () {
+                                        let targetBtn = $(this),
+                                            userId = targetBtn.val();
+
+                                        $.each(selectedUsers, function (index, value) {
+                                            if (userId === value) {
+                                                let row = targetBtn.closest('tr');
+
+                                                doAssignRole(row, userId, roleId, roleName);
+                                            }
+                                        });
+                                    });
+
+                                } else {
+                                    let selectRoleErrorText = langText.attr('swl-sl-role-error-text');
+                                    window.parent.normalAlert(errorTitle, selectRoleErrorText);
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    window.parent.normalAlert(errorTitle, errorText);
+                }
+            }
+        );
+    }
+    /** ./END */
+
 });
 
 /**
@@ -318,6 +387,36 @@ function doChangeState(targetBtn, row, uid, newState, notActive, notVerify, isAc
     });
 }
 /** ./End */
+
+function doAssignRole(row, userId, roleId, newRoleName) {
+    $.ajax({
+        url: route('roles.doSingAssign'),
+        method: 'POST',
+        data: {
+            user: userId,
+            role: roleId
+        },
+        datatype: 'json',
+        beforeSend: function() {
+            window.parent.showLoading(row);
+        },
+        success: function (res) {
+            if (res.status === 200) {
+                window.parent.successMessage(res.message);
+
+                let roleNameCol = row.find('td[scope="role"]');
+
+                roleNameCol.text(newRoleName);
+            } else {
+                window.parent.errorMessage(res.message);
+            }
+            window.parent.hideLoading(row);
+        },
+        error: function () {
+            window.parent.hideLoading(row);
+        }
+    });
+}
 
 /**
  * Append number of selected rows to showable section
