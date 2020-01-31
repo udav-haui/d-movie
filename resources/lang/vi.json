@@ -167,5 +167,6 @@
     "Selected": "Đã chọn",
     "rows": "dòng",
     "Oops...": "Úi...",
-    "You must select at least a record.": "Bạn phải chọn ít nhất một bản ghi để thao tác."
+    "You must select at least a record.": "Bạn phải chọn ít nhất một bản ghi để thao tác.",
+    "Do you want change all state of this users?": "Bạn có muốn thay đổi trạng thái của các người dùng đã chọn?"
 }

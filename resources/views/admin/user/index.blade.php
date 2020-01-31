@@ -38,7 +38,7 @@
            swl-cancelButtonText="{{ __('Cancel') }}"
            users-deleted="{{ __('Deleted: ') }}"
            swl-error-title="{{ __('Oops...') }}"
-           swl-error-text-must-select-one-record="{{ __('You must select at least a record.') }}"/>
+           swl-error-text-must-select-one-record="{{ __('You must select at least a record.') }}" />
     <div class="row m-b-15">
         <div class="col-md-1">
             <div class="btn-group">
@@ -52,8 +52,19 @@
                 <ul role="menu" class="dropdown-menu border-radius-0">
                     <li><a href="javascript:void(0);"
                            class="_delete-users"
-                           swl-title="{{ __('Do you want to destroy this user?') }}">{{ __('Delete') }}</a></li>
-                    <li><a href="javascript:void(0);">{{ __('Set state') }}</a></li>
+                           swl-text="{{ __('Do you want to destroy this user?') }}">{{ __('Delete') }}</a></li>
+                    <li>
+                        <a href="javascript:void(0);"
+                           class="_change-state-users"
+                           swl-text="{{ __('Do you want change all state of this users?') }}"
+                           swl-state-alert-title="{{ __('Select state') }}"
+                           swl-select-not-active-item="{{ __('Not active') }}"
+                           swl-select-not-verify-item="{{ __('Not verify') }}"
+                           swl-select-active-item="{{ __('Active') }}"
+                           swl-cancel-btn-text="{{ __('Cancel') }}" >
+                            {{ __('Set state') }}
+                        </a>
+                    </li>
                     <li><a href="javascript:void(0);">{{ __('Set role') }}</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Separated link</a></li>
@@ -121,10 +132,12 @@
                            @can('cannotSelfUpdate', $user)
                                 <i class="ti-reload"
                                    data-id="{{ $user->state }}"
+                                   user-id="{{ $user->id }}"
                                    cancel-text="{{ __('Cancel') }}"
                                    onclick="changeStatus(this, '{{ $user->id }}', '{{__('Select state')}}', '{{ __('Not active') }}',
                                        '{{ __('Not verify') }}', '{{ __('Active') }}');"
-                                   title="{{ __('Change status') }}"></i>
+                                   title="{{ __('Change status') }}"
+                                   scope="change-state"></i>
                             @endcan
                         </td>
                         <td scope="task">

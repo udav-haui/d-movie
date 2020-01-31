@@ -96,7 +96,15 @@ jQuery(document).ready(function ($) {
                 datatype: 'json',
                 success: function (res) {
                     if (res.status === 200) {
+                        let chkbox = tr.find('input[type="checkbox"]');
+
+                        if (chkbox.is(':checked')) {
+                            selectedUsers = removeAElement(selectedUsers, chkbox.val());
+                            appendToSeletedLabel(selectedUsers.length);
+                        }
+
                         row.remove().draw();
+
                         window.parent.successMessage(res.message);
                     } else {
                         window.parent.errorMessage(res.message);
@@ -115,7 +123,7 @@ jQuery(document).ready(function ($) {
      */
     let deleteUsersBtn = $('._delete-users');
     if (deleteUsersBtn.length > 0) {
-        let swalText = deleteUsersBtn.attr('swl-title');
+        let swalText = deleteUsersBtn.attr('swl-text');
         deleteUsersBtn.on('click', function () {
             if (selectedUsers.length > 0) {
                 window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
@@ -163,6 +171,44 @@ jQuery(document).ready(function ($) {
     }
     /** ./end */
 
+    /**
+     * Change state users
+     */
+    let changeStateBtn = $('._change-state-users');
+    if (changeStateBtn.length > 0) {
+        let swalText = changeStateBtn.attr('swl-text');
+        changeStateBtn.on('click', function () {
+            let self = changeStateBtn;
+            if (selectedUsers.length > 0) {
+                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                    let swlTitle = self.attr('swl-state-alert-title'),
+                        swlSlNotActive = self.attr('swl-select-not-active-item'),
+                        swlSlNotVerify = self.attr('swl-select-not-verify-item'),
+                        swlSlActive = self.attr('swl-select-active-item'),
+                        swlCancelBtnText = self.attr('swl-cancel-btn-text');
+
+                    showStateAlert(swlTitle, swlSlNotActive, swlSlNotVerify, swlSlActive, 1, swlCancelBtnText, function (newState) {
+                        dt.$('i[scope="change-state"]').each(function () {
+                            let targetBtn = $(this),
+                                userId = targetBtn.attr('user-id');
+
+                            $.each(selectedUsers, function (index, value) {
+                                if (userId === value) {
+                                    let row = targetBtn.closest('tr');
+
+                                    doChangeState(targetBtn, row, value, newState, swlSlNotActive, swlSlNotVerify, swlSlActive);
+                                }
+                            });
+                        });
+                    });
+                });
+            } else {
+                window.parent.normalAlert(errorTitle, errorText)
+            }
+        });
+    }
+    /** ./ END */
+
 });
 
 /**
@@ -181,6 +227,23 @@ function changeStatus(recordRow ,uid, title, notActive, notVerify, isActive) {
         cancelText = self.attr('cancel-text'),
         row = self.closest('tr');
 
+    showStateAlert(title, notActive, notVerify, isActive, currentState, cancelText, function (newState) {
+        doChangeState(self, row, uid, newState, notActive, notVerify, isActive);
+    });
+}
+
+/**
+ * Fire alert change state
+ *
+ * @param title
+ * @param notActive
+ * @param notVerify
+ * @param isActive
+ * @param currentState
+ * @param cancelText
+ * @param callback
+ */
+function showStateAlert(title, notActive, notVerify, isActive, currentState = -1, cancelText = 'Cancel', callback) {
     Swal.fire({
         title: title,
         input: 'select',
@@ -206,38 +269,55 @@ function changeStatus(recordRow ,uid, title, notActive, notVerify, isActive) {
     }).then(function (result) {
         if (result.value) {
             let newState = result.value;
-            $.ajax({
-                url: route('users.changeState'),
-                method: 'POST',
-                data: {
-                    user: uid,
-                    state: newState
-                },
-                datatype: 'json',
-                beforeSend: function() {
-                    window.parent.showLoading(row);
-                },
-                success: function (res) {
-                    if (res.status === 200) {
-                        window.parent.successMessage(res.message);
-                        let statusCol = row.find('td[scope="status"]');
-                        self.attr('data-id', newState);
-
-                        statusCol.find('.status-text').text(
-                            newState === '-1' ? notActive : (newState === '0' ? notVerify : isActive)
-                        );
-                    } else {
-                        window.parent.errorMessage(res.message);
-                    }
-                    window.parent.hideLoading(row);
-                },
-                error: function () {
-                    window.parent.hideLoading(row);
-                }
-            });
+            callback(newState);
         }
     });
 }
+/** ./END */
+
+/**
+ * Do change state of user
+ *
+ * @param targetBtn
+ * @param row
+ * @param uid
+ * @param newState
+ * @param notActive
+ * @param notVerify
+ * @param isActive
+ */
+function doChangeState(targetBtn, row, uid, newState, notActive, notVerify, isActive) {
+    $.ajax({
+        url: route('users.changeState'),
+        method: 'POST',
+        data: {
+            user: uid,
+            state: newState
+        },
+        datatype: 'json',
+        beforeSend: function() {
+            window.parent.showLoading(row);
+        },
+        success: function (res) {
+            if (res.status === 200) {
+                window.parent.successMessage(res.message);
+                let statusCol = row.find('td[scope="status"]');
+                targetBtn.attr('data-id', newState);
+
+                statusCol.find('.status-text').text(
+                    newState === '-1' ? notActive : (newState === '0' ? notVerify : isActive)
+                );
+            } else {
+                window.parent.errorMessage(res.message);
+            }
+            window.parent.hideLoading(row);
+        },
+        error: function () {
+            window.parent.hideLoading(row);
+        }
+    });
+}
+/** ./End */
 
 /**
  * Append number of selected rows to showable section
