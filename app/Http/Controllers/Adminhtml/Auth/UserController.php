@@ -178,8 +178,10 @@ class UserController extends Controller
             'address' => $request->address,
             'dob' => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
             'description' => $request->description ?? null,
-            'role_id' => $request->role ?? null
         ];
+
+        // expr1 ?: expr2 , return expr1 if expr1 is true and expr2 when expr1 false
+        !auth()->user()->isAdmin() ?: $fields['role_id'] = $request->role ?? null;
 
         if ($request->has('changePass')) {
             $validator = Validator::make(
