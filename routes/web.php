@@ -37,6 +37,10 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             Route::put('user-change-avatar/{user}', 'Auth\UserController@setAvatar')->name('users.setAvatar');
             Route::post('user-change-password/{user}', 'Auth\UserController@changePassword')
                 ->name('users.changePassword');
+
+            /** SLIDER SESSION */
+            Route::post('sliders/changeStatus', 'SliderController@changeStatus')->name('sliders.changeStatus');
+            Route::resource('sliders', 'SliderController');
         });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
         Route::post('login', 'Auth\LoginController@login');

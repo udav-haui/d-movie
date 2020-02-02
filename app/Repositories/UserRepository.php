@@ -127,7 +127,7 @@ class UserRepository implements UserRepositoryInterface
                 try {
                     $avtPath = request('avatar')->store('uploads', 'public');
                 } catch (Exception $fileException) {
-                    throw new Exception(__('Không thể tải ảnh của bạn lên! Xin lỗi!'));
+                    throw new Exception(__('Cannot upload your image.'));
                 }
                 $data = [
                     'avatar' => $avtPath
@@ -286,7 +286,9 @@ class UserRepository implements UserRepositoryInterface
     public function create($fields, $createLog = 1)
     {
         $isCreateLog = 1;
+
         $userId = User::query()->insertGetId($fields);
+
         $user = User::find($userId);
 
         $createLog !== $isCreateLog ?: $this->createLog($user, User::class);

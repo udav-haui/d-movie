@@ -29,17 +29,9 @@
             </div>
         </div>
     @endcan
-    <input class="lang-text display-none"
-           main-lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-           swl-title-text="{{ __('Are you sure?') }}"
-           swl-text-text="{{ __('Do you want to destroy this user?') }}"
-           swl-icon-text="warning"
-           swl-confirmButtonText="{{ __('Ok') }}"
-           swl-cancelButtonText="{{ __('Cancel') }}"
-           users-deleted="{{ __('Deleted: ') }}"
-           swl-error-title="{{ __('Oops...') }}"
-           swl-error-text-must-select-one-record="{{ __('You must select at least a record.') }}"
-           swl-sl-role-error-text="{{ __('Please select a role') }}" />
+
+    @include('admin.lang.global_text_lang')
+
     <div class="row m-b-15">
         <div class="col-md-1">
             <div class="btn-group">
@@ -51,7 +43,7 @@
                     type="button"> {{ __('Action') }}
                     <span class="caret"></span>
                 </button>
-                <ul role="menu" class="dropdown-menu border-radius-0">
+                <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
                     @if (!auth()->user()->can('delete', \App\User::class) && !auth()->user()->can('update',
                     \App\User::class))
                         <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>

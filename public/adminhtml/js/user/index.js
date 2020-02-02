@@ -1,90 +1,37 @@
-var selectedUsers = [],
-    selectedRowsCount = $('.selected-rows-label');
-jQuery(document).ready(function ($) {
+$(document).ready(function () {
     let langText = $('.lang-text'),
-        table = 'users';
-    let dataTable = $(`#${table}_data`);
+        tableName = 'users';
+    let dtableSelector = $(`#${tableName}_data`);
     let title = langText.attr('swl-title-text'),
         text = langText.attr('swl-text-text'),
         icon = langText.attr('swl-icon-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
         cancelButtonText = langText.attr('swl-cancelButtonText'),
-        mainLang = langText.attr('main-lang'),
         errorTitle = langText.attr('swl-error-title'),
         errorText = langText.attr('swl-error-text-must-select-one-record');
-    var dt = dataTable.DataTable({
-        initComplete: function (settings, json) {
-            let dataWrapper = $(`#${table}_data_wrapper`),
-                selectDropdown = dataWrapper.find(`#${table}_data_length`),
-                inputFilter = dataWrapper.find(`#${table}_data_filter`),
-                dropdown = selectDropdown.find(`select`) || null,
-                filterInput = inputFilter.find(`input`) || null;
-            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-            filterInput.addClass('dmovie-border h-32 p-l-10');
+    $.fn.dataTable.defaults.columnDefs = [
+        {
+            targets: 0,
+            width: '2%'
         },
-        columnDefs: [
-            {
-                targets: 0,
-                width: '2%'
-            },
-            {
-                targets: 2,
-                width: '15%'
-            },
-            {
-                targets: 'no-sort',
-                orderable: false
-            },
-        ],
-        order: [
-            [1, 'desc']
-        ],
-        oLanguage: {
-            sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
-        }
-    });
-
-    /** Init number of selected rows */
-    appendToSeletedLabel();
-
-    dt.$(`td[scope="checkbox"]`).on('change', function () {
-        let checkbox = $(this).find('input[type="checkbox"]');
-        if (checkbox.prop('checked')) {
-            selectedUsers.push(checkbox.val());
-        } else {
-            let userId = checkbox.val();
-            selectedUsers = window.parent.removeAElement(selectedUsers, userId);
-        }
-        appendToSeletedLabel(selectedUsers.length);
-    });
-
-    /**
-     * Select all
-     */
-    $('#checkbox-all').on('click', function () {
-        let rows = dt.rows({ 'search': 'applied' }).nodes();
-        let check = $('input[type="checkbox"]', rows);
-        $('input[type="checkbox"]', rows).prop('checked', this.checked);
-        check.each(function () {
-            let uid = $(this).val();
-            if (check.is(':checked')) {
-                selectedUsers.push(uid);
-            } else {
-                selectedUsers = window.parent.removeAElement(selectedUsers, uid);
-            }
-        });
-
-        appendToSeletedLabel(selectedUsers.length);
-    });
-    /* ./ EnD */
+        {
+            targets: 2,
+            width: '15%'
+        },
+        {
+            targets: 'no-sort',
+            orderable: false
+        },
+    ];
+    window.parent.dtable = initDataTable(dtableSelector, tableName);
 
     /**
      * Delete a user
      */
-    $(`#${table}_data tbody`).on('click', '#deleteUserBtn', function () {
+    $(`#${tableName}_data tbody`).on('click', '#deleteUserBtn', function () {
         let self = $(this);
         let tr = self.closest('tr');
-        let row = $(`#${table}_data`).DataTable().row(tr);
+        let row = $(`#${tableName}_data`).DataTable().row(tr);
         let userId = self.attr('data-id');
         window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
             $.ajax({
@@ -99,8 +46,8 @@ jQuery(document).ready(function ($) {
                         let chkbox = tr.find('input[type="checkbox"]');
 
                         if (chkbox.is(':checked')) {
-                            selectedUsers = removeAElement(selectedUsers, chkbox.val());
-                            appendToSeletedLabel(selectedUsers.length);
+                            selectedObjects = removeAElement(selectedObjects, chkbox.val());
+                            appendToSeletedLabel(selectedObjects.length);
                         }
 
                         row.remove().draw();
@@ -125,17 +72,17 @@ jQuery(document).ready(function ($) {
     if (deleteUsersBtn.length > 0) {
         let swalText = deleteUsersBtn.attr('swl-text');
         deleteUsersBtn.on('click', function () {
-            if (selectedUsers.length > 0) {
+            if (selectedObjects.length > 0) {
                 window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
                     let count = 0;
-                    dt.$(`td[scope="checkbox"]`).each(function () {
+                    dtable.$(`td[scope="checkbox"]`).each(function () {
                         let checkbox = $(this).find('input');
                         if (checkbox.is(':checked')) {
                             let userId = checkbox.val();
                             let tr = checkbox.closest('tr'),
-                                row = dt.row(tr);
+                                row = dtable.row(tr);
                             $(document).ajaxStart(function () {
-                                window.parent.showLoading(dataTable);
+                                window.parent.showLoading(dtableSelector);
                             });
                             $.ajax({
                                 url: route('users.destroy', {user: userId}).url(),
@@ -143,14 +90,14 @@ jQuery(document).ready(function ($) {
                                 datatype: 'json',
                                 success: function (res) {
                                     if (res.status === 200) {
-                                        selectedUsers = removeAElement(selectedUsers, userId);
+                                        selectedObjects = removeAElement(selectedObjects, userId);
 
                                         row.remove().draw();
                                     }
                                 }
                             });
                             $(document).ajaxStop(function () {
-                                window.parent.hideLoading(dataTable);
+                                window.parent.hideLoading(dtableSelector);
                             });
                             count++;
                         }
@@ -160,7 +107,7 @@ jQuery(document).ready(function ($) {
 
                         window.parent.successMessage(message + count + ' users.');
 
-                        appendToSeletedLabel(selectedUsers.length);
+                        appendToSeletedLabel(selectedObjects.length);
                     });
                 });
             } else {
@@ -179,7 +126,7 @@ jQuery(document).ready(function ($) {
         let swalText = changeStateBtn.attr('swl-text');
         changeStateBtn.on('click', function () {
             let self = changeStateBtn;
-            if (selectedUsers.length > 0) {
+            if (selectedObjects.length > 0) {
                 window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
                     let swlTitle = self.attr('swl-state-alert-title'),
                         swlSlNotActive = self.attr('swl-select-not-active-item'),
@@ -188,11 +135,11 @@ jQuery(document).ready(function ($) {
                         swlCancelBtnText = self.attr('swl-cancel-btn-text');
 
                     showStateAlert(swlTitle, swlSlNotActive, swlSlNotVerify, swlSlActive, 1, swlCancelBtnText, function (newState) {
-                        dt.$('i[scope="change-state"]').each(function () {
+                        dtable.$('i[scope="change-state"]').each(function () {
                             let targetBtn = $(this),
                                 userId = targetBtn.attr('user-id');
 
-                            $.each(selectedUsers, function (index, value) {
+                            $.each(selectedObjects, function (index, value) {
                                 if (userId === value) {
                                     let row = targetBtn.closest('tr');
 
@@ -219,7 +166,7 @@ jQuery(document).ready(function ($) {
             'click',
             function () {
                 let self = assignRoleBtn;
-                if (selectedUsers.length > 0) {
+                if (selectedObjects.length > 0) {
                     window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
                         let htmlText = `<div class="col-md-12">
                                             <select id="role_select2" oldRoleId="0" name="role" class="form-control"></select>
@@ -250,11 +197,11 @@ jQuery(document).ready(function ($) {
 
                                 if (roleId !== null) {
                                     let roleName = selectRole.text();
-                                    dt.$('input[type="checkbox"]').each(function () {
+                                    dtable.$('input[type="checkbox"]').each(function () {
                                         let targetBtn = $(this),
                                             userId = targetBtn.val();
 
-                                        $.each(selectedUsers, function (index, value) {
+                                        $.each(selectedObjects, function (index, value) {
                                             if (userId === value) {
                                                 let row = targetBtn.closest('tr');
 
@@ -416,15 +363,4 @@ function doAssignRole(row, userId, roleId, newRoleName) {
             window.parent.hideLoading(row);
         }
     });
-}
-
-/**
- * Append number of selected rows to showable section
- *
- * @param number
- */
-function appendToSeletedLabel(number = 0) {
-    if (selectedRowsCount.length > 0) {
-        selectedRowsCount.text(number);
-    }
 }

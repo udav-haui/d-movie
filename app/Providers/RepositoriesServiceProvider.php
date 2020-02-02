@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Repositories\Interfaces\LogRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Interfaces\SliderRepositoryInterface;
 use App\Repositories\Interfaces\SocialAccountRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\LogRepository;
 use App\Repositories\RoleRepository;
+use App\Repositories\SliderRepository;
 use App\Repositories\SocialAccountRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -35,5 +37,6 @@ class RepositoriesServiceProvider extends ServiceProvider
         $this->app->singleton(UserRepositoryInterface::class, UserRepository::class);
         $this->app->singleton(LogRepositoryInterface::class, LogRepository::class);
         $this->app->singleton(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->singleton(SliderRepositoryInterface::class, SliderRepository::class);
     }
 }

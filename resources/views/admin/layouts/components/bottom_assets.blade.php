@@ -18,8 +18,6 @@
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/moment/moment.js') }}"></script>
 <script src='{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/fullcalendar.min.js') }}'></script>
 <script src="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/cal-init.js') }}"></script>
-<!-- jQuery file upload -->
-<script src="{{ asset('adminhtml/assets/plugins/bower_components/dropify/dist/js/dropify.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{{ asset('adminhtml/assets/js/custom.js') }}"></script>
 <script src="{{ asset('adminhtml/assets/js/dashboard1.js') }}"></script>

@@ -5,21 +5,12 @@ window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('datatables.net-dt');
-require('datatables.net-select-dt');
-jQuery(document).ready(function ($) {
+require('dropify/dist/js/dropify.min');
+require('@fancyapps/fancybox');
+
+$(document).ready(function () {
     "use strict";
-    /**
-     * Ajax loading overlay
-     */
-    // $(document).ajaxStart(function(){
-    //     $('#page-wrapper').LoadingOverlay("show");
-    // });
-    // $(document).ajaxStop(function(){
-    //     $('#page-wrapper').LoadingOverlay("hide");
-    // });
-    /**
-     * /end
-     */
+
     /**
      * Back top top func
      */
@@ -61,7 +52,92 @@ jQuery(document).ready(function ($) {
     });
     // .////////////////////////////////
 });
-let disMissBtn = `<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>`;
+
+let disMissBtn = `<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>`,
+    selectedRowsCount = $('.selected-rows-label') || null,
+    langTextSelector = $('.lang-text') || null;
+window.mainLang = $('html').attr('lang');
+window.selectedObjects = [];
+window.dtable = null;
+
+
+// GLOBAL ACTION ///////
+/**
+ * Select all
+ */
+$('#checkbox-all').on('click', function () {
+    selectedObjects.length = 0;
+    let rows = dtable.rows({ 'search': 'applied' }).nodes();
+    let check = $('input[type="checkbox"]', rows);
+    $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    check.each(function () {
+        let uid = $(this).val();
+        if (check.is(':checked')) {
+            selectedObjects.push(uid);
+        } else {
+            selectedObjects = window.parent.removeAElement(selectedObjects, uid);
+        }
+    });
+
+    appendToSeletedLabel(selectedObjects.length);
+});
+/* ./ EnD */
+
+/**
+ * Check on checkbox item
+ */
+$(`td[scope="checkbox"]`).on('change', function () {
+    let checkbox = $(this).find('input[type="checkbox"]');
+    if (checkbox.prop('checked')) {
+        selectedObjects.push(checkbox.val());
+    } else {
+        let objId = checkbox.val();
+        selectedObjects = window.parent.removeAElement(selectedObjects, objId);
+    }
+    appendToSeletedLabel(selectedObjects.length);
+});
+/** ./End */
+// .////////////////////
+
+
+
+/**
+ * Append number of selected rows to showable section
+ *
+ * @param number
+ */
+appendToSeletedLabel = function (number = 0) {
+    if (selectedRowsCount.length > 0) {
+        selectedRowsCount.text(number);
+    }
+}
+/**
+ * Init datatable
+ *
+ * @param selector
+ * @param tableName
+ * @returns {jQuery}
+ */
+window.initDataTable = function(selector, tableName) {
+    return selector.DataTable({
+        initComplete: function (settings, json) {
+            let dataWrapper = $(`#${tableName}_data_wrapper`),
+                selectDropdown = dataWrapper.find(`#${tableName}_data_length`),
+                inputFilter = dataWrapper.find(`#${tableName}_data_filter`),
+                dropdown = selectDropdown.find(`select`) || null,
+                filterInput = inputFilter.find(`input`) || null;
+            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
+            filterInput.addClass('dmovie-border h-32 p-l-10');
+        },
+        order: [
+            [1, 'desc']
+        ],
+        oLanguage: {
+            sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
+        }
+    });
+};
+
 /**
  * Show success message
  *
@@ -235,3 +311,76 @@ window.removeAElement = function (arr, value) {
         return ele !== value;
     });
 };
+
+/**
+ * Init dropify upload
+ *
+ * @param selector
+ * @param langTextSelector
+ */
+window.imageDropify = function (selector, langTextSelector = $('.lang-text')) {
+    let defaultMsg = '',
+        replaceMsg = '',
+        removeMsg = '',
+        errorMsg = '';
+    if (langTextSelector.length > 0) {
+        defaultMsg = langTextSelector.attr('dropify-msg-default');
+        replaceMsg = langTextSelector.attr('dropify-msg-replace');
+        removeMsg = langTextSelector.attr('dropify-msg-remove');
+        errorMsg = langTextSelector.attr('dropify-msg-error');
+    }
+    selector.dropify({
+        messages: {
+            default: defaultMsg,
+            replace: replaceMsg,
+            remove: removeMsg,
+            error: errorMsg
+        }
+    });
+}
+
+let imgFancybox = $( '[data-fancybox]' ),
+    fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
+    fancyboxTxtNext = langTextSelector.attr('fancybox-text-next'),
+    fancyboxTxtPrev = langTextSelector.attr('fancybox-text-previous'),
+    fancyboxTxtError = langTextSelector.attr('fancybox-text-error'),
+    fancyboxTxtStart = langTextSelector.attr('fancybox-text-start-slideshow'),
+    fancyboxTxtPause = langTextSelector.attr('fancybox-text-pause-slideshow'),
+    fancyboxTxtFullScreen = langTextSelector.attr('fancybox-text-full-screen'),
+    fancyboxTxtThumbs = langTextSelector.attr('fancybox-text-thumbs'),
+    fancyboxTxtDownload = langTextSelector.attr('fancybox-text-download'),
+    fancyboxTxtShare = langTextSelector.attr('fancybox-text-share'),
+    fancyboxTxtZoom = langTextSelector.attr('fancybox-text-zoom');
+if (imgFancybox.length > 0) {
+    imgFancybox.fancybox({
+        lang: mainLang,
+        i18n: {
+            en: {
+                CLOSE: "Close",
+                NEXT: "Next",
+                PREV: "Previous",
+                ERROR: "The requested content cannot be loaded. <br/> Please try again later.",
+                PLAY_START: "Start slideshow",
+                PLAY_STOP: "Pause slideshow",
+                FULL_SCREEN: "Full screen",
+                THUMBS: "Thumbnails",
+                DOWNLOAD: "Download",
+                SHARE: "Share",
+                ZOOM: "Zoom"
+            },
+            vi: {
+                CLOSE: fancyboxTxtClose,
+                NEXT: fancyboxTxtNext,
+                PREV: fancyboxTxtPrev,
+                ERROR: fancyboxTxtError,
+                PLAY_START: fancyboxTxtStart,
+                PLAY_STOP: fancyboxTxtPause,
+                FULL_SCREEN: fancyboxTxtFullScreen,
+                THUMBS: fancyboxTxtThumbs,
+                DOWNLOAD: fancyboxTxtDownload,
+                SHARE: fancyboxTxtShare,
+                ZOOM: fancyboxTxtZoom
+            }
+        }
+    });
+}

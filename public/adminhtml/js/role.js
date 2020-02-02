@@ -6,37 +6,22 @@ $(document).ready(function () {
         text = langText.attr('swl-text-text'),
         icon = langText.attr('swl-icon-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
-        cancelButtonText = langText.attr('swl-cancelButtonText'),
-        mainLang = langText.attr('main-lang');
-    rolesDataTable.DataTable({
-        initComplete: function (settings, json) {
-            let dataWrapper = $(`#${roles}_data_wrapper`),
-                selectDropdown = dataWrapper.find(`#${roles}_data_length`),
-                inputFilter = dataWrapper.find(`#${roles}_data_filter`),
-                dropdown = selectDropdown.find(`select`) || null,
-                filterInput = inputFilter.find(`input`) || null;
-            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-            filterInput.addClass('dmovie-textbox-border h-32 p-l-10');
-            // console.log(dropdown);
+        cancelButtonText = langText.attr('swl-cancelButtonText');
+    $.fn.dataTable.defaults.columnDefs = [
+        {
+            targets: 0,
+            width: '5%'
         },
-        columnDefs: [
-            {
-                targets: 0,
-                width: '5%'
-            },
-            {
-                targets: 2,
-                width: '15%'
-            },
-            {
-                targets: 'no-sort',
-                orderable: false
-            }
-        ],
-        oLanguage: {
-            sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
+        {
+            targets: 2,
+            width: '15%'
+        },
+        {
+            targets: 'no-sort',
+            orderable: false
         }
-    });
+    ];
+    initDataTable(rolesDataTable, roles);
 
     /**
      * Delete a role

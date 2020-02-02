@@ -136,12 +136,6 @@ $(document).ready(function ($) {
         });
     }(jQuery, window, document));
 
-    /* ===== Tooltip Initialization ===== */
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-
     /* ===== Popover Initialization ===== */
 
     $(function () {

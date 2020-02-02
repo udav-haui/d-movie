@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    console.log('jQuery loaded');
 
     $('#momo-payment-test').on('click', function () {
         $.ajax({
@@ -55,12 +54,5 @@ $(document).ready(function () {
      * Profile uploader
      */
     let uploader = $('.avatar-dropify');
-    uploader.dropify({
-        messages: {
-            default: uploader.attr('msg-default'),
-            replace: uploader.attr('msg-replace'),
-            remove: uploader.attr('msg-remove'),
-            error: uploader.attr('msg-error')
-        }
-    });
+    window.parent.imageDropify(uploader, uploader);
 });

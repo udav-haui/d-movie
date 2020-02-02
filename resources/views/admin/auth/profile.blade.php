@@ -14,8 +14,10 @@
                 <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/icons/wall.jpg') }}">
                     <div class="overlay-box">
                         <div class="user-content">
-                            <a href="javascript:void(0)">
-                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" class="thumb-lg img-circle dmovie-img-cover" alt="img">
+                            <a href="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" data-fancybox>
+                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}"
+                                     class="thumb-lg img-circle dmovie-img-cover"
+                                     alt="img" />
                             </a>
                             <h4 class="text-white">{{ $user->name ?? __('Not update') }}</h4>
                             <h5 class="text-white">{{ $user->email ?? __('Not update') }}</h5>
@@ -267,10 +269,10 @@
                                            class="avatar-dropify"
                                            data-height="350"
                                            required
-                                           msg-default="{{ __('Drag and drop a file here or click') }}"
-                                           msg-replace="{{ __('Drag and drop or click to replace') }}"
-                                           msg-remove="{{ __('Remove') }}"
-                                           msg-error="{{ __('Ooops, something wrong appended.') }}" />
+                                           dropify-msg-default="{{ __('Drag and drop a file here or click') }}"
+                                           dropify-msg-replace="{{ __('Drag and drop or click to replace') }}"
+                                           dropify-msg-remove="{{ __('Remove') }}"
+                                           dropify-msg-error="{{ __('Ooops, something wrong appended.') }}" />
                                 </div>
                             </div>
                             <div class="form-group">

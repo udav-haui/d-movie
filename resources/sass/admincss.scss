@@ -1,6 +1,8 @@
 @import url('~select2/dist/css/select2.min.css');
 @import url('~datatables.net-dt/css/jquery.dataTables.min.css');
-@import url('~datatables.net-select-dt/css/select.dataTables.min.css');;
+@import url('~datatables.net-select-dt/css/select.dataTables.min.css');
+@import url('~@fancyapps/fancybox/dist/jquery.fancybox.min.css');
+@import url('~pretty-checkbox');
 @font-face {
     font-family: Nunito;
     src: url("fonts/Nunito-Regular.ttf");
@@ -14,6 +16,7 @@ $secondColor2: #00c193;
 $errorBackground: #ff4b4b2b;
 $sucessBackground: #228b221f;
 $borderColor: #32a3a3;
+
 
 body {
     font-family: Nunito, sans-serif !important;
@@ -248,6 +251,15 @@ table.dataTable {
         }
     }
 }
+table.dataTable{
+    thead {
+        .sorting, .sorting_desc, .sorting_asc{
+            &:after {
+                content: none;
+            }
+        }
+    }
+}
 
 .select2-container {
     .select2-selection--single {
@@ -326,10 +338,24 @@ table.dataTable {
     }
 }
 
+.dropdown-menu {
+    li {
+        a {
+            &:hover {
+                background: $borderColor;
+                color: white;
+            }
+        }
+    }
+}
 
 .dmovie-select2-selection-border, .dmovie-textbox-border {
     border-color: $borderColor;
     border-radius: 0 !important;
+}
+
+.pretty.p-switch.p-fill input:checked~.state.p-success:before {
+    background: $mainColor !important;
 }
 
 .float-left {
@@ -346,15 +372,6 @@ table.dataTable {
 .width-100 {
     width: 100%;
 }
-.invalid {
-    outline: red solid 1px !important;
-    padding: 0px 10px !important;
-    background-image: none !important;
-    border-color: transparent;
-    &:focus {
-        border-color: transparent;
-    }
-}
 .select-none {
     user-select: none !important;
 }
@@ -363,4 +380,14 @@ table.dataTable {
 }
 .dmovie-border {
     border: 1px solid $borderColor !important;
+    border-radius: 0 !important;
+}
+.invalid {
+    outline: red solid 1px !important;
+    padding: 0px 10px !important;
+    background-image: none !important;
+    border-color: transparent !important;
+    &:focus {
+        border-color: transparent;
+    }
 }
