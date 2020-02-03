@@ -475,3 +475,7 @@ table.dataTable thead .sorting_asc:after {
   border-color: transparent;
 }
 
+.min-width-111 {
+  min-width: 111px !important;
+}
+

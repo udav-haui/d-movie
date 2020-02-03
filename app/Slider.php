@@ -50,6 +50,16 @@ class Slider extends Model
     }
 
     /**
+     * Get href raw text of item
+     *
+     * @return string
+     */
+    public function getHrefRaw()
+    {
+        return $this->getAttribute('href');
+    }
+
+    /**
      * Get text of status
      *
      * @return array|string|null
@@ -59,5 +69,25 @@ class Slider extends Model
         return (int)$this->getAttribute('status') === self::ACTIVE ?
             __('Enable') :
             __('Disable');
+    }
+
+    /**
+     * Get status code of item
+     *
+     * @return string|int
+     */
+    public function getStatusCode()
+    {
+        return $this->getAttribute('status');
+    }
+
+    /**
+     * Get title of item
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getAttribute('title');
     }
 }

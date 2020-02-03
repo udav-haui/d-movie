@@ -24,7 +24,8 @@ class SliderRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
+            'title' => 'required|max:255',
             'image' => 'required|image',
             'href' => 'required',
             'order' => [
@@ -33,6 +34,13 @@ class SliderRequest extends FormRequest
                 new UnsignedInteger
             ]
         ];
+
+        /* If request is update, has slider id */
+        if ($this->slider) {
+            $rules['image'] = 'nullable|image';
+        }
+
+        return $rules;
     }
 
     /**
@@ -43,6 +51,8 @@ class SliderRequest extends FormRequest
     public function messages()
     {
         return [
+            'title.required' => __('You must input :attribute'),
+            'title.max' => __('You can not input more than :max character'),
             'image.image' => __('Please input correct type of :attribute.'),
             'image.required' => __('Please select a file.'),
             'href.required' => __('You must input :attribute'),

@@ -15,11 +15,15 @@ $(document).ready(function () {
             width: "3%"
         },
         {
-            targets: 2,
+            targets: [2,4],
+            width: '25%'
+        },
+        {
+            targets: 3,
             width: '5%'
         },
         {
-            targets: 5,
+            targets: 6,
             width: '1%'
         },
         {
@@ -53,10 +57,9 @@ $(document).ready(function () {
  */
 function changeItemStatus(targetBtn, row, itemID, newStatus) {
     $.ajax({
-        url: route('sliders.changeStatus'),
+        url: route('sliders.changeStatus', {slider: itemID}),
         method: 'POST',
         data: {
-            slider: itemID,
             status: newStatus
         },
         delay: 500,

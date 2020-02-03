@@ -39,7 +39,7 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
                 ->name('users.changePassword');
 
             /** SLIDER SESSION */
-            Route::post('sliders/changeStatus', 'SliderController@changeStatus')->name('sliders.changeStatus');
+            Route::post('sliders/changeStatus/{slider}', 'SliderController@changeStatus')->name('sliders.changeStatus');
             Route::resource('sliders', 'SliderController');
         });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

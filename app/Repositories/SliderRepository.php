@@ -55,6 +55,33 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
     }
 
     /**
+     * Update model data
+     *
+     * @param string|int|null $sliderId
+     * @param array $fields
+     * @param Slider $slider
+     * @return Slider|\Illuminate\Database\Eloquent\Model
+     * @throws \Exception
+     */
+    public function update($sliderId = null, $slider = null, $fields = [])
+    {
+        try {
+            if (array_key_exists('image', $fields)) {
+                if ($slider) {
+                    Storage::delete('/public/' . $slider->getAttribute('image'));
+                }
+            }
+
+            $slider = parent::update($sliderId, $slider, $fields);
+
+            $this->updateLog($slider, \App\Slider::class);
+
+            return $slider;
+        } catch (\Exception $exception) {
+            throw new \Exception($exception->getMessage());
+        }
+    }
+    /**
      * Get slider collection by order
      *
      * @return Collection|Slider[]
@@ -67,18 +94,15 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
     /**
      * Change slide item status
      *
-     * @param string|int $sliderId
+     * @param Slider $slider
      * @param string|int $newStatus
+     * @return void
      * @throws \Exception
      */
-    public function changeStatus($sliderId, $newStatus)
+    public function changeStatus($slider, $newStatus)
     {
         try {
-            $slider = $this->update($sliderId, ['status' => $newStatus]);
-
-            if ($slider) {
-                $this->updateLog($slider, Slider::class);
-            }
+            $this->update(null, $slider, ['status' => $newStatus]);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

@@ -25,6 +25,7 @@ interface SliderRepositoryInterface
      *
      * @param string|int $sliderId
      * @param string|int $newStatus
+     * @return void
      * @throws \Exception
      */
     public function changeStatus($sliderId, $newStatus);

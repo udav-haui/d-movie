@@ -16,6 +16,7 @@ class CreateSlidersTable extends Migration
         Schema::create('sliders', function (Blueprint $table) {
             $table->integerIncrements('id')->comment('Slider Item Identity');
             $table->unsignedSmallInteger('status')->default(0)->comment('Item status');
+            $table->string('title')->nullable(true);
             $table->text('image')->nullable(true)->comment('Item image path');
             $table->string('href')->nullable(true)->comment('Item link');
             $table->unsignedInteger('order')->nullable(true)->comment('Item order');

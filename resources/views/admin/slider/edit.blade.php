@@ -1,19 +1,20 @@
+<?php /** @var \App\Slider $slider */ ?>
 @extends('admin.layouts.app')
 
-@section('app.title'){{ __('Slider Manage') }}
+@section('app.title'){{ __('Edit slide item') }}
 @endsection
 
-@section('app.description'){{ __('Slider Manage') }}
+@section('app.description'){{ __('Edit slide item') }}
 @endsection
 
 @section('titlebar.breadcrumb')
     <li><a href="/admin">{{ __('Dashboard') }}</a></li>
     <li><a href="{{ route('sliders.index') }}">{{ __('Slider Manage') }}</a></li>
-    <li class="active">{{ __('New item') }}</li>
+    <li class="active">{{ __('Edit slide item') }}</li>
 @endsection
 
 @section('titlebar.title')
-    {{ __('New item') }}
+    {{ __('Edit slide item') }}
 @endsection
 
 @section('head.css')
@@ -26,13 +27,15 @@
 @section('content')
     @include('admin.lang.global_text_lang')
     <div class="row bg-title" id="dmovie-fix-top-block">
-        <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-            <a href="javascript:void(0);"
-               onclick="event.preventDefault(); $('#create-form').submit();"
-               class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                {{ __('Save') }}
-            </a>
-        </div>
+        @can('update', \App\Slider::class)
+            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
+                <a href="javascript:void(0);"
+                   onclick="event.preventDefault(); $('#create-form').submit();"
+                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
+                    {{ __('Save') }}
+                </a>
+            </div>
+        @endcan
         <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
             <a href="{{ route('sliders.index') }}"
                class="btn btn-block btn-default dmovie-btn dmovie-btn-default">
@@ -43,14 +46,15 @@
     <div class="row">
         <form id="create-form"
               method="POST"
-              action="{{ route('sliders.store') }}"
+              action="{{ route('sliders.update', ['slider' => $slider]) }}"
               class="col-md-12 form-horizontal"
               enctype="multipart/form-data">
+            {{ method_field('PUT') }}
             @csrf
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-info">
-                        <div class="panel-heading">{{ __('New item') }}</div>
+                        <div class="panel-heading">{{ $slider->getTitle() ??  __('Unnamed') }}</div>
                         <div class="panel-body">
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="status">
@@ -61,11 +65,11 @@
                                             class="bs-select-hidden"
                                             data-style="form-control">
                                         <option value="1"
-                                            {{ old('status') !== NULL && (int)old('status') === 1 ? 'selected' : '' }}>
+                                            {{ old('status', $slider->getStatusCode()) !== NULL && (int)old('status', $slider->getStatusCode()) === 1 ? 'selected' : '' }}>
                                             {{ __('Enable') }}
                                         </option>
                                         <option value="0"
-                                            {{ old('status') !== NULL && (int)old('status') === 0 ? 'selected' : '' }}>
+                                            {{ old('status', $slider->getStatusCode()) !== NULL && (int)old('status', $slider->getStatusCode()) === 0 ? 'selected' : '' }}>
                                             {{ __('Disable') }}
                                         </option>
                                     </select>
@@ -83,9 +87,9 @@
                                         id="title"
                                         class="form-control dmovie-border
                                         @error('title') invalid @enderror"
-                                        value="{{ old('title') }}"/>
+                                        value="{{ old('title', $slider->getTitle()) }}"/>
                                     @error('title')
-                                    <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
@@ -100,9 +104,9 @@
                                         id="href"
                                         rows="3"
                                         class="form-control dmovie-border
-                                        @error('href') invalid @enderror">{{ old('href') }}</textarea>
+                                        @error('href') invalid @enderror">{{ old('href', $slider->getHrefRaw()) }}</textarea>
                                     @error('href')
-                                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                                    <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
@@ -111,9 +115,15 @@
                                     {{ __('Image') }}
                                 </label>
                                 <div class="col-md-3 col-xs-12">
-                                    <input type="file" required name="image" id="image" class="dropify col-md-3" />
+                                    <input type="file"
+                                           required
+                                           name="image"
+                                           id="image"
+                                           class="dropify col-md-3"
+                                           data-default-file="{{ $slider->getImage() }}"
+                                    />
                                     @error('image')
-                                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                                    <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
@@ -128,9 +138,9 @@
                                         id="order"
                                         class="form-control dmovie-border
                                         @error('order') invalid @enderror"
-                                        value="{{ old('order') }}"/>
+                                        value="{{ old('order', $slider->getAttribute('order')) }}"/>
                                     @error('order')
-                                        <span class="error text-danger dmovie-error-box">{{ $message }}</span>
+                                    <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>

@@ -96,23 +96,43 @@ class SliderController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Slider  $slider
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(Slider $slider)
     {
-        //
+        $this->authorize('view', Slider::class);
+
+        return view(
+            'admin.slider.edit',
+            compact('slider')
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Slider  $slider
-     * @return \Illuminate\Http\Response
+     * @param SliderRequest $request
+     * @param \App\Slider $slider
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Slider $slider)
+    public function update(SliderRequest $request, Slider $slider)
     {
-        //
+        $this->authorize('update', Slider::class);
+
+        $fields = $request->all();
+
+        try {
+            $this->sliderRepository->update(null, $slider, $fields);
+
+            return redirect(route('sliders.index'))
+                ->with('success', __('Slide image was updated successfully.'));
+        } catch (\Exception $e) {
+            return back()->with(
+                'error',
+                __('Ooops, something wrong appended.') . ' : ' . $e->getMessage()
+            );
+        }
     }
 
     /**
@@ -126,15 +146,21 @@ class SliderController extends Controller
         //
     }
 
-    public function changeStatus()
+    /**
+     * Change image status
+     *
+     * @param \App\Slider $slider
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function changeStatus(\App\Slider $slider)
     {
         $this->authorize('update', \App\Slider::class);
 
-        $sliderId = request('slider');
         $status = request('status');
 
         try {
-            $this->sliderRepository->changeStatus($sliderId, $status);
+            $this->sliderRepository->changeStatus($slider, $status);
 
             $message = __('Slide item was updated successfully.');
             return request()->ajax() ?

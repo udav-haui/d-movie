@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Interface CRUDModelInterface
  *
@@ -20,9 +22,10 @@ interface CRUDModelInterface
     /**
      * Update model data
      *
-     * @param string|int $modelId
+     * @param string|int|null $modelId
      * @param array $fields
-     * @return bool
+     * @param Model|null $model
+     * @return void
      */
-    public function update($modelId, $fields = []);
+    public function update($modelId = null, $model = null, $fields = []);
 }

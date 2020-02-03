@@ -98,17 +98,19 @@
                         </div>
                     </th>
                     <th>#</th>
+                    <th>{{ __('Title') }}</th>
                     <th>{{ __('Image') }}</th>
                     <th>{{ __('Href') }}</th>
                     <th>{{ __('Order') }}</th>
                     <th>{{ __('Status') }}</th>
-                    <th class="no-sort">{{ __('Task') }}</th>
+                    <th class="no-sort min-width-111">{{ __('Task') }}</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
                     <th></th>
                     <th>#</th>
+                    <th>{{ __('Title') }}</th>
                     <th>{{ __('Image') }}</th>
                     <th>{{ __('Href') }}</th>
                     <th>{{ __('Order') }}</th>
@@ -129,11 +131,14 @@
                                 <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>
                             </div>
                         </td>
-                        <td scope="id" data-toggle="tooltip" title="Default tooltip">{{ $item->id }}</td>
+                        <td scope="id">{{ $item->id }}</td>
+                        <td scope="title" title="{{ $item->getTitle() }}">
+                            {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}
+                        </td>
                         <td scope="image">
                             <a href="{{ $item->getImage() }}"
                                class="slide-item"
-                               data-fancybox >
+                               data-fancybox="sliders" data-caption="{{ $item->getTitle() }}">
                                 <img src="{{ $item->getImage() }}"
                                     class="slide-item-image" />
                             </a>
@@ -157,15 +162,15 @@
                             </div>
                         </td>
                         <td scope="task">
-{{--                            @can('view', $item)--}}
-{{--                                <a href="{{ route('users.edit', ['user' => $user->id]) }}"--}}
-{{--                                   type="button"--}}
-{{--                                   class=" @if (auth()->user()->id === $user->id || !auth()->user()->can('delete', $user)) col-md-12 @else col-md-6 @endif--}}
-{{--                                       col-xs-12 btn dmovie-btn dmovie-btn-success"--}}
-{{--                                   title="{{ __('Detail') }}">--}}
-{{--                                    <i class="mdi mdi-account-edit"></i>--}}
-{{--                                </a>--}}
-{{--                            @endcan--}}
+                            @can('view', \App\Slider::class)
+                                <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"
+                                   type="button"
+                                   class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot
+                                       col-xs-12 btn dmovie-btn dmovie-btn-success"
+                                   title="{{ __('Detail') }}">
+                                    <i class="mdi mdi-account-edit"></i>
+                                </a>
+                            @endcan
 {{--                            @can('delete', $user)--}}
 {{--                                @if (auth()->user()->id !== $user->id)--}}
 {{--                                    <button id="deleteUserBtn" type="button"--}}

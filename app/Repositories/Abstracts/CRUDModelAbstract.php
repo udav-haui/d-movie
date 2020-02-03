@@ -3,6 +3,7 @@
 namespace App\Repositories\Abstracts;
 use App\Repositories\Interfaces\CRUDModelInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class CRUDModelAbstract
@@ -32,19 +33,44 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     /**
      * Update model data
      *
-     * @param string|int $modelId
+     * @param string|int|null $modelId
      * @param array $fields
-     * @return bool
+     * @param Model|null $model
+     * @return Model
+     * @throws \Exception
      */
-    public function update($modelId, $fields = [])
+    public function update($modelId = null, $model = null, $fields = [])
     {
         $fields = $this->removeTokenField($fields);
+        $fields = $this->removeMethodField($fields);
 
-        $model = $this->model::find($modelId);
+        if ($modelId !== null) {
+            $model = $this->model::find($modelId);
+        }
 
-        $model->update($fields);
+        try {
+            if (array_key_exists('image', $fields)) {
+                $uploadImage = $fields['image'];
 
-        return $model;
+                try {
+                    $imgPath = $uploadImage->store('uploads', 'public');
+                } catch (\Exception $e) {
+                    throw new \Exception(__('Cannot upload your image.'));
+                }
+
+                $fields['image'] = $imgPath;
+            }
+
+
+            $model->update($fields);
+
+            return $model;
+        } catch (\Exception $e) {
+            if (array_key_exists('image', $fields)) {
+                Storage::delete('/public/' . $imgPath);
+            }
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -57,6 +83,21 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     {
         if (array_key_exists('_token', $fields)) {
             unset($fields['_token']);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Remove _method field if exist
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function removeMethodField($fields)
+    {
+        if (array_key_exists('_method', $fields)) {
+            unset($fields['_method']);
         }
 
         return $fields;
