@@ -134,7 +134,8 @@
                             @if (auth()->user()->getAuthIdentifier() !== $user->getAuthIdentifier())
                                 <div class="dmovie-checkbox dmovie-checkbox-custom">
                                     <input value="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
-                                           class="display-none user-checkbox">
+                                           class="display-none user-checkbox"
+                                           grid-item-checkbox>
                                     <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
                                 </div>
                             @endif

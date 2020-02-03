@@ -122,7 +122,9 @@
                     <tr>
                         <td scope="checkbox">
                             <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}" type="checkbox"
+                                <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"
+                                       type="checkbox"
+                                       grid-item-checkbox
                                        class="display-none user-checkbox">
                                 <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>
                             </div>

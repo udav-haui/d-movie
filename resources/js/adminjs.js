@@ -53,13 +53,20 @@ $(document).ready(function () {
     // .////////////////////////////////
 });
 
-let disMissBtn = `<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>`,
+let disMissBtn = `<button type="button" class="close" dmovie-noti-dismiss>×</button>`,
     selectedRowsCount = $('.selected-rows-label') || null,
     langTextSelector = $('.lang-text') || null;
 window.mainLang = $('html').attr('lang');
 window.selectedObjects = [];
 window.dtable = null;
 
+
+/* DISMISS NOTIFICATION */
+
+$( document ).on('click', '[dmovie-noti-dismiss]', function () {
+    let notiBlock = $(this).closest('div');
+    notiBlock.slideToggle(500);
+});
 
 // GLOBAL ACTION ///////
 /**
@@ -68,8 +75,8 @@ window.dtable = null;
 $('#checkbox-all').on('click', function () {
     selectedObjects.length = 0;
     let rows = dtable.rows({ 'search': 'applied' }).nodes();
-    let check = $('input[type="checkbox"]', rows);
-    $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    let check = $('input[grid-item-checkbox]', rows);
+    $('input[grid-item-checkbox]', rows).prop('checked', this.checked);
     check.each(function () {
         let uid = $(this).val();
         if (check.is(':checked')) {
@@ -87,7 +94,7 @@ $('#checkbox-all').on('click', function () {
  * Check on checkbox item
  */
 $(`td[scope="checkbox"]`).on('change', function () {
-    let checkbox = $(this).find('input[type="checkbox"]');
+    let checkbox = $(this).find('input[grid-item-checkbox]');
     if (checkbox.prop('checked')) {
         selectedObjects.push(checkbox.val());
     } else {
@@ -146,7 +153,7 @@ window.initDataTable = function(selector, tableName) {
 window.successMessage = function (msg) {
     let successMsgBlock = $('.success-block') || null;
     if (successMsgBlock !== null) {
-        successMsgBlock.removeClass('display-none').html(disMissBtn + msg);
+        successMsgBlock.slideDown(500).html(disMissBtn + msg);
     }
 };
 
@@ -158,7 +165,7 @@ window.successMessage = function (msg) {
 window.errorMessage = function (msg) {
     let errorMsgBlock = $('.error-block') || null;
     if (errorMsgBlock !== null) {
-        errorMsgBlock.removeClass('display-none').html(disMissBtn + msg);
+        errorMsgBlock.removeClass('display-none').slideDown(500).html(disMissBtn + msg);
     }
 };
 
@@ -170,7 +177,7 @@ window.errorMessage = function (msg) {
 window.warningMessage = function (msg) {
     let warningMsgBlock = $('.warning') || null;
     if (warningMsgBlock !== null) {
-        warningMsgBlock.removeClass('display-none').html(disMissBtn + msg);
+        warningMsgBlock.removeClass('display-none').slideDown(500).html(disMissBtn + msg);
     }
 };
 
