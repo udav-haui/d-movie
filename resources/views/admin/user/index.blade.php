@@ -16,7 +16,44 @@
 @endsection
 @section('bottom.js')
 {{--    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.min.js') }}"></script>--}}
-    <script src="{{ asset('adminhtml/js/user/index.js') }}"></script>
+<script>
+    let columnDefs = [],
+        colOrder = [];
+    @cannot('canEditDelete', \App\User::class)
+        columnDefs = [
+            {
+                targets: 0,
+                width: '5%'
+            },
+            {
+                targets: 2,
+                width: '15%'
+            },
+            {
+                targets: 'no-sort',
+                orderable: false
+            },
+        ];
+        colOrder = [[0, 'desc']];
+    @else
+        columnDefs = [
+            {
+                targets: 0,
+                width: '1%'
+            },
+            {
+                targets: 2,
+                width: '15%'
+            },
+            {
+                targets: 'no-sort',
+                orderable: false
+            },
+        ];
+        colOrder = [[1, 'desc']];
+    @endcannot
+</script>
+<script src="{{ asset('adminhtml/js/user/index.js') }}"></script>
 @endsection
 @section('content')
     @can('create', \App\User::class)
@@ -32,62 +69,65 @@
 
     @include('admin.lang.global_text_lang')
 
-    <div class="row m-b-15">
-        <div class="col-md-1">
-            <div class="btn-group">
-                <button
-                    aria-expanded="false"
-                    data-toggle="dropdown"
-                    class="btn btn-default btn-outline
-                    dropdown-toggle waves-effect waves-light border-radius-0 dmovie-textbox-border"
-                    type="button"> {{ __('Action') }}
-                    <span class="caret"></span>
-                </button>
-                <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
-                    @if (!auth()->user()->can('delete', \App\User::class) && !auth()->user()->can('update',
-                    \App\User::class))
-                        <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
-                    @endif
-                    @can('delete', \App\User::class)
-                        <li>
-                            <a href="javascript:void(0);"
-                               class="_delete-users"
-                               swl-text="{{ __('Do you want to destroy this user?') }}">
-                                {{ __('Delete') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('update', \App\User::class)
-                        <li>
-                            <a href="javascript:void(0);"
-                               class="_change-state-users"
-                               swl-text="{{ __('Do you want change all state of this users?') }}"
-                               swl-state-alert-title="{{ __('Select state') }}"
-                               swl-select-not-active-item="{{ __('Not active') }}"
-                               swl-select-not-verify-item="{{ __('Not verify') }}"
-                               swl-select-active-item="{{ __('Active') }}"
-                               swl-cancel-btn-text="{{ __('Cancel') }}" >
-                                {{ __('Set state') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @if (auth()->user()->isAdmin())
-                        <li>
-                            <a href="javascript:void(0);"
-                               class="_assign-role-users"
-                               swl-text="{{ __('Do you want assign a role to selected users?') }}"
-                               sl2-placeholder="{{ __('Select role') }}" unnamed="{{ __('Unnamed') }}">
-                                {{ __('Set role') }}
-                            </a>
-                        </li>
-                    @endif
-                </ul>
+    @can('canEditDelete', \App\User::class)
+        <div class="row m-b-15">
+            <div class="col-md-1">
+                <div class="btn-group">
+                    <button
+                        aria-expanded="false"
+                        data-toggle="dropdown"
+                        class="btn btn-default btn-outline
+                        dropdown-toggle waves-effect waves-light border-radius-0 dmovie-textbox-border"
+                        type="button"> {{ __('Action') }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
+                        @if (!auth()->user()->can('delete', \App\User::class) && !auth()->user()->can('update',
+                        \App\User::class))
+                            <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
+                        @endif
+                        @can('delete', \App\User::class)
+                            <li>
+                                <a href="javascript:void(0);"
+                                   class="_delete-users"
+                                   swl-text="{{ __('Do you want to destroy this user?') }}">
+                                    {{ __('Delete') }}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('update', \App\User::class)
+                            <li>
+                                <a href="javascript:void(0);"
+                                   class="_change-state-users"
+                                   swl-text="{{ __('Do you want change all state of this users?') }}"
+                                   swl-state-alert-title="{{ __('Select state') }}"
+                                   swl-select-not-active-item="{{ __('Not active') }}"
+                                   swl-select-not-verify-item="{{ __('Not verify') }}"
+                                   swl-select-active-item="{{ __('Active') }}"
+                                   swl-cancel-btn-text="{{ __('Cancel') }}" >
+                                    {{ __('Set state') }}
+                                </a>
+                            </li>
+                        @endcan
+                        @if (auth()->user()->isAdmin())
+                            <li>
+                                <a href="javascript:void(0);"
+                                   class="_assign-role-users"
+                                   swl-text="{{ __('Do you want assign a role to selected users?') }}"
+                                   sl2-placeholder="{{ __('Select role') }}" unnamed="{{ __('Unnamed') }}">
+                                    {{ __('Set role') }}
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2 selected-rows-label-container m-l-10">
+                {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
             </div>
         </div>
-        <div class="col-md-2 selected-rows-label-container m-l-10">
-            {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
-        </div>
-    </div>
+    @endcan
+
     <div class="row">
         <div class="col-md-12 table-responsive">
             <table id="users_data" class="display nowrap dmovie-table"
@@ -95,13 +135,15 @@
                    width="100%">
                 <thead>
                 <tr>
-                    <th class="no-sort">
-                        <div class="dmovie-checkbox dmovie-checkbox-custom">
-                            <input value="0" id="checkbox-all" type="checkbox"
-                                   class="display-none user-checkbox">
-                            <label for="checkbox-all" class="cursor-pointer background-fff"></label>
-                        </div>
-                    </th>
+                    @can('canEditDelete', \App\User::class)
+                        <th class="no-sort">
+                            <div class="dmovie-checkbox dmovie-checkbox-custom">
+                                <input value="0" id="checkbox-all" type="checkbox"
+                                       class="display-none user-checkbox">
+                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
+                            </div>
+                        </th>
+                    @endcan
                     <th>#</th>
                     <th>{{ __('Username') }}</th>
                     <th>{{ __('Name') }}</th>
@@ -110,7 +152,7 @@
                         <th>{{ __('Role name') }}</th>
                     @endif
                     <th>{{ __('Status') }}</th>
-                    <th class="no-sort">{{ __('Task') }}</th>
+                    <th class="no-sort min-width-65">{{ __('Task') }}</th>
                 </tr>
                 </thead>
                 <tfoot>
@@ -124,22 +166,26 @@
                         <th>{{ __('Role name') }}</th>
                     @endif
                     <th>{{ __('Status') }}</th>
-                    <th class="no-sort">{{ __('Task') }}</th>
+                    @can('canEditDelete', \App\User::class)
+                        <th class="no-sort">{{ __('Task') }}</th>
+                    @endcan
                 </tr>
                 </tfoot>
                 <tbody>
                 @foreach($users as $user)
                     <tr>
-                        <td scope="checkbox">
-                            @if (auth()->user()->getAuthIdentifier() !== $user->getAuthIdentifier())
-                                <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                    <input value="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
-                                           class="display-none user-checkbox"
-                                           grid-item-checkbox>
-                                    <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
-                                </div>
-                            @endif
-                        </td>
+                        @can('canEditDelete', \App\User::class)
+                            <td scope="checkbox">
+                                @if (auth()->user()->getAuthIdentifier() !== $user->getAuthIdentifier())
+                                    <div class="dmovie-checkbox dmovie-checkbox-custom">
+                                        <input value="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
+                                               class="display-none user-checkbox"
+                                               grid-item-checkbox>
+                                        <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
+                                    </div>
+                                @endif
+                            </td>
+                        @endcan
                         <td scope="id">{{ $user->id }}</td>
                         <td scope="username">{!! $user->getUsername()  !!}</td>
                         <td scope="name">{!! $user->getName() !!}</td>
@@ -163,7 +209,7 @@
                             @endcan
                         </td>
                         <td scope="task">
-                            @can('view', $user)
+                            @can('selfUpdate', $user)
                                 <a href="{{ route('users.edit', ['user' => $user->id]) }}"
                                    type="button"
                                    class=" @if (auth()->user()->id === $user->id || !auth()->user()->can('delete', $user)) col-md-12 @else col-md-6 @endif

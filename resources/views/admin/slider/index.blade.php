@@ -20,6 +20,59 @@
 @endsection
 
 @section('bottom.js')
+    <script>
+        let columnDefs = [],
+            colOrder = [];
+    @cannot('canEditDelete', \App\Slider::class)
+        columnDefs = [
+            {
+                targets: [0, 4],
+                width: '5%'
+            },
+            {
+                targets: [2, 5],
+                width: "1%"
+            },
+            {
+                targets: [1, 3],
+                width: '35%'
+            },
+            {
+                targets: 'no-sort',
+                orderable: false
+            },
+        ];
+        colOrder = [[0, 'desc']];
+    @else
+        columnDefs = [
+            {
+                targets: 0,
+                width: '2%'
+            },
+            {
+                targets: 1,
+                width: "3%"
+            },
+            {
+                targets: [2,4],
+                width: '25%'
+            },
+            {
+                targets: 3,
+                width: '5%'
+            },
+            {
+                targets: 6,
+                width: '1%'
+            },
+            {
+                targets: 'no-sort',
+                orderable: false
+            },
+        ];
+        colOrder = [[1, 'desc']];
+    @endcannot
+    </script>
     <script src="{{ asset('adminhtml/js/slider/index.js') }}"></script>
 @endsection
 
@@ -37,51 +90,53 @@
     {{--  include lang text for js select  --}}
     @include('admin.lang.global_text_lang')
 
-    <div class="row m-b-15">
-        <div class="col-md-1">
-            <div class="btn-group">
-                <button
-                    aria-expanded="false"
-                    data-toggle="dropdown"
-                    class="btn btn-default btn-outline
+    @can('canEditDelete', \App\Slider::class)
+        <div class="row m-b-15">
+            <div class="col-md-1">
+                <div class="btn-group">
+                    <button
+                        aria-expanded="false"
+                        data-toggle="dropdown"
+                        class="btn btn-default btn-outline
                     dropdown-toggle waves-effect waves-light border-radius-0 dmovie-textbox-border"
-                    type="button"> {{ __('Action') }}
-                    <span class="caret"></span>
-                </button>
-                <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
-                    @if (!auth()->user()->can('delete', \App\Slider::class) && !auth()->user()->can('update',
-                    \App\Slider::class))
-                        <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
-                    @endif
-                    @can('delete', \App\Slider::class)
-                        <li>
-                            <a href="javascript:void(0);"
-                               class="_delete-sliders"
-                               swl-text="{{ __('Do you want to destroy this slide item?') }}">
-                                {{ __('Delete') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('update', \App\Slider::class)
-                        <li>
-                            <a href="javascript:void(0);"
-                               class="_change-state-sliders"
-                               swl-text="{{ __('Do you want change all state of this slide items?') }}"
-                               swl-state-alert-title="{{ __('Select state') }}"
-                               swl-select-disable-item="{{ __('Disable') }}"
-                               swl-select-enable-item="{{ __('Enable') }}"
-                               swl-cancel-btn-text="{{ __('Cancel') }}" >
-                                {{ __('Set state') }}
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
+                        type="button"> {{ __('Action') }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
+                        @if (!auth()->user()->can('delete', \App\Slider::class) && !auth()->user()->can('update',
+                        \App\Slider::class))
+                            <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
+                        @endif
+                        @can('delete', \App\Slider::class)
+                            <li>
+                                <a href="javascript:void(0);"
+                                   class="_delete-sliders"
+                                   swl-text="{{ __('Do you want to destroy this selected slide items?') }}">
+                                    {{ __('Delete') }}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('update', \App\Slider::class)
+                            <li>
+                                <a href="javascript:void(0);"
+                                   class="_change-status-sliders"
+                                   swl-text="{{ __('Do you want change all status of this slide items?') }}"
+                                   swl-state-alert-title="{{ __('Select state') }}"
+                                   swl-select-disable-item="{{ __('Disable') }}"
+                                   swl-select-enable-item="{{ __('Enable') }}"
+                                   swl-cancel-btn-text="{{ __('Cancel') }}" >
+                                    {{ __('Set state') }}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2 selected-rows-label-container m-l-10">
+                {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
             </div>
         </div>
-        <div class="col-md-2 selected-rows-label-container m-l-10">
-            {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
-        </div>
-    </div>
+    @endcan
 
     <div class="row">
         <div class="col-md-12 table-responsive">
@@ -90,47 +145,55 @@
                    width="100%">
                 <thead>
                 <tr>
-                    <th class="no-sort">
-                        <div class="dmovie-checkbox dmovie-checkbox-custom">
-                            <input value="0" id="checkbox-all" type="checkbox"
-                                   class="display-none user-checkbox">
-                            <label for="checkbox-all" class="cursor-pointer background-fff"></label>
-                        </div>
-                    </th>
+                    @can('canEditDelete', \App\Slider::class)
+                        <th class="no-sort">
+                            <div class="dmovie-checkbox dmovie-checkbox-custom">
+                                <input value="0" id="checkbox-all" type="checkbox"
+                                       class="display-none user-checkbox">
+                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
+                            </div>
+                        </th>
+                    @endcan
                     <th>#</th>
                     <th>{{ __('Title') }}</th>
-                    <th>{{ __('Image') }}</th>
+                    <th class="no-sort">{{ __('Image') }}</th>
                     <th>{{ __('Href') }}</th>
                     <th>{{ __('Order') }}</th>
                     <th>{{ __('Status') }}</th>
-                    <th class="no-sort min-width-111">{{ __('Task') }}</th>
+                    @can('canEditDelete', \App\Slider::class)
+                        <th class="no-sort min-width-65">{{ __('Task') }}</th>
+                    @endcan
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <th></th>
+                    @can('canEditDelete', \App\Slider::class)<th class="no-sort"></th>@endcan
                     <th>#</th>
                     <th>{{ __('Title') }}</th>
-                    <th>{{ __('Image') }}</th>
+                    <th class="no-sort">{{ __('Image') }}</th>
                     <th>{{ __('Href') }}</th>
                     <th>{{ __('Order') }}</th>
                     <th>{{ __('Status') }}</th>
-                    <th class="no-sort">{{ __('Task') }}</th>
+                    @can('canEditDelete', \App\Slider::class)
+                        <th class="no-sort">{{ __('Task') }}</th>
+                    @endcan
                 </tr>
                 </tfoot>
                 <tbody>
                 <?php /** @var $item \App\Slider */ ?>
                 @foreach($sliders as $item)
                     <tr>
-                        <td scope="checkbox">
-                            <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"
-                                       type="checkbox"
-                                       grid-item-checkbox
-                                       class="display-none user-checkbox">
-                                <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>
-                            </div>
-                        </td>
+                        @can('canEditDelete', \App\Slider::class)
+                            <td scope="checkbox">
+                                <div class="dmovie-checkbox dmovie-checkbox-custom">
+                                    <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"
+                                           type="checkbox"
+                                           grid-item-checkbox
+                                           class="display-none user-checkbox">
+                                    <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>
+                                </div>
+                            </td>
+                        @endcan
                         <td scope="id">{{ $item->id }}</td>
                         <td scope="title" title="{{ $item->getTitle() }}">
                             {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}
@@ -143,7 +206,7 @@
                                     class="slide-item-image" />
                             </a>
                         </td>
-                        <td scope="href">{!! $item->getHref() !!}</td>
+                        <td scope="href">{!! $item->renderHtmlHref() !!}</td>
                         <td scope="Order">{{ $item->getAttribute('order') }}</td>
                         <td scope="status">
                             <div class="pretty p-switch p-fill dmovie-switch">
@@ -161,17 +224,18 @@
                                 </div>
                             </div>
                         </td>
-                        <td scope="task">
-                            @can('view', \App\Slider::class)
-                                <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"
-                                   type="button"
-                                   class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot
-                                       col-xs-12 btn dmovie-btn dmovie-btn-success"
-                                   title="{{ __('Detail') }}">
-                                    <i class="mdi mdi-account-edit"></i>
-                                </a>
-                            @endcan
-                            @can('delete', \App\Slider::class)
+                        @can('canEditDelete', \App\Slider::class)
+                            <td scope="task">
+                                @can('view', \App\Slider::class)
+                                    <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"
+                                       type="button"
+                                       class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot
+                                           col-xs-12 btn dmovie-btn dmovie-btn-success"
+                                       title="{{ __('Detail') }}">
+                                        <i class="mdi mdi-account-edit"></i>
+                                    </a>
+                                @endcan
+                                @can('delete', \App\Slider::class)
                                     <button id="deleteBtn" type="button"
                                             class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
                                             title="{{ __('Delete') }}"
@@ -179,8 +243,9 @@
                                             url="{{ route('sliders.destroy', ['slider' => $item->getId()]) }}">
                                         <i class="mdi mdi-account-minus"></i>
                                     </button>
-                            @endcan
-                        </td>
+                                @endcan
+                            </td>
+                        @endcan
                     </tr>
                 @endforeach
                 </tbody>

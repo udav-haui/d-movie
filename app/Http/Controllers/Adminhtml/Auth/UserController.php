@@ -129,9 +129,12 @@ class UserController extends Controller
      *
      * @param User $user
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws AuthorizationException
      */
     public function edit(User $user)
     {
+        $this->authorize('selfUpdate', $user);
+
         $roles = $this->roleRepository->all();
         return view('admin.user.edit', compact('user', 'roles'));
     }
@@ -146,7 +149,7 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $this->authorize('canSelfUpdate', $user);
+        $this->authorize('selfUpdate', $user);
 
         try {
             $this->userRepository->update($request, $user);
@@ -167,7 +170,7 @@ class UserController extends Controller
      */
     public function manageUpdate(UpdateUserRequest $request, User $user)
     {
-        $this->authorize('update', $user);
+        $this->authorize('selfUpdate', $user);
 
         $fields = [
             'username' => $request->username,
@@ -182,6 +185,11 @@ class UserController extends Controller
 
         // expr1 ?: expr2 , return expr1 if expr1 is true and expr2 when expr1 false
         !auth()->user()->isAdmin() ?: $fields['role_id'] = $request->role ?? null;
+        if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier() &&
+            !auth()->user()->can('update', User::class)
+        ) {
+            unset($fields['username']);
+        }
 
         if ($request->has('changePass')) {
             $validator = Validator::make(

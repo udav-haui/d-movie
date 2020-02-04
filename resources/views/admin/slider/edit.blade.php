@@ -65,11 +65,11 @@
                                             class="bs-select-hidden"
                                             data-style="form-control">
                                         <option value="1"
-                                            {{ old('status', $slider->getStatusCode()) !== NULL && (int)old('status', $slider->getStatusCode()) === 1 ? 'selected' : '' }}>
+                                            {{ old('status', $slider->getStatus()) !== NULL && (int)old('status', $slider->getStatus()) === 1 ? 'selected' : '' }}>
                                             {{ __('Enable') }}
                                         </option>
                                         <option value="0"
-                                            {{ old('status', $slider->getStatusCode()) !== NULL && (int)old('status', $slider->getStatusCode()) === 0 ? 'selected' : '' }}>
+                                            {{ old('status', $slider->getStatus()) !== NULL && (int)old('status', $slider->getStatus()) === 0 ? 'selected' : '' }}>
                                             {{ __('Disable') }}
                                         </option>
                                     </select>
@@ -104,7 +104,7 @@
                                         id="href"
                                         rows="3"
                                         class="form-control dmovie-border
-                                        @error('href') invalid @enderror">{{ old('href', $slider->getHrefRaw()) }}</textarea>
+                                        @error('href') invalid @enderror">{{ old('href', $slider->getHref()) }}</textarea>
                                     @error('href')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror

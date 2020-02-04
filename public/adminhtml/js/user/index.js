@@ -6,23 +6,9 @@ $(document).ready(function () {
         text = langText.attr('swl-text-text'),
         icon = langText.attr('swl-icon-warning-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
-        cancelButtonText = langText.attr('swl-cancelButtonText'),
-        errorTitle = langText.attr('swl-error-title'),
-        errorText = langText.attr('swl-error-text-must-select-one-record');
-    $.fn.dataTable.defaults.columnDefs = [
-        {
-            targets: 0,
-            width: '2%'
-        },
-        {
-            targets: 2,
-            width: '15%'
-        },
-        {
-            targets: 'no-sort',
-            orderable: false
-        },
-    ];
+        cancelButtonText = langText.attr('swl-cancelButtonText');
+    $.fn.dataTable.defaults.columnDefs = columnDefs;
+    $.fn.dataTable.defaults.order = colOrder;
     window.parent.dtable = initDataTable(dtableSelector, tableName);
 
     /**

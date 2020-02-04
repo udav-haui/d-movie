@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Api\Data\SliderInterface;
 use App\Helper\Data;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,8 +10,26 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Slider extends Model implements SliderInterface
+class Slider extends Model
 {
+    /* Constant slider column */
+    const ID = 'id';
+    const STATUS = 'status';
+    const TITLE = 'title';
+    const IMAGE = 'image';
+    const HREF = 'href';
+    const ORDER = 'order';
+
+    /* Constant slider permission */
+    const VIEW = 'slider-view';
+    const CREATE = 'slider-create';
+    const EDIT = 'slider-edit';
+    const DELETE = 'slider-delete';
+
+    /* Constant slider status */
+    const ENABLE = 1;
+    const DISABLE = 0;
+
     protected $guarded = [];
 
     /**
@@ -35,6 +52,49 @@ class Slider extends Model implements SliderInterface
     {
         return $this->setAttribute(self::ID, $id);
     }
+
+    /**
+     * Get status of item
+     *
+     * @return int|string
+     */
+    public function getStatus()
+    {
+        return $this->getAttribute(self::STATUS);
+    }
+
+    /**
+     * Set status of item
+     *
+     * @param string|int $status
+     * @return void
+     */
+    public function setStatus($status)
+    {
+        return $this->setAttribute(self::STATUS, $status);
+    }
+
+    /**
+     * Get title of item
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getAttribute(self::TITLE);
+    }
+
+    /**
+     * Set title of item
+     *
+     * @param string $title
+     * @return mixed|void
+     */
+    public function setTitle($title)
+    {
+        return $this->setAttribute(self::TITLE, $title);
+    }
+
     /**
      * Get slider item image
      *
@@ -46,13 +106,56 @@ class Slider extends Model implements SliderInterface
     }
 
     /**
-     * Get slide image path
+     * Set image path for item
      *
-     * @return string
+     * @param string $image
+     * @return void
      */
-    public function getImagePath()
+    public function setImage($image)
     {
-        return !$this->getImage() ?: Data::STORAGE . $this->getAttribute('image');
+        return $this->setAttribute(self::IMAGE, $image);
+    }
+
+    /**
+     * Get link of item
+     *
+     * @return mixed|string
+     */
+    public function getHref()
+    {
+        return $this->getAttribute(self::HREF);
+    }
+
+    /**
+     * Set link for item
+     *
+     * @param string $href
+     * @return void
+     */
+    public function setHref($href)
+    {
+        $this->setAttribute(self::HREF, $href);
+    }
+
+    /**
+     * Get order
+     *
+     * @return int|string
+     */
+    public function getOrder()
+    {
+        return $this->getAttribute(self::ORDER);
+    }
+
+    /**
+     * Set order for item
+     *
+     * @param string|int $order
+     * @return void
+     */
+    public function setOrder($order)
+    {
+        return $this->setAttribute(self::ORDER, $order);
     }
 
     /**
@@ -60,24 +163,11 @@ class Slider extends Model implements SliderInterface
      *
      * @return string
      */
-    public function getHref()
+    public function renderHtmlHref()
     {
-        return !$this->getAttribute('href') ?:
-            '<a href="' .
-            $this->getAttribute('href') .
-            '" target="_blank">' .
-            $this->getAttribute('href') .
-            '</a>';
-    }
-
-    /**
-     * Get href raw text of item
-     *
-     * @return string
-     */
-    public function getHrefRaw()
-    {
-        return $this->getAttribute('href');
+        return !$this->getHref() ?:
+            '<a href="' . $this->getHref() .
+            '" target="_blank">' . $this->getHref() . '</a>';
     }
 
     /**
@@ -93,22 +183,12 @@ class Slider extends Model implements SliderInterface
     }
 
     /**
-     * Get status code of item
-     *
-     * @return string|int
-     */
-    public function getStatusCode()
-    {
-        return $this->getAttribute('status');
-    }
-
-    /**
-     * Get title of item
+     * Get slide image path
      *
      * @return string
      */
-    public function getTitle()
+    public function getImagePath()
     {
-        return $this->getAttribute('title');
+        return !$this->getImage() ?: Data::STORAGE . $this->getAttribute('image');
     }
 }

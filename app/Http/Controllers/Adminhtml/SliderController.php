@@ -50,7 +50,7 @@ class SliderController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', \App\Slider::class);
+        $this->authorize('create', Slider::class);
 
         return view('admin.slider.create');
     }
@@ -64,7 +64,7 @@ class SliderController extends Controller
      */
     public function store(SliderRequest $request)
     {
-        $this->authorize('create', \App\Slider::class);
+        $this->authorize('create', Slider::class);
 
         $fields = $request->all();
 
@@ -84,7 +84,7 @@ class SliderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Slider  $slider
+     * @param  Slider  $slider
      * @return \Illuminate\Http\Response
      */
     public function show(Slider $slider)
@@ -101,7 +101,7 @@ class SliderController extends Controller
      */
     public function edit(Slider $slider)
     {
-        $this->authorize('view', Slider::class);
+        $this->authorize('update', Slider::class);
 
         return view(
             'admin.slider.edit',
@@ -113,7 +113,7 @@ class SliderController extends Controller
      * Update the specified resource in storage.
      *
      * @param SliderRequest $request
-     * @param \App\Slider $slider
+     * @param Slider $slider
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -139,7 +139,7 @@ class SliderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Slider  $slider
+     * @param  Slider  $slider
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function destroy(Slider $slider)
@@ -172,13 +172,13 @@ class SliderController extends Controller
     /**
      * Change image status
      *
-     * @param \App\Slider $slider
+     * @param Slider $slider
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function changeStatus(\App\Slider $slider)
+    public function changeStatus(Slider $slider)
     {
-        $this->authorize('update', \App\Slider::class);
+        $this->authorize('update', Slider::class);
 
         $status = request('status');
 
@@ -191,7 +191,7 @@ class SliderController extends Controller
                     'status' => 200,
                     'message' => $message,
                     'data' => [
-                        'text' => (int)$status === \App\Slider::ENABLE ? __('Enable') : __('Disable')
+                        'text' => (int)$status === Slider::ENABLE ? __('Enable') : __('Disable')
                     ]
                 ]) :
                 back()->with('success', $message);

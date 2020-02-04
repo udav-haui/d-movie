@@ -21,16 +21,31 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the both user has CREATE, EDIT permission can change the model.
+     * Determine whether the both user has EDIT, DELETE permission can change the model.
      *
-     * @param \App\User $user
+     * @param  \App\User  $user
      * @return mixed
      */
-    public function changeByCE(User $user)
+    public function canEditDelete(User $user)
     {
         return $user->isAdmin() ||
-            $user->canAccess(\App\User::CREATE) ||
-            $user->canAccess(\App\User::EDIT);
+            $user->canAccess(\App\User::EDIT) ||
+            $user->canAccess(\App\User::DELETE);
+    }
+
+    /**
+     * Determine whether the both user has permission can change username of the other user.
+     *
+     * @param User $user
+     * @param User $model
+     * @return bool
+     */
+    public function updateUserName(User $user, User $model)
+    {
+        return $user->isAdmin() ||
+            $user->canAccess(\App\User::EDIT) ||
+            ($user->getAuthIdentifier() === $model->getAuthIdentifier() &&
+            $model->canChangeUsername());
     }
 
     /**
@@ -40,7 +55,7 @@ class UserPolicy
      * @param User $model
      * @return mixed
      */
-    public function canSelfUpdate(User $user, User $model)
+    public function selfUpdate(User $user, User $model)
     {
         return $user->isAdmin() ||
             $user->canAccess(\App\User::EDIT) ||

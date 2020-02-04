@@ -354,6 +354,11 @@ table.dataTable{
         &::before {
             border-radius: 0;
         }
+        label {
+            &::before, &::after{
+                border-radius: 10%;
+            }
+        }
     }
 }
 
@@ -401,4 +406,34 @@ table.dataTable{
 }
 .min-width-111 {
     min-width: 111px !important;
+}
+.min-width-100 {
+    min-width: 100px !important;
+}
+.min-width-90 {
+    min-width: 90px !important;
+}
+.min-width-85 {
+    min-width: 85px !important;
+}
+.min-width-80 {
+    min-width: 80px !important;
+}
+.min-width-75 {
+    min-width: 75px !important;
+}
+.min-width-70 {
+    min-width: 70px !important;
+}
+.min-width-60 {
+    min-width: 60px !important;
+}
+.min-width-65 {
+    min-width: 65px !important;
+}
+.min-width-55 {
+    min-width: 55px !important;
+}
+.min-width-50 {
+    min-width: 50px !important;
 }

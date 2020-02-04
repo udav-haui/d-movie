@@ -25,7 +25,7 @@
 
 @section('content')
     <div class="row bg-title" id="dmovie-fix-top-block">
-        @can('update', $user)
+        @can('selfUpdate', $user)
             <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
                 <a href="javascript:void(0);"
                    onclick="event.preventDefault(); $('#create-form').submit();"
@@ -81,7 +81,7 @@
                                         <input type="email" placeholder="{{ __('Input your E-Mail') }}"
                                                class="form-control dmovie-textbox-border
                                                @error('email') invalid @enderror"
-                                               @cannot('update', $user) disabled @endcannot
+                                               @cannot('selfUpdate', $user) disabled @endcannot
                                                name="email"
                                                id="example-email" value="{{ old('email', $user->email) }}" />
                                         @error('email')
@@ -111,7 +111,7 @@
                                     <div class="col-md-3 col-xs-12">
                                         <div class="checkbox checkbox-custom">
                                             <input name="changePass" id="changePass" value="1" type="checkbox"
-                                                   @cannot('update', $user) disabled @endcannot
+                                                   @cannot('selfUpdate', $user) disabled @endcannot
                                                     @if ($errors->has('password')) checked @endif/>
                                             <label for="changePass"
                                                    class="select-none"> {{ __('Change password') }}
@@ -127,7 +127,7 @@
                                         <div class="col-md-9 col-xs-12">
                                             <select name="role" id="role"
                                                     class="role-selector bs-select-hidden"
-                                                    data-style="form-control" @cannot('update', $user) disabled @endcannot>
+                                                    data-style="form-control">
                                                 <option value="0" {{ old('role') ? '' : 'selected' }}>
                                                     {{ __('Not now') }}
                                                 </option>
@@ -156,7 +156,7 @@
                                                @error('address') invalid @enderror"
                                                placeholder="{{ __('Provide your address...') }}"
                                                value="{{ old('address', $user->address) }}"
-                                               @cannot('update', $user) disabled @endcannot />
+                                               @cannot('selfUpdate', $user) disabled @endcannot />
                                         @error('address')
                                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                         @enderror
@@ -170,7 +170,7 @@
                                                class="form-control dmovie-textbox-border
                                                @error('name') invalid @enderror"
                                                value="{{ old('name', $user->name) }}" name="name"
-                                               @cannot('update', $user) disabled @endcannot />
+                                               @cannot('selfUpdate', $user) disabled @endcannot />
                                         @error('name')
                                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                         @enderror
@@ -189,7 +189,7 @@
                                                    id="dob-datepicker"
                                                    placeholder="dd/mm/yyyy"
                                                    value="{{ old('dob', $user->getDob()) }}"
-                                                   @cannot('update', $user) disabled @endcannot />
+                                                   @cannot('selfUpdate', $user) disabled @endcannot />
                                             <span class="input-group-addon"><i class="icon-calender"></i></span>
                                         </div>
                                         @error('dob')
@@ -207,7 +207,7 @@
                                         <select name="gender" id="gender"
                                                 class="gender-selector bs-select-hidden"
                                                 data-style="form-control"
-                                                @cannot('update', $user) disabled @endcannot>
+                                                @cannot('selfUpdate', $user) disabled @endcannot>
                                             <option value="-1" {{ old('gender', $user->gender) ? '' : 'selected' }}>
                                                 {{ __('Select your gender') }}
                                             </option>
@@ -225,7 +225,7 @@
                                                class="form-control dmovie-textbox-border
                                                @error('phone') invalid @enderror"
                                                value="{{ old('phone', $user->phone) }}"
-                                               @cannot('update', $user) disabled @endcannot />
+                                               @cannot('selfUpdate', $user) disabled @endcannot />
                                         @error('phone')
                                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                         @enderror
@@ -239,7 +239,7 @@
                                             <textarea name="description" id="description" rows="3"
                                                       class="form-control dmovie-textbox-border
                                                       @error('description') invalid @enderror"
-                                                      @cannot('update', $user) disabled @endcannot
+                                                      @cannot('selfUpdate', $user) disabled @endcannot
                                                       placeholder="{{ __('Say something about your-self...') }}">{{ old('description', $user->description) }}</textarea>
                                         @error('description')
                                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>

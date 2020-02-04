@@ -1,3 +1,4 @@
+<?php /** @var \App\User $user */ ?>
 @extends('admin.layouts.app')
 @section('app.title')
     {{ __('Profile - :name', ['name' => $user->name]) }}
@@ -9,7 +10,7 @@
     <!-- /.row -->
     <!-- .row -->
     <div class="row">
-        <div class="@can('canSelfUpdate', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
+        <div class="@can('selfUpdate', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
             <div class="white-box">
                 <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/icons/wall.jpg') }}">
                     <div class="overlay-box">
@@ -52,7 +53,7 @@
                 </div>
             </div>
         </div>
-        @can('canSelfUpdate', $user)
+        @can('selfUpdate', $user)
         <div class="col-md-8 col-xs-12">
             <div class="white-box">
                 <ul class="nav nav-tabs tabs customtab">
@@ -87,14 +88,16 @@
                                     <div class="form-group">
                                         <label class="col-md-12" for="username">
                                             {{ __('Username') }}
-                                            <strong class="text-danger small">({{ __('Username can edit for one times') }})</strong>
+                                            @if (auth()->user()->cant('updateUserName', $user) || (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier() && $user->canChangeUsername()))
+                                                <strong class="text-danger small">({{ __('Username can edit for one times') }})</strong>
+                                            @endif
                                         </label>
                                         <div class="col-md-12">
                                             <input type="text" placeholder="{{ __('Input your username') }}"
                                                    class="form-control form-control-line @error('username') invalid @enderror
-                                                   @cannot('canSelfUpdate', $user) disabled @endcannot"
+                                                   @cannot('updateUserName', $user) disabled @endcannot"
                                                    value="{{ old('username', $user->username) }}" name="username"
-                                                   @cannot('canSelfUpdate', $user) disabled @endcannot />
+                                                   @cannot('updateUserName', $user) disabled @endcannot />
                                             @error('username')
                                                 <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                             @enderror

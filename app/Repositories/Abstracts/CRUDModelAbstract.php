@@ -14,7 +14,7 @@ use Exception;
 abstract class CRUDModelAbstract implements CRUDModelInterface
 {
     /** @var Model */
-    protected $_model;
+    protected $model;
 
     /**
      * Retrieve model
@@ -24,7 +24,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      */
     public function find($id)
     {
-        return $this->_model::find($id);
+        return $this->model::find($id);
     }
 
     /**
@@ -39,7 +39,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $fields = $this->removeTokenField($fields);
 
         try {
-            return $this->_model::create($fields);
+            return $this->model::create($fields);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -60,7 +60,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $fields = $this->removeMethodField($fields);
 
         if ($modelId !== null) {
-            $model = $this->_model::find($modelId);
+            $model = $this->model::find($modelId);
         }
 
         try {
@@ -78,7 +78,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @return bool
      * @throws Exception
      */
-    public function delete($model = null)
+    public function delete($modelId, $model = null)
     {
         try {
             $model->delete();

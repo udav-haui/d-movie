@@ -59,6 +59,8 @@ let disMissBtn = `<button type="button" class="close" dmovie-noti-dismiss>×</bu
 window.mainLang = $('html').attr('lang');
 window.selectedObjects = [];
 window.dtable = null;
+window.errorTitle = langTextSelector.attr('swl-error-title'),
+window.errorText = langTextSelector.attr('swl-error-text-must-select-one-record');
 
 
 /* DISMISS NOTIFICATION */
@@ -106,7 +108,32 @@ $(`td[scope="checkbox"]`).on('change', function () {
 /** ./End */
 // .////////////////////
 
-
+window.ajaxRequest = function (
+    url = '',
+    method = '',
+    data = {},
+    beforeSendCallBack,
+    successCallback,
+    errorCallback,
+    delay = 0
+) {
+    $.ajax({
+        url: url,
+        method: method,
+        data: data,
+        datatype: 'json',
+        delay: delay,
+        beforeSend: function (res) {
+            beforeSendCallBack(res);
+        },
+        success: function (res) {
+            successCallback(res);
+        },
+        error: function (res) {
+            errorCallback(res);
+        }
+    });
+};
 
 /**
  * Append number of selected rows to showable section
@@ -118,6 +145,7 @@ appendToSeletedLabel = function (number = 0) {
         selectedRowsCount.text(number);
     }
 }
+
 /**
  * Init datatable
  *
@@ -136,9 +164,6 @@ window.initDataTable = function(selector, tableName) {
             dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
             filterInput.addClass('dmovie-border h-32 p-l-10');
         },
-        order: [
-            [1, 'desc']
-        ],
         oLanguage: {
             sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
         }

@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface CRUDModelInterface
 {
-
     /**
      * Retrieve model
      *
@@ -43,7 +42,7 @@ interface CRUDModelInterface
      * @param null|Model $model
      * @return bool
      */
-    public function delete($model = null);
+    public function delete($modelId, $model = null);
 
     /**
      * Remove _token field.

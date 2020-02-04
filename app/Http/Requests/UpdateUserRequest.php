@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'username' => [
                 'required',
                 'unique:users,username,' . $this->user->id,
@@ -42,6 +42,12 @@ class UpdateUserRequest extends FormRequest
                 'date_format:d/m/Y'
             ]
         ];
+
+        if (auth()->user()->getAuthIdentifier() === $this->user->id) {
+            unset($rules['username'][0]);
+        }
+
+        return $rules;
     }
 
     /**

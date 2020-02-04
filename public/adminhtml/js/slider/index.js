@@ -10,32 +10,9 @@ $(document).ready(function () {
         cancelButtonText = langText.attr('swl-cancelButtonText');
     let dtableSelector = $(`#${tableName}_data`);
 
-    $.fn.dataTable.defaults.columnDefs = [
-        {
-            targets: 0,
-            width: '2%'
-        },
-        {
-            targets: 1,
-            width: "3%"
-        },
-        {
-            targets: [2,4],
-            width: '25%'
-        },
-        {
-            targets: 3,
-            width: '5%'
-        },
-        {
-            targets: 6,
-            width: '1%'
-        },
-        {
-            targets: 'no-sort',
-            orderable: false
-        },
-    ];
+    $.fn.dataTable.defaults.columnDefs = columnDefs;
+    $.fn.dataTable.defaults.order = colOrder;
+
     window.parent.dtable = initDataTable(dtableSelector, tableName);
 
     /* Change status of slide item */
@@ -60,32 +37,80 @@ $(document).ready(function () {
         let row = dtable.row(tr);
         let id = self.attr('data-id');
         window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
-            $.ajax({
-                url: url,
-                method: 'DELETE',
-                data: {
+            ajaxRequest(
+                url,
+                'DELETE',
+                {
                     slider: id
                 },
-                datatype: 'json',
-                beforeSend: function () {
+                function (res) {
                     showLoading(tr);
                 },
-                success: function (res) {
+                function (res) {
                     if (res.status === 200) {
                         row.remove().draw();
                         successMessage(res.message);
                     } else {
+                        hideLoading(tr);
                         errorMessage(res.message);
                     }
-
-                    // hideLoading(tr);
                 },
-                error: function () {
-                    // hideLoading(tr);
+                function (res) {
+                    hideLoading(tr);
                 }
-            });
+            );
         } );
     });
+
+    /* Multi delete */
+    let multiDeleteBtn = $('._delete-sliders');
+    if (multiDeleteBtn.length > 0) {
+        let swalText = multiDeleteBtn.attr('swl-text');
+        multiDeleteBtn.on('click', function () {
+            if (selectedObjects.length > 0) {
+                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                    let count = 0;
+                    dtable.$(`td[scope="checkbox"]`).each(function () {
+                        let checkbox = $(this).find('input');
+                        if (checkbox.is(':checked')) {
+                            let userId = checkbox.val();
+                            let tr = checkbox.closest('tr'),
+                                row = dtable.row(tr);
+                            $(document).ajaxStart(function () {
+                                window.parent.showLoading(dtableSelector);
+                            });
+                            $.ajax({
+                                url: route('users.destroy', {user: userId}).url(),
+                                method: 'DELETE',
+                                datatype: 'json',
+                                success: function (res) {
+                                    if (res.status === 200) {
+                                        selectedObjects = removeAElement(selectedObjects, userId);
+
+                                        row.remove().draw();
+                                    }
+                                }
+                            });
+                            $(document).ajaxStop(function () {
+                                window.parent.hideLoading(dtableSelector);
+                            });
+                            count++;
+                        }
+                    });
+                    $(document).ajaxSuccess(function () {
+                        let message = langText.attr('users-deleted');
+
+                        window.parent.successMessage(message + count + ' users.');
+
+                        appendToSeletedLabel(selectedObjects.length);
+                    });
+                });
+            } else {
+                /** If not select any row, then show a alert */
+                window.parent.normalAlert(errorTitle, errorText);
+            }
+        })
+    }
 });
 
 /**
@@ -96,27 +121,16 @@ $(document).ready(function () {
  * @param newStatus
  */
 function changeItemStatus(targetBtn, row, itemID, newStatus) {
-    $.ajax({
-        url: route('sliders.changeStatus', {slider: itemID}),
-        method: 'POST',
-        data: {
+    ajaxRequest(
+        route('sliders.changeStatus', {slider: itemID}),
+        'POST',
+        {
             status: newStatus
         },
-        delay: 500,
-        datatype: 'json',
-        beforeSend: function() {
-            window.parent.showLoading(row);
+        function (res) {
+            showLoading(row);
         },
-        error: function (res) {
-            targetBtn.prop('checked', !targetBtn.prop('checked'));
-
-            let errorMsg = res.responseJSON.message;
-
-            errorMessage(errorMsg);
-
-            window.parent.hideLoading(row);
-        },
-        success: function (res) {
+        function (res) {
             if (res.status === 200) {
                 window.parent.successMessage(res.message);
 
@@ -127,6 +141,16 @@ function changeItemStatus(targetBtn, row, itemID, newStatus) {
                 window.parent.errorMessage(res.message);
             }
             window.parent.hideLoading(row);
-        }
-    });
+        },
+        function (res) {
+            targetBtn.prop('checked', !targetBtn.prop('checked'));
+
+            let errorMsg = res.responseJSON.message;
+
+            errorMessage(errorMsg);
+
+            window.parent.hideLoading(row);
+        },
+        500
+    );
 }

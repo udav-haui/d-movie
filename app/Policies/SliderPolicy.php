@@ -11,14 +11,16 @@ class SliderPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any sliders.
+     * Determine whether the user only can view sliders.
      *
      * @param  \App\User  $user
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function canEditDelete(User $user)
     {
-        //
+        return $user->isAdmin() ||
+            $user->canAccess(\App\Slider::EDIT) ||
+            $user->canAccess(\App\Slider::DELETE);
     }
 
     /**

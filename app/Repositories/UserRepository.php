@@ -53,7 +53,7 @@ class UserRepository implements UserRepositoryInterface
             $userData = $request->all();
 
             if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier()) {
-                if (auth()->user()->cant('update', $user)) {
+                if (auth()->user()->cant('update', User::class)) {
                     if (!$user->canChangeUsername()) {
                         unset($userData['username']);
                     } else {
@@ -119,7 +119,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function setAvatar(User $user)
     {
-        if (auth()->user()->can('canSelfUpdate', $user)) {
+        if (auth()->user()->can('selfUpdate', $user)) {
             try {
                 if ($user->avatar) {
                     Storage::delete('/public/' . $user->avatar);
@@ -127,7 +127,7 @@ class UserRepository implements UserRepositoryInterface
                 try {
                     $avtPath = request('avatar')->store('uploads', 'public');
                 } catch (Exception $fileException) {
-                    throw new Exception(__('Cannot upload your image.'));
+                    throw new Exception(__('We cannot upload your image.'));
                 }
                 $data = [
                     'avatar' => $avtPath
@@ -156,7 +156,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function changePassword(User $user)
     {
-        if (auth()->user()->can('canSelfUpdate', $user)) {
+        if (auth()->user()->can('selfUpdate', $user)) {
             if (request()->has('current_password')) {
                 $currentPassword = request('current_password');
                 if (Hash::check($currentPassword, $user->getAuthPassword())) {

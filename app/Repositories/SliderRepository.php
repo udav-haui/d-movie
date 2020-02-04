@@ -19,7 +19,7 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
 {
     use LoggerTrait;
 
-    protected $_model = Slider::class;
+    protected $model = Slider::class;
 
     /**
      * Create new Slide item image
@@ -34,13 +34,7 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
             if ($fields['image']) {
                 $uploadImage = $fields['image'];
 
-                try {
-                    $imgPath = $uploadImage->store('uploads', 'public');
-                } catch (Exception $e) {
-                    throw new Exception(__('Cannot upload your image.'));
-                }
-
-                $fields['image'] = $imgPath;
+                $fields['image'] = $this->storeImage($uploadImage);
             }
 
             $slider = parent::create($fields);
@@ -49,7 +43,9 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
 
             return $slider;
         } catch (Exception $exception) {
-            Storage::delete('/public/' . $imgPath);
+            if ($fields['image']) {
+                Storage::delete('/public/' . $fields['image']);
+            }
 
             throw new Exception($exception->getMessage());
         }
@@ -108,7 +104,7 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
                 Storage::delete('/public/' . $slider->getImage());
             }
             try {
-                parent::delete($slider);
+                parent::delete(null, $slider);
 
                 $this->deleteLog($slider, Slider::class);
                 return true;
@@ -143,6 +139,22 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
             $this->update(null, $slider, ['status' => $newStatus]);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Store image to storage
+     *
+     * @param object $image
+     * @return string
+     * @throws Exception
+     */
+    public function storeImage($image)
+    {
+        try {
+            return $image->store('uploads', 'public');
+        } catch (Exception $e) {
+            throw new Exception(__('We cannot upload your image.'));
         }
     }
 }
