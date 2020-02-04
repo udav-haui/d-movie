@@ -56,6 +56,9 @@ $(document).ready(function () {
                     }
                 },
                 function (res) {
+                    let errorMsg = res.responseJSON.message;
+
+                    errorMessage(errorMsg);
                     hideLoading(tr);
                 }
             );

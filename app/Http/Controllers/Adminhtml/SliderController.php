@@ -139,11 +139,14 @@ class SliderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Slider  $slider
+     * @param Slider $slider
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Slider $slider)
     {
+        $this->authorize('delete', Slider::class);
+
         try {
             $this->sliderRepository->delete(null, $slider);
 
