@@ -188,6 +188,7 @@
     "The :attribute must is unsigned integer.": ":attribute phải là số không âm.",
     "Slide image was created successfully.": "Ảnh slide đã được tạo thành công.",
     "Slide image was updated successfully.": "Ảnh slide đã được cập nhật thành công.",
+    "Slide image was deleted successfully.": "Đã xóa ảnh slide thành công.",
     "Slide item was updated successfully.": "Ảnh slide đã được cập nhật thành công.",
     "Close": "Đóng",
     "The requested content cannot be loaded. <br/> Please try again later.": "Nội dung yêu cầu không thể được tải. <br /> Vui lòng thử lại sau.",
@@ -200,5 +201,6 @@
     "Zoom": "Phóng to",
     "This action is unauthorized.": "Bạn không có quyền thực hiện hành động này.",
     "Edit slide item": "Sửa ảnh trình chiếu",
-    "Title": "Tiêu đề"
+    "Title": "Tiêu đề",
+    "Please try again.": "Vui lòng thử lại."
 }

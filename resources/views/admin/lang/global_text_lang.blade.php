@@ -2,7 +2,7 @@
        main-lang="{{ str_replace('_', '-', app()->getLocale()) }}"
        swl-title-text="{{ __('Are you sure?') }}"
        swl-text-text="{{ __('Do you want to destroy this user?') }}"
-       swl-icon-text="warning"
+       swl-icon-warning-text="warning"
        swl-confirmButtonText="{{ __('Ok') }}"
        swl-cancelButtonText="{{ __('Cancel') }}"
        users-deleted="{{ __('Deleted: ') }}"
@@ -24,4 +24,5 @@
        fancybox-text-download="{{ __('Download') }}"
        fancybox-text-share="{{ __('Share') }}"
        fancybox-text-zoom="{{ __('Zoom') }}"
+       swl-slider-delete-text="{{ __('Do you want to destroy this image?') }}"
 />

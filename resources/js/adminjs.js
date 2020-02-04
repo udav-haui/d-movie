@@ -258,7 +258,9 @@ window.showLoader = function (type = 1) {
 
 /** Show loading for specifier block */
 window.showLoading = function (selector) {
-    selector.LoadingOverlay('show');
+    selector.LoadingOverlay("show", {
+        zIndex: 1
+    });
 };
 window.hideLoading = function (selector) {
     selector.LoadingOverlay('hide');

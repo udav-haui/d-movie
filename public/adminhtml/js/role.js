@@ -4,7 +4,7 @@ $(document).ready(function () {
     let rolesDataTable = $(`#${roles}_data`);
     let title = langText.attr('swl-title-text'),
         text = langText.attr('swl-text-text'),
-        icon = langText.attr('swl-icon-text'),
+        icon = langText.attr('swl-icon-warning-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
         cancelButtonText = langText.attr('swl-cancelButtonText');
     $.fn.dataTable.defaults.columnDefs = [
@@ -23,9 +23,7 @@ $(document).ready(function () {
     ];
     initDataTable(rolesDataTable, roles);
 
-    /**
-     * Delete a role
-     */
+    /* Delete role */
     $('#roles_data tbody').on('click', '#deleteRoleBtn', function () {
         let self = $(this);
         let url = self.attr('url');

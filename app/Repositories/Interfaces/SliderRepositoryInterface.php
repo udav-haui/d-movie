@@ -5,6 +5,7 @@ namespace App\Repositories\Interfaces;
 
 use App\Slider;
 use Illuminate\Database\Eloquent\Collection;
+use Exception;
 
 /**
  * Class SliderRepository
@@ -26,7 +27,7 @@ interface SliderRepositoryInterface
      * @param string|int $sliderId
      * @param string|int $newStatus
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function changeStatus($sliderId, $newStatus);
 }

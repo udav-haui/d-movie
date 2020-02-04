@@ -2,7 +2,12 @@ $(document).ready(function () {
     'use strict';
 
     let langText = $('.lang-text'),
-        tableName = 'sliders';
+        tableName = 'sliders',
+        title = langText.attr('swl-title-text'),
+        icon = langText.attr('swl-icon-warning-text'),
+        text = langText.attr('swl-slider-delete-text'),
+        confirmButtonText = langText.attr('swl-confirmButtonText'),
+        cancelButtonText = langText.attr('swl-cancelButtonText');
     let dtableSelector = $(`#${tableName}_data`);
 
     $.fn.dataTable.defaults.columnDefs = [
@@ -45,6 +50,41 @@ $(document).ready(function () {
 
         changeItemStatus(self, row, itemId, self.val());
 
+    });
+
+    /* Delete slide item */
+    $(`#${tableName}_data tbody`).on('click', '#deleteBtn', function () {
+        let self = $(this);
+        let url = self.attr('url');
+        let tr = self.closest('tr');
+        let row = dtable.row(tr);
+        let id = self.attr('data-id');
+        window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
+            $.ajax({
+                url: url,
+                method: 'DELETE',
+                data: {
+                    slider: id
+                },
+                datatype: 'json',
+                beforeSend: function () {
+                    showLoading(tr);
+                },
+                success: function (res) {
+                    if (res.status === 200) {
+                        row.remove().draw();
+                        successMessage(res.message);
+                    } else {
+                        errorMessage(res.message);
+                    }
+
+                    // hideLoading(tr);
+                },
+                error: function () {
+                    // hideLoading(tr);
+                }
+            });
+        } );
     });
 });
 

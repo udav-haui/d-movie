@@ -11,6 +11,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface CRUDModelInterface
 {
+
+    /**
+     * Retrieve model
+     *
+     * @param string|int $id
+     * @return Model
+     */
+    public function find($id);
+
     /**
      * Create new record for model
      *
@@ -28,4 +37,27 @@ interface CRUDModelInterface
      * @return void
      */
     public function update($modelId = null, $model = null, $fields = []);
+
+    /**
+     * @param null|string|int $modelId
+     * @param null|Model $model
+     * @return bool
+     */
+    public function delete($model = null);
+
+    /**
+     * Remove _token field.
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function removeTokenField($fields);
+
+    /**
+     * Remove _method field if exist
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function removeMethodField($fields);
 }

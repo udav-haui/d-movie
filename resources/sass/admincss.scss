@@ -349,6 +349,14 @@ table.dataTable{
     }
 }
 
+.pretty.dmovie-switch {
+    .state {
+        &::before {
+            border-radius: 0;
+        }
+    }
+}
+
 .dmovie-select2-selection-border, .dmovie-textbox-border {
     border-color: $borderColor;
     border-radius: 0 !important;

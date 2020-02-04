@@ -16,6 +16,7 @@ trait LoggerTrait
      * LoggerTrait constructor.
      *
      * @param LogRepositoryInterface $logRepository
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __construct(LogRepositoryInterface $logRepository)
     {

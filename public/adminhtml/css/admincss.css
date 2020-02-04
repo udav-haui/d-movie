@@ -422,6 +422,10 @@ table.dataTable thead .sorting_asc:after {
   color: white;
 }
 
+.pretty.dmovie-switch .state::before {
+  border-radius: 0;
+}
+
 .dmovie-select2-selection-border,
 .dmovie-textbox-border {
   border-color: #32a3a3;

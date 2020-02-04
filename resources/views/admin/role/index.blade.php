@@ -41,7 +41,7 @@
            main-lang="{{ str_replace('_', '-', app()->getLocale()) }}"
            swl-title-text="{{ __('Are you sure?') }}"
            swl-text-text="{{ __('This may affect to all user are being assigned. You not need to delete it, just edit.') }}"
-           swl-icon-text="warning"
+           swl-icon-warning-text="warning"
            swl-confirmButtonText="{{ __('Still delete it!') }}"
            swl-cancelButtonText="{{ __('Oke, I got it!') }}" />
     <div class="row">

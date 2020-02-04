@@ -4,7 +4,7 @@ $(document).ready(function () {
     let dtableSelector = $(`#${tableName}_data`);
     let title = langText.attr('swl-title-text'),
         text = langText.attr('swl-text-text'),
-        icon = langText.attr('swl-icon-text'),
+        icon = langText.attr('swl-icon-warning-text'),
         confirmButtonText = langText.attr('swl-confirmButtonText'),
         cancelButtonText = langText.attr('swl-cancelButtonText'),
         errorTitle = langText.attr('swl-error-title'),

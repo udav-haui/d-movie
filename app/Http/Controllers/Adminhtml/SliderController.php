@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SliderRequest;
 use App\Repositories\Interfaces\SliderRepositoryInterface;
 use App\Slider;
-use Illuminate\Http\Request;
+use Exception;
 
 class SliderController extends Controller
 {
@@ -95,8 +95,9 @@ class SliderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Slider  $slider
+     * @param Slider $slider
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Slider $slider)
     {
@@ -139,11 +140,33 @@ class SliderController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Slider  $slider
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function destroy(Slider $slider)
     {
-        //
+        try {
+            $this->sliderRepository->delete(null, $slider);
+
+            $message = __('Slide image was deleted successfully.');
+            return !request()->ajax() ?
+                redirect(route('sliders.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (Exception $exception) {
+            $message = __('Ooops, something wrong appended.') . '-' . $exception->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
     }
 
     /**
@@ -168,7 +191,7 @@ class SliderController extends Controller
                     'status' => 200,
                     'message' => $message,
                     'data' => [
-                        'text' => (int)$status === 1 ? __('Enable') : __('Disable')
+                        'text' => (int)$status === \App\Slider::ENABLE ? __('Enable') : __('Disable')
                     ]
                 ]) :
                 back()->with('success', $message);
@@ -184,4 +207,11 @@ class SliderController extends Controller
                 back()->with('error', $message);
         }
     }
+
+//    public function test(Slider $slider)
+//    {
+//        $slider->setId(15);
+//        $slider->save();
+//        dd($slider);
+//    }
 }

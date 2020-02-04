@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Api\Data\SliderInterface;
 use App\Helper\Data;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,20 +11,30 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Slider extends Model
+class Slider extends Model implements SliderInterface
 {
     protected $guarded = [];
 
-    /** Constant slider permission */
-    const VIEW = 'slider-view';
-    const CREATE = 'slider-create';
-    const EDIT = 'slider-edit';
-    const DELETE = 'slider-delete';
+    /**
+     * Get Identifier
+     *
+     * @return string|int
+     */
+    public function getId()
+    {
+        return $this->getAttribute(self::ID);
+    }
 
-    /** Constant slider status */
-    const ACTIVE = 1;
-    const DEACTIVATE = 0;
-
+    /**
+     * Set Identifier
+     *
+     * @param string|int $id
+     * @return mixed
+     */
+    public function setId($id)
+    {
+        return $this->setAttribute(self::ID, $id);
+    }
     /**
      * Get slider item image
      *
@@ -31,7 +42,17 @@ class Slider extends Model
      */
     public function getImage()
     {
-        return !$this->image ?: Data::STORAGE . $this->getAttribute('image');
+        return $this->getAttribute(self::IMAGE);
+    }
+
+    /**
+     * Get slide image path
+     *
+     * @return string
+     */
+    public function getImagePath()
+    {
+        return !$this->getImage() ?: Data::STORAGE . $this->getAttribute('image');
     }
 
     /**
@@ -66,7 +87,7 @@ class Slider extends Model
      */
     public function getStatusLabel()
     {
-        return (int)$this->getAttribute('status') === self::ACTIVE ?
+        return (int)$this->getAttribute('status') === self::ENABLE ?
             __('Enable') :
             __('Disable');
     }

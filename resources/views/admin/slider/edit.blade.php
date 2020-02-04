@@ -120,7 +120,7 @@
                                            name="image"
                                            id="image"
                                            class="dropify col-md-3"
-                                           data-default-file="{{ $slider->getImage() }}"
+                                           data-default-file="{{ $slider->getImagePath() }}"
                                     />
                                     @error('image')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>

@@ -54,7 +54,7 @@
     <input type="hidden" class="lang-text"
            swl-title-text="{{ __('Are you sure?') }}"
            swl-text-text="{{ __('This may affect to all user are being assigned. You not need to delete it, just edit.') }}"
-           swl-icon-text="warning"
+           swl-icon-warning-text="warning"
            swl-confirmButtonText="{{ __('Still delete it!') }}"
            swl-cancelButtonText="{{ __('Oke, I got it!') }}"
            placeholderUsersText="{{ __('Chose one or some users.') }}"

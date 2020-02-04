@@ -136,17 +136,17 @@
                             {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}
                         </td>
                         <td scope="image">
-                            <a href="{{ $item->getImage() }}"
+                            <a href="{{ $item->getImagePath() }}"
                                class="slide-item"
                                data-fancybox="sliders" data-caption="{{ $item->getTitle() }}">
-                                <img src="{{ $item->getImage() }}"
+                                <img src="{{ $item->getImagePath() }}"
                                     class="slide-item-image" />
                             </a>
                         </td>
                         <td scope="href">{!! $item->getHref() !!}</td>
                         <td scope="Order">{{ $item->getAttribute('order') }}</td>
                         <td scope="status">
-                            <div class="pretty p-switch p-fill">
+                            <div class="pretty p-switch p-fill dmovie-switch">
                                 <input type="checkbox"
                                        {{ (int)$item->getAttribute('status') === 1 ? 'checked' : '' }}
                                        class="status-checkbox"
@@ -171,17 +171,15 @@
                                     <i class="mdi mdi-account-edit"></i>
                                 </a>
                             @endcan
-{{--                            @can('delete', $user)--}}
-{{--                                @if (auth()->user()->id !== $user->id)--}}
-{{--                                    <button id="deleteUserBtn" type="button"--}}
-{{--                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"--}}
-{{--                                            title="{{ __('Delete') }}"--}}
-{{--                                            data-id="{{ $user->id }}"--}}
-{{--                                            url="{{ route('users.destroy', ['user' => $user->id]) }}">--}}
-{{--                                        <i class="mdi mdi-account-minus"></i>--}}
-{{--                                    </button>--}}
-{{--                                @endif--}}
-{{--                            @endcan--}}
+                            @can('delete', \App\Slider::class)
+                                    <button id="deleteBtn" type="button"
+                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
+                                            title="{{ __('Delete') }}"
+                                            data-id="{{ $item->getId() }}"
+                                            url="{{ route('sliders.destroy', ['slider' => $item->getId()]) }}">
+                                        <i class="mdi mdi-account-minus"></i>
+                                    </button>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach

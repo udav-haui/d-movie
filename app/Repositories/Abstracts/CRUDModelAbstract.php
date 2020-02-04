@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Repositories\Abstracts;
+
 use App\Repositories\Interfaces\CRUDModelInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Exception;
 
 /**
  * Class CRUDModelAbstract
@@ -13,21 +14,35 @@ use Illuminate\Support\Facades\Storage;
 abstract class CRUDModelAbstract implements CRUDModelInterface
 {
     /** @var Model */
-    protected $model;
+    protected $_model;
+
+    /**
+     * Retrieve model
+     *
+     * @param int|string $id
+     * @return Model
+     */
+    public function find($id)
+    {
+        return $this->_model::find($id);
+    }
 
     /**
      * Create new record for model
      *
      * @param array $fields
      * @return mixed
+     * @throws Exception
      */
     public function create($fields = [])
     {
         $fields = $this->removeTokenField($fields);
 
-        $modelId = $this->model::query()->insertGetId($fields);
-
-        return $this->model::find($modelId);
+        try {
+            return $this->_model::create($fields);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -37,7 +52,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @param array $fields
      * @param Model|null $model
      * @return Model
-     * @throws \Exception
+     * @throws Exception
      */
     public function update($modelId = null, $model = null, $fields = [])
     {
@@ -45,31 +60,31 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $fields = $this->removeMethodField($fields);
 
         if ($modelId !== null) {
-            $model = $this->model::find($modelId);
+            $model = $this->_model::find($modelId);
         }
 
         try {
-            if (array_key_exists('image', $fields)) {
-                $uploadImage = $fields['image'];
-
-                try {
-                    $imgPath = $uploadImage->store('uploads', 'public');
-                } catch (\Exception $e) {
-                    throw new \Exception(__('Cannot upload your image.'));
-                }
-
-                $fields['image'] = $imgPath;
-            }
-
-
             $model->update($fields);
 
             return $model;
-        } catch (\Exception $e) {
-            if (array_key_exists('image', $fields)) {
-                Storage::delete('/public/' . $imgPath);
-            }
-            throw new \Exception($e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * @param null|int|string $modelId
+     * @param null|Model $model
+     * @return bool
+     * @throws Exception
+     */
+    public function delete($model = null)
+    {
+        try {
+            $model->delete();
+            return true;
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
         }
     }
 
