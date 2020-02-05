@@ -18,7 +18,8 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "mservice/payment": "dev-master",
-        "tightenco/ziggy": "^0.8.1"
+        "tightenco/ziggy": "^0.8.1",
+        "yajra/laravel-datatables-oracle": "^9.8"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

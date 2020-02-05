@@ -1,53 +1,24 @@
 $(document).ready(function () {
-    let langText = $('.lang-text'),
-        tableName = 'users';
-    let dtableSelector = $(`#${tableName}_data`);
-    let title = langText.attr('swl-title-text'),
-        text = langText.attr('swl-text-text'),
-        icon = langText.attr('swl-icon-warning-text'),
-        confirmButtonText = langText.attr('swl-confirmButtonText'),
-        cancelButtonText = langText.attr('swl-cancelButtonText');
+    tableName = 'users';
+
     $.fn.dataTable.defaults.columnDefs = columnDefs;
     $.fn.dataTable.defaults.order = colOrder;
-    window.parent.dtable = initDataTable(dtableSelector, tableName);
+
+    dtable = initDataTable();
 
     /**
      * Delete a user
      */
     $(`#${tableName}_data tbody`).on('click', '#deleteUserBtn', function () {
         let self = $(this);
-        let tr = self.closest('tr');
-        let row = $(`#${tableName}_data`).DataTable().row(tr);
+        let trSelector = self.closest('tr');
         let userId = self.attr('data-id');
-        window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
-            $.ajax({
-                url: route('users.destroy', {user: userId}).url(),
-                method: 'DELETE',
-                beforeSend: function () {
-                    window.parent.showLoading(tr);
-                },
-                datatype: 'json',
-                success: function (res) {
-                    if (res.status === 200) {
-                        let chkbox = tr.find('input[type="checkbox"]');
-
-                        if (chkbox.is(':checked')) {
-                            selectedObjects = removeAElement(selectedObjects, chkbox.val());
-                            appendToSeletedLabel(selectedObjects.length);
-                        }
-
-                        row.remove().draw();
-
-                        window.parent.successMessage(res.message);
-                    } else {
-                        window.parent.errorMessage(res.message);
-                    }
-                    window.parent.hideLoading(tr);
-                },
-                error: function () {
-                    window.parent.hideLoading(tr);
-                }
-            });
+        showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
+            deleteRowRecord(
+                route('users.destroy', {user: userId}).url(),
+                {},
+                trSelector
+            );
         } );
     });
 
@@ -56,10 +27,9 @@ $(document).ready(function () {
      */
     let deleteUsersBtn = $('._delete-users');
     if (deleteUsersBtn.length > 0) {
-        let swalText = deleteUsersBtn.attr('swl-text');
         deleteUsersBtn.on('click', function () {
             if (selectedObjects.length > 0) {
-                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
                     let count = 0;
                     dtable.$(`td[scope="checkbox"]`).each(function () {
                         let checkbox = $(this).find('input');
@@ -109,16 +79,15 @@ $(document).ready(function () {
      */
     let changeStateBtn = $('._change-state-users');
     if (changeStateBtn.length > 0) {
-        let swalText = changeStateBtn.attr('swl-text');
+        swlText = changeStateBtn.attr('swl-text');
         changeStateBtn.on('click', function () {
             let self = changeStateBtn;
             if (selectedObjects.length > 0) {
-                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
-                    let swlTitle = self.attr('swl-state-alert-title'),
-                        swlSlNotActive = self.attr('swl-select-not-active-item'),
+                showYesNoModal(swlTitle, swlText, swlIcon, function () {
+                    swlTitle = self.attr('swl-state-alert-title');
+                    let swlSlNotActive = self.attr('swl-select-not-active-item'),
                         swlSlNotVerify = self.attr('swl-select-not-verify-item'),
-                        swlSlActive = self.attr('swl-select-active-item'),
-                        swlCancelBtnText = self.attr('swl-cancel-btn-text');
+                        swlSlActive = self.attr('swl-select-active-item');
 
                     showStateAlert(swlTitle, swlSlNotActive, swlSlNotVerify, swlSlActive, 1, swlCancelBtnText, function (newState) {
                         dtable.$('i[scope="change-state"]').each(function () {
@@ -147,13 +116,13 @@ $(document).ready(function () {
      */
     let assignRoleBtn = $('._assign-role-users');
     if (assignRoleBtn.length > 0) {
-        let swalText = assignRoleBtn.attr('swl-text');
+        swlText = assignRoleBtn.attr('swl-text');
         assignRoleBtn.on(
             'click',
             function () {
                 let self = assignRoleBtn;
                 if (selectedObjects.length > 0) {
-                    window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
+                    showYesNoModal(swlTitle, swlText, swlIcon, function () {
                         let htmlText = `<div class="col-md-12">
                                             <select id="role_select2" oldRoleId="0" name="role" class="form-control"></select>
                                             <span class="error text-danger dmovie-error-box display-none"></span>
@@ -164,7 +133,7 @@ $(document).ready(function () {
                             title: sl2Placeholder,
                             html: htmlText,
                             showCancelButton: true,
-                            cancelButtonText: cancelButtonText,
+                            cancelButtonText: swlCancelBtnText,
                             customClass: {
                                 popup: 'border-radius-0'
                             },

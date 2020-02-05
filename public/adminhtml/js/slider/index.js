@@ -1,19 +1,31 @@
 $(document).ready(function () {
     'use strict';
 
-    let langText = $('.lang-text'),
-        tableName = 'sliders',
-        title = langText.attr('swl-title-text'),
-        icon = langText.attr('swl-icon-warning-text'),
-        text = langText.attr('swl-slider-delete-text'),
-        confirmButtonText = langText.attr('swl-confirmButtonText'),
-        cancelButtonText = langText.attr('swl-cancelButtonText');
-    let dtableSelector = $(`#${tableName}_data`);
+    // $('#sliders_ajax').DataTable({
+    //     serverSide: true,
+    //     processing: true,
+    //     ajax: {
+    //         url: route('sliders.ajaxIndex')
+    //     },
+    //     columns: [
+    //         {
+    //             data: 'id',
+    //             name: 'id'
+    //         },
+    //         {
+    //             data: 'title',
+    //             name: 'title'
+    //         },
+    //     ],
+    // });
+
+    tableName = 'sliders';
+    swlIcon = langTextSelector.attr('swl-icon-warning-text');
 
     $.fn.dataTable.defaults.columnDefs = columnDefs;
     $.fn.dataTable.defaults.order = colOrder;
 
-    window.parent.dtable = initDataTable(dtableSelector, tableName);
+    dtable = initDataTable();
 
     /* Change status of slide item */
 
@@ -34,33 +46,12 @@ $(document).ready(function () {
         let self = $(this);
         let url = self.attr('url');
         let tr = self.closest('tr');
-        let row = dtable.row(tr);
         let id = self.attr('data-id');
-        window.parent.showYesNoModal(title, text, icon, confirmButtonText, cancelButtonText, function () {
-            ajaxRequest(
+        showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
+            deleteRowRecord(
                 url,
-                'DELETE',
-                {
-                    slider: id
-                },
-                function (res) {
-                    showLoading(tr);
-                },
-                function (res) {
-                    if (res.status === 200) {
-                        row.remove().draw();
-                        successMessage(res.message);
-                    } else {
-                        hideLoading(tr);
-                        errorMessage(res.message);
-                    }
-                },
-                function (res) {
-                    let errorMsg = res.responseJSON.message;
-
-                    errorMessage(errorMsg);
-                    hideLoading(tr);
-                }
+                {},
+                tr
             );
         } );
     });
@@ -71,46 +62,22 @@ $(document).ready(function () {
         let swalText = multiDeleteBtn.attr('swl-text');
         multiDeleteBtn.on('click', function () {
             if (selectedObjects.length > 0) {
-                window.parent.showYesNoModal(title, swalText, icon, confirmButtonText, cancelButtonText, function () {
-                    let count = 0;
+                showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
                     dtable.$(`td[scope="checkbox"]`).each(function () {
-                        let checkbox = $(this).find('input');
-                        if (checkbox.is(':checked')) {
-                            let userId = checkbox.val();
-                            let tr = checkbox.closest('tr'),
-                                row = dtable.row(tr);
-                            $(document).ajaxStart(function () {
-                                window.parent.showLoading(dtableSelector);
-                            });
-                            $.ajax({
-                                url: route('users.destroy', {user: userId}).url(),
-                                method: 'DELETE',
-                                datatype: 'json',
-                                success: function (res) {
-                                    if (res.status === 200) {
-                                        selectedObjects = removeAElement(selectedObjects, userId);
-
-                                        row.remove().draw();
-                                    }
-                                }
-                            });
-                            $(document).ajaxStop(function () {
-                                window.parent.hideLoading(dtableSelector);
-                            });
-                            count++;
+                        let rowCheckbox = $(this).find('input');
+                        if (rowCheckbox.is(':checked')) {
+                            let rowSelector = rowCheckbox.closest('tr');
+                            deleteRowRecord(
+                                route(`sliders.destroy`, {slider: rowCheckbox.val()}),
+                                {},
+                                rowSelector,
+                            );
                         }
-                    });
-                    $(document).ajaxSuccess(function () {
-                        let message = langText.attr('users-deleted');
-
-                        window.parent.successMessage(message + count + ' users.');
-
-                        appendToSeletedLabel(selectedObjects.length);
                     });
                 });
             } else {
                 /** If not select any row, then show a alert */
-                window.parent.normalAlert(errorTitle, errorText);
+                normalAlert(errorTitle, errorText);
             }
         })
     }
@@ -154,6 +121,5 @@ function changeItemStatus(targetBtn, row, itemID, newStatus) {
 
             window.parent.hideLoading(row);
         },
-        500
     );
 }

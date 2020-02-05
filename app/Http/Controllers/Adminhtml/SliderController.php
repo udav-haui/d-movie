@@ -35,7 +35,7 @@ class SliderController extends Controller
     {
         $this->authorize('view', Slider::class);
 
-        $sliders = $this->sliderRepository->allByOrder();
+        $sliders = Slider::paginate(10); //$this->sliderRepository->allByOrder();
         return view(
             'admin.slider.index',
             compact('sliders')
@@ -211,6 +211,13 @@ class SliderController extends Controller
         }
     }
 
+
+    public function ajaxIndex()
+    {
+        $sliders = Slider::select(['id', 'title']);
+
+        return datatables()->of($sliders)->make();
+    }
 //    public function test(Slider $slider)
 //    {
 //        $slider->setId(15);

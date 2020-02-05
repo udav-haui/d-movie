@@ -54,13 +54,27 @@ $(document).ready(function () {
 });
 
 let disMissBtn = `<button type="button" class="close" dmovie-noti-dismiss>×</button>`,
-    selectedRowsCount = $('.selected-rows-label') || null,
-    langTextSelector = $('.lang-text') || null;
+    selectedRowsCount = $('.selected-rows-label') || null;
+window.langTextSelector = $('.lang-text') || null;
+
 window.mainLang = $('html').attr('lang');
-window.selectedObjects = [];
+
+window.tableName = '';
 window.dtable = null;
+
+window.selectedObjects = [];
+
 window.errorTitle = langTextSelector.attr('swl-error-title'),
 window.errorText = langTextSelector.attr('swl-error-text-must-select-one-record');
+window.swlTitle = langTextSelector.attr('swl-title-text');
+window.swlText = '';
+window.swlIcon = '';
+window.swlSingDeleteText = langTextSelector.attr('swl-single-delete-text');
+window.swlMultiDeleteText = langTextSelector.attr('swl-multi-delete-text');
+window.swlConfirmBtnText = langTextSelector.attr('swl-confirm-btn-text');
+window.swlCancelBtnText = langTextSelector.attr('swl-cancel-btn-text');
+window.swlConfirmBtnColor = langTextSelector.attr('swl-confirm-btn-color');
+window.swlCancelBtnColor = langTextSelector.attr('swl-cancel-btn-color');
 
 
 /* DISMISS NOTIFICATION */
@@ -108,6 +122,16 @@ $(`td[scope="checkbox"]`).on('change', function () {
 /** ./End */
 // .////////////////////
 
+/**
+ * Send ajax request
+ *
+ * @param url
+ * @param method
+ * @param data
+ * @param beforeSendCallBack
+ * @param successCallback
+ * @param errorCallback
+ */
 window.ajaxRequest = function (
     url = '',
     method = '',
@@ -115,14 +139,12 @@ window.ajaxRequest = function (
     beforeSendCallBack,
     successCallback,
     errorCallback,
-    delay = 0
 ) {
     $.ajax({
         url: url,
         method: method,
         data: data,
         datatype: 'json',
-        delay: delay,
         beforeSend: function (res) {
             beforeSendCallBack(res);
         },
@@ -136,25 +158,69 @@ window.ajaxRequest = function (
 };
 
 /**
+ * Delete a data table row record
+ *
+ * @param url
+ * @param data
+ * @param trSelector
+ */
+window.deleteRowRecord = function (
+    url = '',
+    data = {},
+    trSelector = $(document)
+) {
+    let dtRow = dtable.row(trSelector);
+    ajaxRequest(
+        url,
+        'DELETE',
+        data,
+        function (res) {
+            showLoading(trSelector);
+        },
+        function (res) {
+            if (res.status === 200) {
+                let chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
+                if (chkbox.is(':checked')) {
+                    selectedObjects = removeAElement(selectedObjects, chkbox.val());
+                    appendToSeletedLabel(selectedObjects.length);
+                }
+                dtRow.remove().draw();
+                successMessage(res.message);
+
+            } else {
+                hideLoading(trSelector);
+                errorMessage(res.message);
+            }
+        },
+        function (res) {
+            let errorMsg = res.responseJSON.message;
+
+            errorMessage(errorMsg);
+            hideLoading(trSelector);
+        }
+    );
+};
+
+
+/**
  * Append number of selected rows to showable section
  *
  * @param number
  */
-appendToSeletedLabel = function (number = 0) {
+window.appendToSeletedLabel = function (number = 0) {
     if (selectedRowsCount.length > 0) {
         selectedRowsCount.text(number);
     }
-}
+};
 
 /**
  * Init datatable
  *
- * @param selector
- * @param tableName
  * @returns {jQuery}
  */
-window.initDataTable = function(selector, tableName) {
-    return selector.DataTable({
+window.initDataTable = function() {
+    let dtableSelector = $(`#${tableName}_data`);
+    return dtableSelector.DataTable({
         initComplete: function (settings, json) {
             let dataWrapper = $(`#${tableName}_data_wrapper`),
                 selectDropdown = dataWrapper.find(`#${tableName}_data_length`),
@@ -294,23 +360,21 @@ window.hideLoading = function (selector) {
 
 window.showYesNoModal = function (
     title,
-    text,
+    swalText,
     icon,
-    confirmButtonText,
-    cancelButtonText,
     callback,
-    confirmButtonColor = '#3085d6',
-    cancelButtonColor = '#d33',
+    confirmButtonColor = swlConfirmBtnColor,
+    cancelButtonColor = swlCancelBtnColor,
 ) {
     Swal.fire({
         title: title,
-        text: text,
+        text: swalText,
         icon: icon,
         showCancelButton: true,
         confirmButtonColor: confirmButtonColor,
         cancelButtonColor: cancelButtonColor,
-        confirmButtonText: confirmButtonText,
-        cancelButtonText: cancelButtonText,
+        confirmButtonText: swlConfirmBtnText,
+        cancelButtonText: swlCancelBtnText,
         width: '640px'
     }).then((result) => {
         if (result.value) {

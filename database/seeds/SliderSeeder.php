@@ -11,6 +11,6 @@ class SliderSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(\App\Slider::class, 20)->create();
     }
 }
