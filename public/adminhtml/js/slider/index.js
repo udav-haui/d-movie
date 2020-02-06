@@ -1,31 +1,98 @@
 $(document).ready(function () {
     'use strict';
 
-    // $('#sliders_ajax').DataTable({
-    //     serverSide: true,
-    //     processing: true,
-    //     ajax: {
-    //         url: route('sliders.ajaxIndex')
-    //     },
-    //     columns: [
-    //         {
-    //             data: 'id',
-    //             name: 'id'
-    //         },
-    //         {
-    //             data: 'title',
-    //             name: 'title'
-    //         },
-    //     ],
-    // });
+    dtable = $('#sliders_ajax').DataTable({
+        serverSide: true,
+        processing: true,
+        ajax: {
+            url: route('sliders.index')
+        },
+        columns: [
+            {
+                targets: 0,
+                data: 'id',
+                render: function (data, type, full, meta) {
+                    return `<div class="dmovie-checkbox dmovie-checkbox-custom">
+                                    <input value="${data}" id="checkbox-${data}"
+                                           type="checkbox"
+                                           grid-item-checkbox
+                                           class="dt-checkboxes display-none user-checkbox">
+                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
+                                </div>`;
+                }
+            },
+            {
+                data: 'id',
+                name: 'id'
+            },
+            {
+                data: 'title',
+                name: 'title'
+            },
+            {
+                data: 'order',
+                name: 'order'
+            }
+        ],
+        columnDefs: [
+            {
+                targets: 0,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'checkbox');
+                    // let chkInput = $(td).find('input');
+                    // chkInput.val(cellData);
+                    // chkInput.attr('grid-item-checkbox', "dmovie-checkbox");
+                },
+                checkboxes: {
+                    selectRow: true,
+                    selectAllRender: `<div class="dmovie-checkbox dmovie-checkbox-custom">
+                                <input value="0" id="checkbox-all" type="checkbox"
+                                       class="display-none user-checkbox">
+                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
+                            </div>`,
+                }
+            },
+            {
+                targets: ['no-sort', 0],
+                orderable: false
+            },
+        ],
+        select: {
+            style: 'multi',
+        },
+        order: [[1, 'asc']]
+    });
 
+    dtable.on('select', function (e, dt, type, indexes) {
+        if (type === 'row') {
+
+            let data = dtable.rows( indexes ).data().pluck( 'id' );
+
+            let objId = data[0];
+
+            selectedObjects.push(objId);
+
+            appendToSeletedLabel(selectedObjects.length);
+        }
+    });
+    dtable.on('deselect', function (e, dt, type, indexes) {
+        if (type === 'row') {
+            let data = dtable.rows( indexes ).data().pluck( 'id' );
+
+            let objId = data[0];
+
+            selectedObjects = removeAElement(selectedObjects, objId);
+
+            appendToSeletedLabel(selectedObjects.length);
+        }
+    });
     tableName = 'sliders';
     swlIcon = langTextSelector.attr('swl-icon-warning-text');
 
     $.fn.dataTable.defaults.columnDefs = columnDefs;
     $.fn.dataTable.defaults.order = colOrder;
 
-    dtable = initDataTable();
+    // dtable = initDataTable();
 
     /* Change status of slide item */
 
@@ -52,7 +119,7 @@ $(document).ready(function () {
                 url,
                 {},
                 tr
-            );
+            ).then((result) => console.log(result));
         } );
     });
 

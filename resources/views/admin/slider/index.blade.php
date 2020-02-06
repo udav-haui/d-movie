@@ -16,6 +16,7 @@
 @endsection
 
 @section('head.css')
+    <link rel="stylesheet" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css">
     <link rel="stylesheet" href="{{ asset('adminhtml/css/slider/index.css') }}">
 @endsection
 
@@ -73,6 +74,8 @@
         colOrder = [[1, 'desc']];
     @endcannot
     </script>
+
+    <script src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
     <script src="{{ asset('adminhtml/js/slider/index.js') }}"></script>
 @endsection
 
@@ -140,115 +143,132 @@
 
     <div class="row">
         <div class="col-md-12 table-responsive">
-            <table id="sliders_data" class="display nowrap dmovie-table"
+{{--            <table id="sliders_data"--}}
+{{--                   class="display nowrap dmovie-table"--}}
+{{--                   cellspacing="0"--}}
+{{--                   width="100%">--}}
+{{--                <thead>--}}
+{{--                <tr>--}}
+{{--                    @can('canEditDelete', \App\Slider::class)--}}
+{{--                        <th class="no-sort">--}}
+{{--                            <div class="dmovie-checkbox dmovie-checkbox-custom">--}}
+{{--                                <input value="0" id="checkbox-all" type="checkbox"--}}
+{{--                                       class="display-none user-checkbox">--}}
+{{--                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>--}}
+{{--                            </div>--}}
+{{--                        </th>--}}
+{{--                    @endcan--}}
+{{--                    <th>#</th>--}}
+{{--                    <th>{{ __('Title') }}</th>--}}
+{{--                    <th class="no-sort">{{ __('Image') }}</th>--}}
+{{--                    <th>{{ __('Href') }}</th>--}}
+{{--                    <th>{{ __('Order') }}</th>--}}
+{{--                    <th>{{ __('Status') }}</th>--}}
+{{--                    @can('canEditDelete', \App\Slider::class)--}}
+{{--                        <th class="no-sort min-width-65">{{ __('Task') }}</th>--}}
+{{--                    @endcan--}}
+{{--                </tr>--}}
+{{--                </thead>--}}
+{{--                <tfoot>--}}
+{{--                <tr>--}}
+{{--                    @can('canEditDelete', \App\Slider::class)<th class="no-sort"></th>@endcan--}}
+{{--                    <th>#</th>--}}
+{{--                    <th>{{ __('Title') }}</th>--}}
+{{--                    <th class="no-sort">{{ __('Image') }}</th>--}}
+{{--                    <th>{{ __('Href') }}</th>--}}
+{{--                    <th>{{ __('Order') }}</th>--}}
+{{--                    <th>{{ __('Status') }}</th>--}}
+{{--                    @can('canEditDelete', \App\Slider::class)--}}
+{{--                        <th class="no-sort">{{ __('Task') }}</th>--}}
+{{--                    @endcan--}}
+{{--                </tr>--}}
+{{--                </tfoot>--}}
+{{--                <tbody>--}}
+{{--                <?php /** @var $item \App\Slider */ ?>--}}
+{{--                @foreach($sliders as $item)--}}
+{{--                    <tr>--}}
+{{--                        @can('canEditDelete', \App\Slider::class)--}}
+{{--                            <td scope="checkbox">--}}
+{{--                                <div class="dmovie-checkbox dmovie-checkbox-custom">--}}
+{{--                                    <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"--}}
+{{--                                           type="checkbox"--}}
+{{--                                           grid-item-checkbox--}}
+{{--                                           class="display-none user-checkbox">--}}
+{{--                                    <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>--}}
+{{--                                </div>--}}
+{{--                            </td>--}}
+{{--                        @endcan--}}
+{{--                        <td scope="id">{{ $item->id }}</td>--}}
+{{--                        <td scope="title" title="{{ $item->getTitle() }}">--}}
+{{--                            {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}--}}
+{{--                        </td>--}}
+{{--                        <td scope="image">--}}
+{{--                            <a href="{{ $item->getImagePath() }}"--}}
+{{--                               class="slide-item"--}}
+{{--                               data-fancybox="sliders" data-caption="{{ $item->getTitle() }}">--}}
+{{--                                <img src="{{ $item->getImagePath() }}"--}}
+{{--                                    class="slide-item-image" />--}}
+{{--                            </a>--}}
+{{--                        </td>--}}
+{{--                        <td scope="href">{!! $item->renderHtmlHref() !!}</td>--}}
+{{--                        <td scope="Order">{{ $item->getAttribute('order') }}</td>--}}
+{{--                        <td scope="status">--}}
+{{--                            <div class="pretty p-switch p-fill dmovie-switch">--}}
+{{--                                <input type="checkbox"--}}
+{{--                                       {{ (int)$item->getAttribute('status') === 1 ? 'checked' : '' }}--}}
+{{--                                       class="status-checkbox"--}}
+{{--                                       value="{{ $item->getAttribute('status') }}"--}}
+{{--                                       data-id="{{ $item->getAttribute('id') }}"--}}
+{{--                                       @cannot('update', \App\Slider::class) disabled @endcannot--}}
+{{--                                />--}}
+{{--                                <div class="state p-success">--}}
+{{--                                    <label class="status-text select-none">--}}
+{{--                                        {{ $item->getStatusLabel() }}--}}
+{{--                                    </label>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </td>--}}
+{{--                        @can('canEditDelete', \App\Slider::class)--}}
+{{--                            <td scope="task">--}}
+{{--                                @can('view', \App\Slider::class)--}}
+{{--                                    <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"--}}
+{{--                                       type="button"--}}
+{{--                                       class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot--}}
+{{--                                           col-xs-12 btn dmovie-btn dmovie-btn-success"--}}
+{{--                                       title="{{ __('Detail') }}">--}}
+{{--                                        <i class="mdi mdi-account-edit"></i>--}}
+{{--                                    </a>--}}
+{{--                                @endcan--}}
+{{--                                @can('delete', \App\Slider::class)--}}
+{{--                                    <button id="deleteBtn" type="button"--}}
+{{--                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"--}}
+{{--                                            title="{{ __('Delete') }}"--}}
+{{--                                            data-id="{{ $item->getId() }}"--}}
+{{--                                            url="{{ route('sliders.destroy', ['slider' => $item->getId()]) }}">--}}
+{{--                                        <i class="mdi mdi-account-minus"></i>--}}
+{{--                                    </button>--}}
+{{--                                @endcan--}}
+{{--                            </td>--}}
+{{--                        @endcan--}}
+{{--                    </tr>--}}
+{{--                @endforeach--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
+
+            <hr />
+
+            <table id="sliders_ajax"
+                   class="display nowrap dmovie-table"
                    cellspacing="0"
                    width="100%">
                 <thead>
                 <tr>
-                    @can('canEditDelete', \App\Slider::class)
-                        <th class="no-sort">
-                            <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input value="0" id="checkbox-all" type="checkbox"
-                                       class="display-none user-checkbox">
-                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
-                            </div>
-                        </th>
-                    @endcan
-                    <th>#</th>
-                    <th>{{ __('Title') }}</th>
-                    <th class="no-sort">{{ __('Image') }}</th>
-                    <th>{{ __('Href') }}</th>
-                    <th>{{ __('Order') }}</th>
-                    <th>{{ __('Status') }}</th>
-                    @can('canEditDelete', \App\Slider::class)
-                        <th class="no-sort min-width-65">{{ __('Task') }}</th>
-                    @endcan
+                    <th></th>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Order</th>
                 </tr>
                 </thead>
-                <tfoot>
-                <tr>
-                    @can('canEditDelete', \App\Slider::class)<th class="no-sort"></th>@endcan
-                    <th>#</th>
-                    <th>{{ __('Title') }}</th>
-                    <th class="no-sort">{{ __('Image') }}</th>
-                    <th>{{ __('Href') }}</th>
-                    <th>{{ __('Order') }}</th>
-                    <th>{{ __('Status') }}</th>
-                    @can('canEditDelete', \App\Slider::class)
-                        <th class="no-sort">{{ __('Task') }}</th>
-                    @endcan
-                </tr>
-                </tfoot>
-                <tbody>
-                <?php /** @var $item \App\Slider */ ?>
-                @foreach($sliders as $item)
-                    <tr>
-                        @can('canEditDelete', \App\Slider::class)
-                            <td scope="checkbox">
-                                <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                    <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"
-                                           type="checkbox"
-                                           grid-item-checkbox
-                                           class="display-none user-checkbox">
-                                    <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>
-                                </div>
-                            </td>
-                        @endcan
-                        <td scope="id">{{ $item->id }}</td>
-                        <td scope="title" title="{{ $item->getTitle() }}">
-                            {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}
-                        </td>
-                        <td scope="image">
-                            <a href="{{ $item->getImagePath() }}"
-                               class="slide-item"
-                               data-fancybox="sliders" data-caption="{{ $item->getTitle() }}">
-                                <img src="{{ $item->getImagePath() }}"
-                                    class="slide-item-image" />
-                            </a>
-                        </td>
-                        <td scope="href">{!! $item->renderHtmlHref() !!}</td>
-                        <td scope="Order">{{ $item->getAttribute('order') }}</td>
-                        <td scope="status">
-                            <div class="pretty p-switch p-fill dmovie-switch">
-                                <input type="checkbox"
-                                       {{ (int)$item->getAttribute('status') === 1 ? 'checked' : '' }}
-                                       class="status-checkbox"
-                                       value="{{ $item->getAttribute('status') }}"
-                                       data-id="{{ $item->getAttribute('id') }}"
-                                       @cannot('update', \App\Slider::class) disabled @endcannot
-                                />
-                                <div class="state p-success">
-                                    <label class="status-text select-none">
-                                        {{ $item->getStatusLabel() }}
-                                    </label>
-                                </div>
-                            </div>
-                        </td>
-                        @can('canEditDelete', \App\Slider::class)
-                            <td scope="task">
-                                @can('view', \App\Slider::class)
-                                    <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"
-                                       type="button"
-                                       class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot
-                                           col-xs-12 btn dmovie-btn dmovie-btn-success"
-                                       title="{{ __('Detail') }}">
-                                        <i class="mdi mdi-account-edit"></i>
-                                    </a>
-                                @endcan
-                                @can('delete', \App\Slider::class)
-                                    <button id="deleteBtn" type="button"
-                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
-                                            title="{{ __('Delete') }}"
-                                            data-id="{{ $item->getId() }}"
-                                            url="{{ route('sliders.destroy', ['slider' => $item->getId()]) }}">
-                                        <i class="mdi mdi-account-minus"></i>
-                                    </button>
-                                @endcan
-                            </td>
-                        @endcan
-                    </tr>
-                @endforeach
-                </tbody>
             </table>
         </div>
     </div>

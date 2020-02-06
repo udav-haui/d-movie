@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->index();
             $table->smallInteger('account_type');
             $table->smallInteger('can_change_username')->default(0);
             $table->smallInteger('login_with_social_account')->default(0);

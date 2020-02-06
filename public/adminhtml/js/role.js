@@ -34,7 +34,7 @@ $(document).ready(function () {
                 datatype: 'json',
                 success: function (res) {
                     if (res.status === 200) {
-                        row.remove().draw();
+                        row.remove().draw(true);
                         window.parent.successMessage(res.message);
                     } else {
                         window.parent.errorMessage(res.message);

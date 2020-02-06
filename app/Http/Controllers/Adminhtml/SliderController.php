@@ -35,7 +35,16 @@ class SliderController extends Controller
     {
         $this->authorize('view', Slider::class);
 
-        $sliders = Slider::paginate(10); //$this->sliderRepository->allByOrder();
+
+        if (request()->ajax()) {
+            $sliders = Slider::select(['id', 'title', 'order']);
+
+            return datatables()->of($sliders)
+                ->rawColumns(['checkbox'])
+                ->make();
+        }
+
+        $sliders = $this->sliderRepository->allByOrder();
         return view(
             'admin.slider.index',
             compact('sliders')
@@ -214,9 +223,7 @@ class SliderController extends Controller
 
     public function ajaxIndex()
     {
-        $sliders = Slider::select(['id', 'title']);
 
-        return datatables()->of($sliders)->make();
     }
 //    public function test(Slider $slider)
 //    {

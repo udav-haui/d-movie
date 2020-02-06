@@ -48,7 +48,7 @@ $(document).ready(function () {
                                     if (res.status === 200) {
                                         selectedObjects = removeAElement(selectedObjects, userId);
 
-                                        row.remove().draw();
+                                        row.remove().draw(true);
                                     }
                                 }
                             });

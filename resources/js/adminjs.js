@@ -5,6 +5,7 @@ window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('datatables.net-dt');
+require('datatables.net-select-dt');
 require('dropify/dist/js/dropify.min');
 require('@fancyapps/fancybox');
 
@@ -109,18 +110,19 @@ $('#checkbox-all').on('click', function () {
 /**
  * Check on checkbox item
  */
-$(`td[scope="checkbox"]`).on('change', function () {
-    let checkbox = $(this).find('input[grid-item-checkbox]');
-    if (checkbox.prop('checked')) {
-        selectedObjects.push(checkbox.val());
-    } else {
-        let objId = checkbox.val();
-        selectedObjects = window.parent.removeAElement(selectedObjects, objId);
-    }
-    appendToSeletedLabel(selectedObjects.length);
-});
+// $(document).on('change', 'td[scope="checkbox"]', function () {
+//     let checkbox = $(this).find('input[grid-item-checkbox]');
+//     if (checkbox.prop('checked')) {
+//         selectedObjects.push(checkbox.val());
+//     } else {
+//         let objId = checkbox.val();
+//         selectedObjects = window.parent.removeAElement(selectedObjects, objId);
+//     }
+//     appendToSeletedLabel(selectedObjects.length);
+// });
 /** ./End */
 // .////////////////////
+
 
 /**
  * Send ajax request
@@ -145,6 +147,7 @@ window.ajaxRequest = function (
         method: method,
         data: data,
         datatype: 'json',
+        delay: 250,
         beforeSend: function (res) {
             beforeSendCallBack(res);
         },
@@ -164,13 +167,13 @@ window.ajaxRequest = function (
  * @param data
  * @param trSelector
  */
-window.deleteRowRecord = function (
+window.deleteRowRecord = async function (
     url = '',
     data = {},
     trSelector = $(document)
 ) {
     let dtRow = dtable.row(trSelector);
-    ajaxRequest(
+    let result = await ajaxRequest(
         url,
         'DELETE',
         data,
@@ -184,12 +187,14 @@ window.deleteRowRecord = function (
                     selectedObjects = removeAElement(selectedObjects, chkbox.val());
                     appendToSeletedLabel(selectedObjects.length);
                 }
-                dtRow.remove().draw();
+                // dtRow.deselect().remove().draw(true);
                 successMessage(res.message);
-
+                return true;
             } else {
                 hideLoading(trSelector);
                 errorMessage(res.message);
+
+                return false;
             }
         },
         function (res) {
@@ -197,8 +202,12 @@ window.deleteRowRecord = function (
 
             errorMessage(errorMsg);
             hideLoading(trSelector);
+
+            return false;
         }
     );
+
+    return result;
 };
 
 
@@ -435,7 +444,7 @@ window.imageDropify = function (selector, langTextSelector = $('.lang-text')) {
             error: errorMsg
         }
     });
-}
+};
 
 let imgFancybox = $( '[data-fancybox]' ),
     fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
