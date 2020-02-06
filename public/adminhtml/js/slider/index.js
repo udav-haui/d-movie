@@ -1,55 +1,41 @@
 $(document).ready(function () {
     'use strict';
 
+    $.fn.dataTable.defaults.aoColumns = aoColumns;
+
     dtable = $('#sliders_ajax').DataTable({
         serverSide: true,
         processing: true,
+        lengthMenu: [
+            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, -1],
+            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, "All"]
+        ],
+        pageLength: 15,
         ajax: {
             url: route('sliders.index')
         },
-        columns: [
-            {
-                targets: 0,
-                data: 'id',
-                render: function (data, type, full, meta) {
-                    return `<div class="dmovie-checkbox dmovie-checkbox-custom">
-                                    <input value="${data}" id="checkbox-${data}"
-                                           type="checkbox"
-                                           grid-item-checkbox
-                                           class="dt-checkboxes display-none user-checkbox">
-                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
-                                </div>`;
-                }
-            },
-            {
-                data: 'id',
-                name: 'id'
-            },
-            {
-                data: 'title',
-                name: 'title'
-            },
-            {
-                data: 'order',
-                name: 'order'
-            }
-        ],
+
         columnDefs: [
             {
                 targets: 0,
                 createdCell: function (td, cellData, rowData, row, col) {
                     $(td).attr('scope', 'checkbox');
-                    // let chkInput = $(td).find('input');
-                    // chkInput.val(cellData);
-                    // chkInput.attr('grid-item-checkbox', "dmovie-checkbox");
                 },
                 checkboxes: {
                     selectRow: true,
-                    selectAllRender: `<div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input value="0" id="checkbox-all" type="checkbox"
-                                       class="display-none user-checkbox">
-                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
-                            </div>`,
+                        selectAllRender: `<input type="checkbox" id="checkbox-all" />`
+                }
+            },
+            {
+                targets: 1,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'id');
+                }
+            },
+            {
+                targets: 5,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'status');
                 }
             },
             {
@@ -57,46 +43,49 @@ $(document).ready(function () {
                 orderable: false
             },
         ],
-        select: {
-            style: 'multi',
-        },
         order: [[1, 'asc']]
     });
 
-    dtable.on('select', function (e, dt, type, indexes) {
-        if (type === 'row') {
+    // dtable.on('select', function (e, dt, type, indexes) {
+    //     if (type === 'row') {
+    //
+    //         let data = dtable.rows( indexes ).data().pluck( 'id' );
+    //
+    //         let objId = data[0];
+    //
+    //         selectedObjects.push(objId);
+    //
+    //         appendToSeletedLabel(selectedObjects.length);
+    //     }
+    // });
+    // dtable.on('deselect', function (e, dt, type, indexes) {
+    //     if (type === 'row') {
+    //         let data = dtable.rows( indexes ).data().pluck( 'id' );
+    //
+    //         let objId = data[0];
+    //
+    //         selectedObjects = removeAElement(selectedObjects, objId);
+    //
+    //         appendToSeletedLabel(selectedObjects.length);
+    //     }
+    // });
 
-            let data = dtable.rows( indexes ).data().pluck( 'id' );
-
-            let objId = data[0];
-
-            selectedObjects.push(objId);
-
-            appendToSeletedLabel(selectedObjects.length);
-        }
-    });
-    dtable.on('deselect', function (e, dt, type, indexes) {
-        if (type === 'row') {
-            let data = dtable.rows( indexes ).data().pluck( 'id' );
-
-            let objId = data[0];
-
-            selectedObjects = removeAElement(selectedObjects, objId);
-
-            appendToSeletedLabel(selectedObjects.length);
-        }
-    });
     tableName = 'sliders';
     swlIcon = langTextSelector.attr('swl-icon-warning-text');
 
-    $.fn.dataTable.defaults.columnDefs = columnDefs;
-    $.fn.dataTable.defaults.order = colOrder;
+    // $.fn.dataTable.defaults.columnDefs = columnDefs;
+    // $.fn.dataTable.defaults.order = colOrder;
 
     // dtable = initDataTable();
 
+    $('#btn-test').on('click', function () {
+        dtable.draw();
+    });
+
     /* Change status of slide item */
 
-    $('.status-checkbox').on('change', function () {
+    /* Change status switch */
+    $(document).on('change', '.status-checkbox', function () {
         let self = $(this),
             row = self.closest('tr');
 
@@ -130,17 +119,9 @@ $(document).ready(function () {
         multiDeleteBtn.on('click', function () {
             if (selectedObjects.length > 0) {
                 showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
-                    dtable.$(`td[scope="checkbox"]`).each(function () {
-                        let rowCheckbox = $(this).find('input');
-                        if (rowCheckbox.is(':checked')) {
-                            let rowSelector = rowCheckbox.closest('tr');
-                            deleteRowRecord(
-                                route(`sliders.destroy`, {slider: rowCheckbox.val()}),
-                                {},
-                                rowSelector,
-                            );
-                        }
-                    });
+                    let exeUrl = route(`sliders.multiDestroy`),
+                        data = {ids: selectedObjects};
+                    multiDeleteRecords(exeUrl, data);
                 });
             } else {
                 /** If not select any row, then show a alert */
@@ -164,7 +145,7 @@ function changeItemStatus(targetBtn, row, itemID, newStatus) {
         {
             status: newStatus
         },
-        function (res) {
+        function () {
             showLoading(row);
         },
         function (res) {
@@ -177,7 +158,7 @@ function changeItemStatus(targetBtn, row, itemID, newStatus) {
             } else {
                 window.parent.errorMessage(res.message);
             }
-            window.parent.hideLoading(row);
+            hideLoading(row);
         },
         function (res) {
             targetBtn.prop('checked', !targetBtn.prop('checked'));

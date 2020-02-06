@@ -37,11 +37,76 @@ class SliderController extends Controller
 
 
         if (request()->ajax()) {
-            $sliders = Slider::select(['id', 'title', 'order']);
+            $sliders = Slider::select(['id', 'status', 'title', 'order', 'image', 'href']);
 
-            return datatables()->of($sliders)
-                ->rawColumns(['checkbox'])
-                ->make();
+            $dataTable = datatables()->of($sliders);
+
+            $dataTable->editColumn('image', function (Slider $slider) {
+                return $slider->renderImageHtml();
+            });
+            $dataTable->editColumn('title', function (Slider $slider) {
+                return strlen($slider->getTitle()) > 65 ?
+                    substr($slider->getTitle(), 0, 65) . '...' :
+                    $slider->getTitle();
+            });
+            $dataTable->editColumn('href', function (Slider $slider) {
+                return $slider->renderHtmlHref();
+            });
+
+            $authUser = auth()->user();
+            if ($authUser->can('canEditDelete', Slider::class)) {
+                $dataTable->addColumn('task', function (Slider $slider) use ($authUser) {
+                    if ($authUser->can('update', Slider::class)) {
+                        $htmlRaw = "<a href=\"" . route('sliders.edit', ['slider' => $slider->getId()]) . "\"
+                                   type=\"button\" class=\"";
+                        if ($authUser->cant('delete', Slider::class)) {
+                            $htmlRaw .= "col-md-12 ";
+                        } else {
+                            $htmlRaw .= 'col-md-6 ';
+                        }
+
+                        $htmlRaw .= "col-xs-12 btn dmovie-btn dmovie-btn-success\"";
+                        $htmlRaw .= "title=\"" . __('Detail') . "\">";
+                        $htmlRaw .= "<i class=\"mdi mdi-account-edit\"></i></a>";
+                    }
+
+                    if ($authUser->can('delete', Slider::class)) {
+                        $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
+                                            class=\"col-md-6 col-xs-12 btn dmovie-btn btn-danger\"
+                                            title=\" " . __('Delete') . " \"
+                                            data-id=\"{$slider->getId()}\"
+                                            url=\"" . route('sliders.destroy', ['slider' => $slider->getId()]) . "\">
+                                        <i class=\"mdi mdi-account-minus\"></i>
+                                    </button>";
+                    }
+
+                    return $htmlRaw;
+                });
+            }
+
+            $dataTable->editColumn('status', function (Slider $slider) {
+                $authU = auth()->user();
+                $htmlRaw = "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+                $htmlRaw .= "<input type=\"checkbox\"";
+                $htmlRaw .= (int)$slider->getStatus() === Slider::ENABLE ? "checked " : "";
+                $htmlRaw .= "class=\"status-checkbox\"".
+                    "value=\"{$slider->getId()}\"".
+                    "data-id=\"{$slider->getId()}\"";
+                if ($authU->cant('update', Slider::class)) {
+                    $htmlRaw .= "disabled";
+                }
+                $htmlRaw .= "/>";
+                $htmlRaw .= "<div class=\"state p-success\">
+                          <label class=\"status-text select-none\">
+                                {$slider->getStatusLabel()}
+                          </label>
+                    </div>
+                </div>";
+
+                return $htmlRaw;
+            });
+
+            return $dataTable->rawColumns(['image', 'status', 'href', 'task'])->make();
         }
 
         $sliders = $this->sliderRepository->allByOrder();
@@ -220,10 +285,48 @@ class SliderController extends Controller
         }
     }
 
+    /**
+     * Multi delete item
+     *
+     * @param array $ids
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function multiDestroy()
+    {
+        $this->authorize('delete', Slider::class);
+
+        $ids = request('ids');
+        try {
+            /** @var string $id */
+            foreach ($ids as $id) {
+                $this->sliderRepository->delete($id);
+            }
+
+            $message = __('Slide image was deleted successfully.');
+            return !request()->ajax() ?
+                redirect(route('sliders.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
 
     public function ajaxIndex()
     {
-
     }
 //    public function test(Slider $slider)
 //    {

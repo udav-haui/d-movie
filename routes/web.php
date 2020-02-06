@@ -42,6 +42,7 @@ Route::group(['middleware' => ['locale', 'prefix']], function () {
             Route::post('sliders/changeStatus/{slider}', 'SliderController@changeStatus')->name('sliders.changeStatus');
             // Route::get('sliders/{slider}/test', 'SliderController@test');
             Route::get('sliders/ajaxIndex', 'SliderController@ajaxIndex')->name('sliders.ajaxIndex');
+            Route::delete('sliders/multiDestroy', 'SliderController@multiDestroy')->name('sliders.multiDestroy');
             Route::resource('sliders', 'SliderController');
         });
         Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

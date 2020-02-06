@@ -23,8 +23,50 @@
 @section('bottom.js')
     <script>
         let columnDefs = [],
-            colOrder = [];
+            colOrder = [],
+            aoColumns = [];
     @cannot('canEditDelete', \App\Slider::class)
+        aoColumns = [
+        {
+            targets: 0,
+            data: 'id',
+            render: function (data, type, full, meta) {
+                return `<div class="dmovie-checkbox dmovie-checkbox-custom">
+                                    <input value="${data}" id="checkbox-${data}"
+                                           type="checkbox"
+                                           grid-item-checkbox
+                                           class="dt-checkboxes display-none user-checkbox">
+                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
+                                </div>`;
+            }
+        },
+        {
+            data: 'id',
+            name: 'id'
+        },
+        {
+            data: 'title',
+            name: 'title'
+        },
+        {
+            data: 'image',
+            name: 'image',
+            orderable: false,
+            sortable: false
+        },
+        {
+            data: 'href',
+            name: 'href'
+        },
+        {
+            data: 'status',
+            name: 'status'
+        },
+        {
+            data: 'order',
+            name: 'order'
+        }
+    ];
         columnDefs = [
             {
                 targets: [0, 4],
@@ -45,6 +87,52 @@
         ];
         colOrder = [[0, 'desc']];
     @else
+        aoColumns = [
+        {
+            targets: 0,
+            data: 'id',
+            render: function (data, type, full, meta) {
+                return `<div class="dmovie-checkbox dmovie-checkbox-custom">
+                                    <input value="${data}" id="checkbox-${data}"
+                                           type="checkbox"
+                                           grid-item-checkbox
+                                           class="dt-checkboxes display-none user-checkbox">
+                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
+                                </div>`;
+            }
+        },
+        {
+            data: 'id',
+            name: 'id'
+        },
+        {
+            data: 'title',
+            name: 'title'
+        },
+        {
+            data: 'image',
+            name: 'image',
+            orderable: false,
+            sortable: false
+        },
+        {
+            data: 'href',
+            name: 'href'
+        },
+        {
+            data: 'status',
+            name: 'status'
+        },
+        {
+            data: 'order',
+            name: 'order'
+        },
+        {
+            data: 'task',
+            sortable: false,
+            orderable: false
+        }
+    ];
         columnDefs = [
             {
                 targets: 0,
@@ -264,12 +352,21 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Order</th>
+                    <th>#</th>
+                    <th>{{ __('Title') }}</th>
+                    <th>{{ __('Image') }}</th>
+                    <th>{{ __('Href') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Order') }}</th>
+                    @can('canEditDelete', \App\Slider::class)
+                        <th class="no-sort min-width-65">{{ __('Task') }}</th>
+                    @endcan
                 </tr>
                 </thead>
             </table>
+
+
+            <button id="btn-test">Test</button>
         </div>
     </div>
 

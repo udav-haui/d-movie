@@ -5,7 +5,7 @@ window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('datatables.net-dt');
-require('datatables.net-select-dt');
+// require('datatables.net-select-dt');
 require('dropify/dist/js/dropify.min');
 require('@fancyapps/fancybox');
 
@@ -15,32 +15,32 @@ $(document).ready(function () {
     /**
      * Back top top func
      */
-    jQuery(window).scroll(function(){
-        if(jQuery(window).scrollTop() <= 0){
+    $(window).scroll(function(){
+        if($(window).scrollTop() <= 0){
             jQuery('#rocketmeluncur').slideUp(500);
         }else{
             jQuery('#rocketmeluncur').slideDown(500);
         }
-        let ftrocketmeluncur = jQuery("#ft")[0] ? jQuery("#ft")[0] : jQuery(document.body)[0];
+        let ftrocketmeluncur = $("#ft")[0] ? $("#ft")[0] : $(document.body)[0];
         let scrolltoprocketmeluncur = $('#rocketmeluncur');
         let viewPortHeightrocketmeluncur = parseInt(document.documentElement.clientHeight);
         let scrollHeightrocketmeluncur = parseInt(document.body.getBoundingClientRect().top);
         let basewrocketmeluncur = parseInt(ftrocketmeluncur.clientWidth);
         let swrocketmeluncur = scrolltoprocketmeluncur.clientWidth;
-        if (basewrocketmeluncur < 1000) {
-            let leftrocketmeluncur = parseInt(fetchOffset(ftrocketmeluncur)['left']);
-            leftrocketmeluncur = leftrocketmeluncur < swrocketmeluncur ? leftrocketmeluncur * 2 - swrocketmeluncur : leftrocketmeluncur;
-            scrolltoprocketmeluncur.style.left = ( basewrocketmeluncur + leftrocketmeluncur ) + 'px';
-        } else {
-            // scrolltoprocketmeluncur.css({
-            //     'left':'auto',
-            //     'right':'10px'
-            // });
-        }
+        // if (basewrocketmeluncur < 1000) {
+        //     let leftrocketmeluncur = parseInt(fetchOffset(ftrocketmeluncur)['left']);
+        //     leftrocketmeluncur = leftrocketmeluncur < swrocketmeluncur ? leftrocketmeluncur * 2 - swrocketmeluncur : leftrocketmeluncur;
+        //     scrolltoprocketmeluncur.style.left = ( basewrocketmeluncur + leftrocketmeluncur ) + 'px';
+        // } else {
+        //     // scrolltoprocketmeluncur.css({
+        //     //     'left':'auto',
+        //     //     'right':'10px'
+        //     // });
+        // }
     });
 
-    jQuery('#rocketmeluncur').click(function(){
-        jQuery("html, body").animate({ scrollTop: '0px',display:'none'},{
+    $('#rocketmeluncur').click(function(){
+        $("html, body").animate({ scrollTop: '0px',display:'none'},{
             duration: 600,
             easing: 'linear'
         });
@@ -89,20 +89,25 @@ $( document ).on('click', '[dmovie-noti-dismiss]', function () {
 /**
  * Select all
  */
-$('#checkbox-all').on('click', function () {
-    selectedObjects.length = 0;
+$(document).on('change', '#checkbox-all', function () {
+    // selectedObjects.length = 0;
     let rows = dtable.rows({ 'search': 'applied' }).nodes();
     let check = $('input[grid-item-checkbox]', rows);
     $('input[grid-item-checkbox]', rows).prop('checked', this.checked);
+    let count = 0;
     check.each(function () {
+        if (count > 100) {
+            screenLoader();
+        }
         let uid = $(this).val();
         if (check.is(':checked')) {
             selectedObjects.push(uid);
         } else {
             selectedObjects = window.parent.removeAElement(selectedObjects, uid);
         }
+        count++;
     });
-
+    screenLoader(0);
     appendToSeletedLabel(selectedObjects.length);
 });
 /* ./ EnD */
@@ -110,16 +115,16 @@ $('#checkbox-all').on('click', function () {
 /**
  * Check on checkbox item
  */
-// $(document).on('change', 'td[scope="checkbox"]', function () {
-//     let checkbox = $(this).find('input[grid-item-checkbox]');
-//     if (checkbox.prop('checked')) {
-//         selectedObjects.push(checkbox.val());
-//     } else {
-//         let objId = checkbox.val();
-//         selectedObjects = window.parent.removeAElement(selectedObjects, objId);
-//     }
-//     appendToSeletedLabel(selectedObjects.length);
-// });
+$(document).on('change', 'td[scope="checkbox"]', function () {
+    let checkbox = $(this).find('input[grid-item-checkbox]');
+    if (checkbox.prop('checked')) {
+        selectedObjects.push(checkbox.val());
+    } else {
+        let objId = checkbox.val();
+        selectedObjects = window.parent.removeAElement(selectedObjects, objId);
+    }
+    appendToSeletedLabel(selectedObjects.length);
+});
 /** ./End */
 // .////////////////////
 
@@ -131,31 +136,34 @@ $('#checkbox-all').on('click', function () {
  * @param method
  * @param data
  * @param beforeSendCallBack
- * @param successCallback
- * @param errorCallback
+ * @param doneCallback
+ * @param failCallback
+ * @param alwaysCallback
  */
 window.ajaxRequest = function (
     url = '',
     method = '',
     data = {},
     beforeSendCallBack,
-    successCallback,
-    errorCallback,
+    doneCallback = null,
+    failCallback = null,
+    alwaysCallback = null
 ) {
     $.ajax({
         url: url,
         method: method,
         data: data,
         datatype: 'json',
-        delay: 250,
-        beforeSend: function (res) {
-            beforeSendCallBack(res);
-        },
-        success: function (res) {
-            successCallback(res);
-        },
-        error: function (res) {
-            errorCallback(res);
+        beforeSend: function () {
+            beforeSendCallBack();
+        }
+    }).done(function (response) {
+        doneCallback(response);
+    }).fail(function (response) {
+        failCallback(response);
+    }).always(function () {
+        if (alwaysCallback != null) {
+            alwaysCallback();
         }
     });
 };
@@ -167,49 +175,99 @@ window.ajaxRequest = function (
  * @param data
  * @param trSelector
  */
-window.deleteRowRecord = async function (
+window.singleDeleteRecord = function (
     url = '',
     data = {},
     trSelector = $(document)
 ) {
     let dtRow = dtable.row(trSelector);
-    let result = await ajaxRequest(
-        url,
-        'DELETE',
-        data,
-        function (res) {
-            showLoading(trSelector);
-        },
-        function (res) {
-            if (res.status === 200) {
-                let chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
-                if (chkbox.is(':checked')) {
-                    selectedObjects = removeAElement(selectedObjects, chkbox.val());
-                    appendToSeletedLabel(selectedObjects.length);
+    let result = null;
+    try {
+        ajaxRequest(
+            url,
+            'DELETE',
+            data,
+            function () {
+                showLoading(trSelector);
+            },
+            function (res) {
+                if (res.status === 200) {
+                    var chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
+
+                    if (chkbox.is(':checked')) {
+                        selectedObjects = removeAElement(selectedObjects, chkbox.val());
+                        appendToSeletedLabel(selectedObjects.length);
+                    }
+
+                    successMessage(res.message);
+                } else {
+                    hideLoading(trSelector);
+                    errorMessage(res.message);
                 }
-                // dtRow.deselect().remove().draw(true);
-                successMessage(res.message);
-                return true;
-            } else {
+            },
+            function (res) {
+                var errorMsg = res.responseJSON.message;
+                errorMessage(errorMsg);
                 hideLoading(trSelector);
-                errorMessage(res.message);
-
-                return false;
             }
-        },
-        function (res) {
-            let errorMsg = res.responseJSON.message;
-
-            errorMessage(errorMsg);
-            hideLoading(trSelector);
-
-            return false;
-        }
-    );
+        ).done(function () {
+            dtRow.deselect().remove().draw(true);
+        });
+    } catch (e) {
+        console.log(e);
+    }
 
     return result;
 };
 
+window.multiDeleteRecords = function (
+    url = '',
+    data = {},
+
+) {
+    try {
+        let ajaxDtSelector = $(`#${tableName}_ajax_dt`);
+        ajaxRequest(
+            url,
+            'DELETE',
+            data,
+            function () {
+                screenLoader();
+            },
+            function (res) {
+                if (res.status === 200) {
+
+
+                    test().then(value => {
+                        if (value) {
+                            screenLoader(0);
+                        }
+                    });
+
+                    selectedObjects = [];
+
+                    successMessage(res.message);
+                } else {
+                    errorMessage(res.message);
+                }
+            },
+            function (res) {
+                let errorMsg = res.responseJSON.message;
+                errorMessage(errorMsg);
+                screenLoader(0);
+            },
+            function () {
+                appendToSeletedLabel(selectedObjects.length);
+            }
+        );
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+async function test () {
+    return dtable.draw(false);
+}
 
 /**
  * Append number of selected rows to showable section
@@ -337,14 +395,14 @@ window.loadRoleSelect2 = function (
 };
 
 /**
- * Show loader
+ * Loader
  *
  * @param type
  * @constructor
  */
-window.showLoader = function (type = 1) {
+window.screenLoader = function (type = 1) {
     let show = 1;
-    let page = $('#page-wrapper');
+    let page = $('body');
     type === show ? page.LoadingOverlay("show", {
         imageColor: '#6e6e6ee6',
         imageResizeFactor: 0.45,
@@ -367,7 +425,7 @@ window.hideLoading = function (selector) {
 };
 /** ./END SHOW LOADING FOR BLOCK */
 
-window.showYesNoModal = function (
+window.showYesNoModal = async function (
     title,
     swalText,
     icon,
@@ -425,7 +483,7 @@ window.removeAElement = function (arr, value) {
  * @param selector
  * @param langTextSelector
  */
-window.imageDropify = function (selector, langTextSelector = $('.lang-text')) {
+window.imageDropify = function (selector) {
     let defaultMsg = '',
         replaceMsg = '',
         removeMsg = '',

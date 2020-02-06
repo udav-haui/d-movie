@@ -191,4 +191,15 @@ class Slider extends Model
     {
         return !$this->getImage() ?: Data::STORAGE . $this->getAttribute('image');
     }
+
+    public function renderImageHtml()
+    {
+        return $this->getImage() != "" ?
+        "<a href=\"{$this->getImagePath()}\"
+            class=\"slide-item\"
+            data-fancybox=\"sliders\" data-caption=\"{$this->getTitle()}\">
+            <img src=\"{$this->getImagePath()}\"
+                 class=\"slide-item-image\" />
+        </a>" : "<p>" . __('No image') . "</p>";
+    }
 }

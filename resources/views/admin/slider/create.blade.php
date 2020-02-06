@@ -25,6 +25,7 @@
 
 @section('content')
     @include('admin.lang.global_text_lang')
+
     <div class="row bg-title" id="dmovie-fix-top-block">
         <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
             <a href="javascript:void(0);"

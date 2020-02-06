@@ -53,12 +53,12 @@ $(document).ready(function () {
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
-                window.parent.showLoader();
+                screenLoader();
             },
             success: function (res) {
                 let $selectedRole = $("<option selected='selected'></option>").val(oldRoleId).text(res.data.role_name);
                 selectedRole.append($selectedRole).trigger('change');
-                window.parent.showLoader(0);
+                screenLoader(0);
             }
         });
     }

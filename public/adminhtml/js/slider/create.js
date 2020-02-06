@@ -12,6 +12,6 @@ $(document).ready(function () {
     /** Dropify image */
     let imageSelector = $('.dropify');
     if (imageSelector.length > 0) {
-        window.parent.imageDropify(imageSelector);
+        imageDropify(imageSelector);
     }
 });
