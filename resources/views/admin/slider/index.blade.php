@@ -28,19 +28,6 @@
     @cannot('canEditDelete', \App\Slider::class)
         aoColumns = [
         {
-            targets: 0,
-            data: 'id',
-            render: function (data, type, full, meta) {
-                return `<div class="dmovie-checkbox dmovie-checkbox-custom">
-                                    <input value="${data}" id="checkbox-${data}"
-                                           type="checkbox"
-                                           grid-item-checkbox
-                                           class="dt-checkboxes display-none user-checkbox">
-                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
-                                </div>`;
-            }
-        },
-        {
             data: 'id',
             name: 'id'
         },
@@ -67,21 +54,22 @@
             name: 'order'
         }
     ];
-        columnDefs = [
+
+        columnDefs= [
             {
-                targets: [0, 4],
-                width: '5%'
+                targets: 1,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'id');
+                }
             },
             {
-                targets: [2, 5],
-                width: "1%"
+                targets: 5,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'status');
+                }
             },
             {
-                targets: [1, 3],
-                width: '35%'
-            },
-            {
-                targets: 'no-sort',
+                targets: ['no-sort'],
                 orderable: false
             },
         ];
@@ -136,26 +124,28 @@
         columnDefs = [
             {
                 targets: 0,
-                width: '2%'
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'checkbox');
+                },
+                checkboxes: {
+                    selectRow: true,
+                    selectAllRender: `<input type="checkbox" id="checkbox-all" />`
+                }
             },
             {
                 targets: 1,
-                width: "3%"
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'id');
+                }
             },
             {
-                targets: [2,4],
-                width: '25%'
+                targets: 5,
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'status');
+                }
             },
             {
-                targets: 3,
-                width: '5%'
-            },
-            {
-                targets: 6,
-                width: '1%'
-            },
-            {
-                targets: 'no-sort',
+                targets: ['no-sort', 0],
                 orderable: false
             },
         ];
@@ -345,13 +335,13 @@
 
             <hr />
 
-            <table id="sliders_ajax"
+            <table id="sliders_ajax_dt"
                    class="display nowrap dmovie-table"
                    cellspacing="0"
                    width="100%">
                 <thead>
                 <tr>
-                    <th></th>
+                    @can('canEditDelete', \App\Slider::class)<th></th>@endcan
                     <th>#</th>
                     <th>{{ __('Title') }}</th>
                     <th>{{ __('Image') }}</th>

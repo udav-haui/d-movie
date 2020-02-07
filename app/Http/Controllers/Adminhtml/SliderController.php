@@ -55,9 +55,10 @@ class SliderController extends Controller
 
             $authUser = auth()->user();
             if ($authUser->can('canEditDelete', Slider::class)) {
-                $dataTable->addColumn('task', function (Slider $slider) use ($authUser) {
+                $htmlRaw = "";
+                $dataTable->addColumn('task', function (Slider $slider) use ($authUser, $htmlRaw) {
                     if ($authUser->can('update', Slider::class)) {
-                        $htmlRaw = "<a href=\"" . route('sliders.edit', ['slider' => $slider->getId()]) . "\"
+                        $htmlRaw .= "<a href=\"" . route('sliders.edit', ['slider' => $slider->getId()]) . "\"
                                    type=\"button\" class=\"";
                         if ($authUser->cant('delete', Slider::class)) {
                             $htmlRaw .= "col-md-12 ";
@@ -71,8 +72,11 @@ class SliderController extends Controller
                     }
 
                     if ($authUser->can('delete', Slider::class)) {
+
+                        $cssClass = $authUser->can('update', Slider::class) ? "col-md-6" : "col-md-12";
+
                         $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
-                                            class=\"col-md-6 col-xs-12 btn dmovie-btn btn-danger\"
+                                            class=\"{$cssClass} col-xs-12 btn dmovie-btn btn-danger\"
                                             title=\" " . __('Delete') . " \"
                                             data-id=\"{$slider->getId()}\"
                                             url=\"" . route('sliders.destroy', ['slider' => $slider->getId()]) . "\">

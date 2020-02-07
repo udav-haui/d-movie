@@ -18,6 +18,7 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "mservice/payment": "dev-master",
+        "rachidlaasri/laravel-installer": "^4.0",
         "tightenco/ziggy": "^0.8.1",
         "yajra/laravel-datatables-oracle": "^9.8"
     },

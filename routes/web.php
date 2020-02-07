@@ -2,15 +2,16 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
+    $admin = \App\Helper\Data::getAdminPath();
 
-Route::group(['middleware' => ['locale', 'prefix']], function () {
     Route::get('/switch-language/{lang}', 'LanguageController@switch')
         ->name('switch-language');
     Route::get('/', 'Frontend\HomeController@index')->name('frontend.dashboard');
 
     Route::group([
         'namespace' => 'Adminhtml',
-        'prefix' => 'admin'
+        'prefix' => $admin
     ], function () {
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'DashboardController@index');

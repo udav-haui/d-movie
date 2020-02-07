@@ -1,50 +1,14 @@
 $(document).ready(function () {
     'use strict';
 
+    tableName = 'sliders';
+    swlIcon = langTextSelector.attr('swl-icon-warning-text');
+
     $.fn.dataTable.defaults.aoColumns = aoColumns;
+    $.fn.dataTable.defaults.columnDefs = columnDefs;
+    $.fn.dataTable.defaults.order = colOrder;
 
-    dtable = $('#sliders_ajax').DataTable({
-        serverSide: true,
-        processing: true,
-        lengthMenu: [
-            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, -1],
-            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, "All"]
-        ],
-        pageLength: 15,
-        ajax: {
-            url: route('sliders.index')
-        },
-
-        columnDefs: [
-            {
-                targets: 0,
-                createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'checkbox');
-                },
-                checkboxes: {
-                    selectRow: true,
-                        selectAllRender: `<input type="checkbox" id="checkbox-all" />`
-                }
-            },
-            {
-                targets: 1,
-                createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'id');
-                }
-            },
-            {
-                targets: 5,
-                createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'status');
-                }
-            },
-            {
-                targets: ['no-sort', 0],
-                orderable: false
-            },
-        ],
-        order: [[1, 'asc']]
-    });
+    dtable = serverSideDatatable();
 
     // dtable.on('select', function (e, dt, type, indexes) {
     //     if (type === 'row') {
@@ -70,8 +34,6 @@ $(document).ready(function () {
     //     }
     // });
 
-    tableName = 'sliders';
-    swlIcon = langTextSelector.attr('swl-icon-warning-text');
 
     // $.fn.dataTable.defaults.columnDefs = columnDefs;
     // $.fn.dataTable.defaults.order = colOrder;
@@ -98,17 +60,16 @@ $(document).ready(function () {
     });
 
     /* Delete slide item */
-    $(`#${tableName}_data tbody`).on('click', '#deleteBtn', function () {
+    $(`#${tableName}_ajax_dt tbody`).on('click', '#deleteBtn', function () {
         let self = $(this);
         let url = self.attr('url');
         let tr = self.closest('tr');
-        let id = self.attr('data-id');
         showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
-            deleteRowRecord(
+            singleDeleteRecord(
                 url,
                 {},
                 tr
-            ).then((result) => console.log(result));
+            );
         } );
     });
 

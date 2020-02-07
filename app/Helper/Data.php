@@ -32,4 +32,14 @@ class Data
     const ADMIN_LOGIN_PATH = '/admin/login',
         ADMIN_PATH = '/admin',
         CUSTOMER_LOGIN_PATH = '/login';
+
+    /**
+     * Get admin prefix
+     *
+     * @return \Illuminate\Config\Repository|mixed|string
+     */
+    public static function getAdminPath()
+    {
+        return config('app.admin_path');
+    }
 }

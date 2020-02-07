@@ -17,6 +17,17 @@ return [
         'secret_key' => env('MOMO_SECRET_KEY', ''),
         'request_type' => env('MOMO_REQUEST_TYPE', 'captureMoMoWallet')
     ],
+
+    /*
+     /-------------------------------------------------------------------------------
+     / Admin specified path
+     /-------------------------------------------------------------------------------
+     /
+     / The path of admin page are you want to specify
+     /
+     */
+    'admin_path' => env('ADMIN_PATH', 'admin'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -194,6 +205,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoriesServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
+
+        RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
     ],
 

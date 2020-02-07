@@ -5,6 +5,7 @@ window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('datatables.net-dt');
+require('datatables.net-fixedcolumns-dt');
 // require('datatables.net-select-dt');
 require('dropify/dist/js/dropify.min');
 require('@fancyapps/fancybox');
@@ -12,9 +13,7 @@ require('@fancyapps/fancybox');
 $(document).ready(function () {
     "use strict";
 
-    /**
-     * Back top top func
-     */
+    /* Back top top func */
     $(window).scroll(function(){
         if($(window).scrollTop() <= 0){
             jQuery('#rocketmeluncur').slideUp(500);
@@ -181,7 +180,6 @@ window.singleDeleteRecord = function (
     trSelector = $(document)
 ) {
     let dtRow = dtable.row(trSelector);
-    let result = null;
     try {
         ajaxRequest(
             url,
@@ -192,32 +190,31 @@ window.singleDeleteRecord = function (
             },
             function (res) {
                 if (res.status === 200) {
-                    var chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
+                    let chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
 
                     if (chkbox.is(':checked')) {
                         selectedObjects = removeAElement(selectedObjects, chkbox.val());
-                        appendToSeletedLabel(selectedObjects.length);
                     }
+
+                    dtRow.remove().draw(false);
 
                     successMessage(res.message);
                 } else {
-                    hideLoading(trSelector);
                     errorMessage(res.message);
                 }
             },
             function (res) {
                 var errorMsg = res.responseJSON.message;
                 errorMessage(errorMsg);
+            },
+            function () {
                 hideLoading(trSelector);
+                appendToSeletedLabel(selectedObjects.length);
             }
-        ).done(function () {
-            dtRow.deselect().remove().draw(true);
-        });
+        );
     } catch (e) {
         console.log(e);
     }
-
-    return result;
 };
 
 window.multiDeleteRecords = function (
@@ -237,8 +234,7 @@ window.multiDeleteRecords = function (
             function (res) {
                 if (res.status === 200) {
 
-
-                    test().then(value => {
+                    reloadDataTable().then(value => {
                         if (value) {
                             screenLoader(0);
                         }
@@ -265,7 +261,7 @@ window.multiDeleteRecords = function (
     }
 };
 
-async function test () {
+async function reloadDataTable () {
     return dtable.draw(false);
 }
 
@@ -288,19 +284,48 @@ window.appendToSeletedLabel = function (number = 0) {
 window.initDataTable = function() {
     let dtableSelector = $(`#${tableName}_data`);
     return dtableSelector.DataTable({
-        initComplete: function (settings, json) {
-            let dataWrapper = $(`#${tableName}_data_wrapper`),
-                selectDropdown = dataWrapper.find(`#${tableName}_data_length`),
-                inputFilter = dataWrapper.find(`#${tableName}_data_filter`),
-                dropdown = selectDropdown.find(`select`) || null,
-                filterInput = inputFilter.find(`input`) || null;
-            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-            filterInput.addClass('dmovie-border h-32 p-l-10');
+        initComplete: initDatatable,
+        oLanguage: {
+            sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
+        }
+    });
+};
+
+/**
+ * Init datatable from server side
+ *
+ * @returns {jQuery}
+ */
+window.serverSideDatatable = function () {
+    let dtableSelector = $(`#${tableName}_ajax_dt`);
+    return dtableSelector.DataTable({
+        initComplete: initDatatable,
+        serverSide: true,
+        processing: true,
+        fixedHeader: true,
+        lengthMenu: [
+            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, -1],
+            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, "All"]
+        ],
+        pageLength: 15,
+        ajax: {
+            url: route('sliders.index')
         },
         oLanguage: {
             sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
         }
     });
+};
+
+function initDatatable()
+{
+    let dataWrapper = $(`#${tableName}_ajax_dt_wrapper`),
+        selectDropdown = dataWrapper.find(`#${tableName}_ajax_dt_length`),
+        inputFilter = dataWrapper.find(`#${tableName}_ajax_dt_filter`),
+        dropdown = selectDropdown.find(`select`) || null,
+        filterInput = inputFilter.find(`input`) || null;
+    dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
+    filterInput.addClass('dmovie-border h-32 p-l-10');
 };
 
 /**
