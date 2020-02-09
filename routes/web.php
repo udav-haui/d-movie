@@ -16,21 +16,28 @@ Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
         Route::group(['middleware' => 'auth'], function () {
             Route::get('/', 'DashboardController@index');
             /**
-             * USER SESSION
+             * USER SECTION
              */
             Route::get('users/getActiveUsers', 'Auth\UserController@getActiveUsers')->name('users.getActiveUsers');
             Route::get('users/getUsers', 'Auth\UserController@findUserByNameOrMailOrUsername')->name('users.getUsers');
             Route::put('users/manageUpdate/{user}', 'Auth\UserController@manageUpdate')->name('users.manageUpdate');
             Route::post('users/changeState', 'Auth\UserController@changeState')->name('users.changeState');
+            Route::put('users/mass-update', 'Auth\UserController@massUpdate')->name('users.massUpdate');
+            Route::put('users/{user}/mass-update', 'Auth\UserController@massSingleUserUpdate')
+                ->name('users.massSingleUserUpdate');
+            Route::post('users/multi-change-status', 'Auth\UserCOntroller@multiChangeStatus')
+                ->name('users.multiChangeStatus');
+            Route::delete('users/multi-destroy', 'Auth\UserController@multiDestroy')->name('users.multiDestroy');
             Route::resource('users', 'Auth\UserController');
             /**
-             * ROLE SESSION
+             * ROLE SECTION
              */
             Route::get('roles/fetch', 'RoleController@fetch')->name('roles.getRoles');
             Route::get('roles/{role}/get', 'RoleController@get')->name('roles.getRole');
             Route::post('roles/assign', 'RoleController@doAssign')->name('roles.doAssign');
             Route::get('roles/assign', 'RoleController@showAssignForm')->name('roles.assignForm');
             Route::post('roles/singAssign', 'RoleController@doSingleAssign')->name('roles.doSingAssign');
+            Route::post('roles/{role}/mass-assign', 'RoleController@massAssign')->name('roles.massAssign');
             Route::resource('roles', 'RoleController');
             /**
              * Api method
@@ -39,18 +46,27 @@ Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
             Route::post('user-change-password/{user}', 'Auth\UserController@changePassword')
                 ->name('users.changePassword');
 
-            /** SLIDER SESSION */
+            /** SLIDER SECTION */
             Route::post('sliders/changeStatus/{slider}', 'SliderController@changeStatus')->name('sliders.changeStatus');
             // Route::get('sliders/{slider}/test', 'SliderController@test');
-            Route::get('sliders/ajaxIndex', 'SliderController@ajaxIndex')->name('sliders.ajaxIndex');
-            Route::delete('sliders/multiDestroy', 'SliderController@multiDestroy')->name('sliders.multiDestroy');
+            Route::get('sliders/ajax-index', 'SliderController@ajaxIndex')->name('sliders.ajaxIndex');
+            Route::delete('sliders/multi-destroy', 'SliderController@multiDestroy')->name('sliders.multiDestroy');
+            Route::post('sliders/multi-change-status', 'SliderController@multiChangeStatus')
+                ->name('slider.multiChangeStatus');
             Route::resource('sliders', 'SliderController');
+
+            /** FILM SECTION */
+
+            Route::resource('films', 'FilmController');
         });
-        Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-        Route::post('login', 'Auth\LoginController@login');
-        Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+//        Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+//        Route::post('login', 'Auth\LoginController@login');
+//        Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+//        Route::post('password/reset', 'Auth\ResetPasswordController@sendResetLinkEmail')->name('password.email');
         Route::get('callback/{provider}', 'SocialAuthController@callback');
         Route::get('redirect/{provider}', 'SocialAuthController@redirect');
+
+        Auth::routes();
 
         /**
          * MoMo testing

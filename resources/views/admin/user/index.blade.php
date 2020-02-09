@@ -12,31 +12,178 @@
     {{ __('User Manage') }}
     @endsection
 @section('head.css')
-{{--    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.css') }}">--}}
+    <link rel="stylesheet" href="{{ asset('adminhtml/css/slider/index.css') }}">
 @endsection
 @section('bottom.js')
 {{--    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.min.js') }}"></script>--}}
 <script>
+    let invisibleCols = ['.data-cell-address', '.data-cell-dob', '.data-cell-description', '.data-cell-avatar'];
     let columnDefs = [],
-        colOrder = [];
+        aoColumns = [
+            {
+                data: 'id',
+                name: 'id'
+            },
+            {
+                data: 'username',
+                name: 'username'
+            },
+            {
+                data: 'name',
+                name: 'name'
+            },
+            {
+                data: 'email',
+                name: 'email'
+            },
+            {
+                data: 'gender',
+                name: 'gender'
+            },
+            {
+                data: 'phone',
+                name: 'phone'
+            },
+            {
+                data: 'address',
+                name: 'address'
+            },
+            {
+                data: 'avatar',
+                name: 'avatar'
+            },
+            {
+                data: 'dob',
+                name: 'dob'
+            },
+            {
+                data: 'state',
+                name: 'state'
+            },
+            {
+                data: 'description',
+                name: 'description'
+            }
+        ],
+        colOrder = [[0, 'desc']];
     @cannot('canEditDelete', \App\User::class)
+        aoColumns.push({
+            data: 'task',
+            sortable: false,
+            orderable: false
+        });
         columnDefs = [
-            {
-                targets: 0,
-                width: '5%'
-            },
-            {
-                targets: 2,
-                width: '15%'
-            },
             {
                 targets: 'no-sort',
                 orderable: false
             },
         ];
-        colOrder = [[0, 'desc']];
     @else
+        @if (auth()->user()->isAdmin())
+            aoColumns.push({
+                data: 'role_id',
+                name: 'role_id'
+            });
+    @endif
+        aoColumns.push({
+            data: 'task',
+            sortable: false,
+            orderable: false
+        });
         columnDefs = [
+        {
+            targets: 'data-cell-id',
+            className: 'no-visible-filter',
+            createdCell: function (td, cellData, rowData, row, col) {
+                $(td).attr('data-id', rowData.id);
+                $(td).attr('scope', 'id');
+            }
+        },
+            {
+                targets: 'data-cell-username',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'username');
+                }
+            },
+            {
+                targets: 'data-cell-name',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'name');
+                }
+            },
+            {
+                targets: 'data-cell-email',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'email');
+                }
+            },
+            {
+                targets: 'data-cell-gender',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'gender');
+                }
+            },
+            {
+                targets: 'data-cell-phone',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'phone');
+                }
+            },
+            {
+                targets: 'data-cell-address',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'address');
+                }
+            },
+            {
+                targets: 'data-cell-avatar',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'avatar');
+                }
+            },
+            {
+                targets: 'data-cell-dob',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'dob');
+                }
+            },
+            {
+                targets: 'data-cell-status',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'status');
+                }
+            },
+            {
+                targets: 'data-cell-description',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'description');
+                }
+            },
+            @if (auth()->user()->isAdmin())
+            {
+                targets: 'data-cell-role',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'role');
+                }
+            },
+            @endif
+            {
+                targets: 'data-cell-task',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('not-selector', '');
+                }
+            },
             {
                 targets: 0,
                 width: '1%'
@@ -50,9 +197,9 @@
                 orderable: false
             },
         ];
-        colOrder = [[1, 'desc']];
     @endcannot
 </script>
+<script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dt-buttons/buttons.flash.js') }}"></script>
 <script src="{{ asset('adminhtml/js/user/index.js') }}"></script>
 @endsection
 @section('content')
@@ -129,110 +276,30 @@
     @endcan
 
     <div class="row">
+
         <div class="col-md-12 table-responsive">
-            <table id="users_data" class="display nowrap dmovie-table"
+            <table id="users_ajax_dt" class="display nowrap dmovie-table"
                    cellspacing="0"
                    width="100%">
                 <thead>
-                <tr>
-                    @can('canEditDelete', \App\User::class)
-                        <th class="no-sort">
-                            <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input value="0" id="checkbox-all" type="checkbox"
-                                       class="display-none user-checkbox">
-                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>
-                            </div>
-                        </th>
-                    @endcan
-                    <th>#</th>
-                    <th>{{ __('Username') }}</th>
-                    <th>{{ __('Name') }}</th>
-                    <th>{{ __('Email') }}</th>
-                    @if (auth()->user()->isAdmin())
-                        <th>{{ __('Role name') }}</th>
-                    @endif
-                    <th>{{ __('Status') }}</th>
-                    <th class="no-sort min-width-65">{{ __('Task') }}</th>
-                </tr>
-                </thead>
-                <tfoot>
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>{{ __('Username') }}</th>
-                    <th>{{ __('Name') }}</th>
-                    <th>{{ __('Email') }}</th>
-                    @if (auth()->user()->isAdmin())
-                        <th>{{ __('Role name') }}</th>
-                    @endif
-                    <th>{{ __('Status') }}</th>
-                    @can('canEditDelete', \App\User::class)
-                        <th class="no-sort">{{ __('Task') }}</th>
-                    @endcan
-                </tr>
-                </tfoot>
-                <tbody>
-                @foreach($users as $user)
                     <tr>
-                        @can('canEditDelete', \App\User::class)
-                            <td scope="checkbox">
-                                @if (auth()->user()->getAuthIdentifier() !== $user->getAuthIdentifier())
-                                    <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                        <input value="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
-                                               class="display-none user-checkbox"
-                                               grid-item-checkbox>
-                                        <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
-                                    </div>
-                                @endif
-                            </td>
-                        @endcan
-                        <td scope="id">{{ $user->id }}</td>
-                        <td scope="username">{!! $user->getUsername()  !!}</td>
-                        <td scope="name">{!! $user->getName() !!}</td>
-                        <td scope="email">{{ $user->email }}</td>
+                        <th class="data-cell-id">ID</th>
+                        <th class="data-cell-username">{{ __('Username') }}</th>
+                        <th class="data-cell-name">{{ __('Name') }}</th>
+                        <th class="data-cell-email">{{ __('Email') }}</th>
+                        <th class="data-cell-gender">{{ __('Gender') }}</th>
+                        <th class="data-cell-phone">{{ __('Phone') }}</th>
+                        <th class="data-cell-address">{{ __('Address') }}</th>
+                        <th class="data-cell-avatar">{{ __('Avatar') }}</th>
+                        <th class="data-cell-dob">{{ __('Date of Birth') }}</th>
+                        <th class="data-cell-status">{{ __('Status') }}</th>
+                        <th class="data-cell-description">{{ __('Description') }}</th>
                         @if (auth()->user()->isAdmin())
-                            <td scope="role">{{ $user->getRoleName() }}</td>
+                            <th class="data-cell-id">{{ __('Role name') }}</th>
                         @endif
-                        <td scope="status">
-                            <span class="status-text">
-                                {!! __($user->getStatus()) !!}
-                            </span>
-                           @can('cannotSelfUpdate', $user)
-                                <i class="ti-reload"
-                                   data-id="{{ $user->state }}"
-                                   user-id="{{ $user->id }}"
-                                   cancel-text="{{ __('Cancel') }}"
-                                   onclick="changeStatus(this, '{{ $user->id }}', '{{__('Select state')}}', '{{ __('Not active') }}',
-                                       '{{ __('Not verify') }}', '{{ __('Active') }}');"
-                                   title="{{ __('Change status') }}"
-                                   scope="change-state"></i>
-                            @endcan
-                        </td>
-                        <td scope="task">
-                            @can('selfUpdate', $user)
-                                <a href="{{ route('users.edit', ['user' => $user->id]) }}"
-                                   type="button"
-                                   class=" @if (auth()->user()->id === $user->id || !auth()->user()->can('delete', $user)) col-md-12 @else col-md-6 @endif
-                                   col-xs-12 btn dmovie-btn dmovie-btn-success"
-                                   title="{{ __('Detail') }}">
-                                    <i class="mdi mdi-account-edit"></i>
-                                </a>
-                            @endcan
-                            @can('delete', $user)
-                                @if (auth()->user()->id !== $user->id)
-                                    <button id="deleteUserBtn" type="button"
-                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"
-                                            title="{{ __('Delete') }}"
-                                            data-id="{{ $user->id }}"
-                                            url="{{ route('users.destroy', ['user' => $user->id]) }}">
-                                        <i class="mdi mdi-account-minus"></i>
-                                    </button>
-                                @endif
-                            @endcan
-                        </td>
+                        <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                     </tr>
-                @endforeach
-                </tbody>
+                </thead>
             </table>
         </div>
     </div>

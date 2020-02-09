@@ -1,5 +1,3 @@
-
-
 {
 	"sProcessing":   "Đang xử lý...",
 	"sLengthMenu":   "Xem _MENU_ mục",
@@ -15,5 +13,20 @@
 		"sPrevious": "Trước",
 		"sNext":     "Tiếp",
 		"sLast":     "Cuối"
-	}
+	},
+    "buttons": {
+        "copyTitle": "Lưu vào khay nhớ tạm",
+        "copyKeys": "Dùng <i>ctrl</i> hoặc <i>\u2318</i> + <i>C</i> để sao chép vào khay nhớ tạm",
+        "copySuccess": {
+            "_": "%d dòng đã được sao chép",
+            "1": "1 dòng được sao chép"
+        }
+    },
+    "select": {
+        "rows": {
+            "_": "Đã chọn %d bản ghi",
+            "0": "Nhấp chuột vào dòng để chọn",
+            "1": "1 bản ghi được chọn"
+        }
+    }
 }

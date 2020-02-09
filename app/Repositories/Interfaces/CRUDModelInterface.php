@@ -12,6 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 interface CRUDModelInterface
 {
     /**
+     * Get all records
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|Model[]
+     */
+    public function all();
+
+    /**
      * Retrieve model
      *
      * @param string|int $id
@@ -59,4 +66,12 @@ interface CRUDModelInterface
      * @return array
      */
     public function removeMethodField($fields);
+
+    /**
+     * Remove ids field from request
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function removeIdsKey($fields);
 }

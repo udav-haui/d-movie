@@ -188,7 +188,7 @@
                                                    lang="{{ \Session::get('locale', config('app.locale')) }}"
                                                    id="dob-datepicker"
                                                    placeholder="dd/mm/yyyy"
-                                                   value="{{ old('dob', $user->getDob()) }}"
+                                                   value="{{ old('dob', $user->getDobFormated()) }}"
                                                    @cannot('selfUpdate', $user) disabled @endcannot />
                                             <span class="input-group-addon"><i class="icon-calender"></i></span>
                                         </div>

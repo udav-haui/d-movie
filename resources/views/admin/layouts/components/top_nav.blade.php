@@ -183,17 +183,17 @@
             <li class="dropdown">
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
                     <div class="dmovie-img-cover-container">
-                        <img src="{{ auth()->user()->getAvatar() }}" alt="user-img" class="img-circle dmovie-img-cover">
+                        <img src="{{ auth()->user()->getAvatarPath() }}" alt="user-img" class="img-circle dmovie-img-cover">
                     </div>
-                    <b class="hidden-xs">{{ auth()->user()->name }}</b>
+                    <b class="hidden-xs">{{ auth()->user()->getName() }}</b>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-user animated flipInY">
                     <li>
                         <div class="dw-user-box">
-                            <div class="u-img"><img src="{{ auth()->user()->getAvatar() }}" alt="user" /></div>
+                            <div class="u-img"><img src="{{ auth()->user()->getAvatarPath() }}" alt="user" /></div>
                             <div class="u-text">
-                                <h4 class="dot-dot-dot" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</h4>
+                                <h4 class="dot-dot-dot" title="{{ auth()->user()->getName() }}">{{ auth()->user()->getName() }}</h4>
                                 <p class="text-muted dot-dot-dot" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</p>
                                 <a href="{{ route('users.show', ['user' => auth()->user()->getAuthIdentifier()]) }}"
                                    class="btn btn-rounded btn-danger btn-sm">{{ __('View Profile') }}</a>

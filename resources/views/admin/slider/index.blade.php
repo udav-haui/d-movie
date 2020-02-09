@@ -16,7 +16,7 @@
 @endsection
 
 @section('head.css')
-    <link rel="stylesheet" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css">
+    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.css') }}">
     <link rel="stylesheet" href="{{ asset('adminhtml/css/slider/index.css') }}">
 @endsection
 
@@ -24,7 +24,8 @@
     <script>
         let columnDefs = [],
             colOrder = [],
-            aoColumns = [];
+            aoColumns = [],
+            invisibleCols = [];
     @cannot('canEditDelete', \App\Slider::class)
         aoColumns = [
         {
@@ -57,45 +58,21 @@
 
         columnDefs= [
             {
-                targets: 1,
-                createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'id');
-                }
-            },
-            {
-                targets: 5,
-                createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'status');
-                }
-            },
-            {
                 targets: ['no-sort'],
                 orderable: false
             },
         ];
-        colOrder = [[0, 'desc']];
+        colOrder = [[0, 'asc']];
     @else
         aoColumns = [
-        {
-            targets: 0,
-            data: 'id',
-            render: function (data, type, full, meta) {
-                return `<div class="dmovie-checkbox dmovie-checkbox-custom">
-                                    <input value="${data}" id="checkbox-${data}"
-                                           type="checkbox"
-                                           grid-item-checkbox
-                                           class="dt-checkboxes display-none user-checkbox">
-                                    <label for="checkbox-${data}" class="cursor-pointer"></label>
-                                </div>`;
-            }
-        },
         {
             data: 'id',
             name: 'id'
         },
         {
             data: 'title',
-            name: 'title'
+            name: 'title',
+            width: '10%'
         },
         {
             data: 'image',
@@ -123,37 +100,68 @@
     ];
         columnDefs = [
             {
-                targets: 0,
+                targets: 'data-cell-id',
+                className: 'no-visible-filter',
                 createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'checkbox');
-                },
-                checkboxes: {
-                    selectRow: true,
-                    selectAllRender: `<input type="checkbox" id="checkbox-all" />`
-                }
-            },
-            {
-                targets: 1,
-                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
                     $(td).attr('scope', 'id');
                 }
             },
             {
-                targets: 5,
+                targets: 'data-cell-title',
                 createdCell: function (td, cellData, rowData, row, col) {
-                    $(td).attr('scope', 'status');
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'title');
                 }
             },
             {
-                targets: ['no-sort', 0],
+                targets: 'data-cell-order',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'order');
+                }
+            },
+            {
+                targets: 'data-cell-href',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'href');
+                }
+            },
+            {
+                targets: 'data-cell-status',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'status');
+                    $(td).attr('not-selector', '');
+                }
+            },
+            {
+                targets: 'data-cell-image',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'image');
+                }
+            },
+            {
+                targets: 'data-cell-task',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('not-selector', '');
+                }
+            },
+            {
+                targets: ['data-cell-image', 'data-cell-checkbox', 'data-cell-status'],
+                width: '1%',
+            },
+            {
+                targets: ['no-sort'],
                 orderable: false
             },
         ];
-        colOrder = [[1, 'desc']];
+        colOrder = [[0, 'asc']];
     @endcannot
     </script>
-
-    <script src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dt-buttons/buttons.flash.js') }}"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('adminhtml/js/slider/index.js') }}"></script>
 @endsection
 
@@ -173,17 +181,17 @@
 
     @can('canEditDelete', \App\Slider::class)
         <div class="row m-b-15">
-            <div class="col-md-1">
-                <div class="btn-group">
+            <div class="col-md-3 col-lg-2">
+                <div class="btn-group width-100">
                     <button
                         aria-expanded="false"
                         data-toggle="dropdown"
-                        class="btn btn-default btn-outline
+                        class="btn btn-default btn-outline width-100
                     dropdown-toggle waves-effect waves-light border-radius-0 dmovie-textbox-border"
                         type="button"> {{ __('Action') }}
                         <span class="caret"></span>
                     </button>
-                    <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border">
+                    <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border width-100">
                         @if (!auth()->user()->can('delete', \App\Slider::class) && !auth()->user()->can('update',
                         \App\Slider::class))
                             <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
@@ -213,150 +221,38 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-2 selected-rows-label-container m-l-10">
-                {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('rows') }}
+            <div class="col-md-2 selected-rows-label-container">
+                {{ __('Selected') }}&nbsp;<span class="selected-rows-label">0</span>&nbsp;{{ __('records') }}
             </div>
         </div>
     @endcan
 
     <div class="row">
         <div class="col-md-12 table-responsive">
-{{--            <table id="sliders_data"--}}
-{{--                   class="display nowrap dmovie-table"--}}
-{{--                   cellspacing="0"--}}
-{{--                   width="100%">--}}
-{{--                <thead>--}}
-{{--                <tr>--}}
-{{--                    @can('canEditDelete', \App\Slider::class)--}}
-{{--                        <th class="no-sort">--}}
-{{--                            <div class="dmovie-checkbox dmovie-checkbox-custom">--}}
-{{--                                <input value="0" id="checkbox-all" type="checkbox"--}}
-{{--                                       class="display-none user-checkbox">--}}
-{{--                                <label for="checkbox-all" class="cursor-pointer background-fff"></label>--}}
-{{--                            </div>--}}
-{{--                        </th>--}}
-{{--                    @endcan--}}
-{{--                    <th>#</th>--}}
-{{--                    <th>{{ __('Title') }}</th>--}}
-{{--                    <th class="no-sort">{{ __('Image') }}</th>--}}
-{{--                    <th>{{ __('Href') }}</th>--}}
-{{--                    <th>{{ __('Order') }}</th>--}}
-{{--                    <th>{{ __('Status') }}</th>--}}
-{{--                    @can('canEditDelete', \App\Slider::class)--}}
-{{--                        <th class="no-sort min-width-65">{{ __('Task') }}</th>--}}
-{{--                    @endcan--}}
-{{--                </tr>--}}
-{{--                </thead>--}}
-{{--                <tfoot>--}}
-{{--                <tr>--}}
-{{--                    @can('canEditDelete', \App\Slider::class)<th class="no-sort"></th>@endcan--}}
-{{--                    <th>#</th>--}}
-{{--                    <th>{{ __('Title') }}</th>--}}
-{{--                    <th class="no-sort">{{ __('Image') }}</th>--}}
-{{--                    <th>{{ __('Href') }}</th>--}}
-{{--                    <th>{{ __('Order') }}</th>--}}
-{{--                    <th>{{ __('Status') }}</th>--}}
-{{--                    @can('canEditDelete', \App\Slider::class)--}}
-{{--                        <th class="no-sort">{{ __('Task') }}</th>--}}
-{{--                    @endcan--}}
-{{--                </tr>--}}
-{{--                </tfoot>--}}
-{{--                <tbody>--}}
-{{--                <?php /** @var $item \App\Slider */ ?>--}}
-{{--                @foreach($sliders as $item)--}}
-{{--                    <tr>--}}
-{{--                        @can('canEditDelete', \App\Slider::class)--}}
-{{--                            <td scope="checkbox">--}}
-{{--                                <div class="dmovie-checkbox dmovie-checkbox-custom">--}}
-{{--                                    <input value="{{ $item->id }}" id="checkbox-{{ $item->id }}"--}}
-{{--                                           type="checkbox"--}}
-{{--                                           grid-item-checkbox--}}
-{{--                                           class="display-none user-checkbox">--}}
-{{--                                    <label for="checkbox-{{ $item->id }}" class="cursor-pointer"></label>--}}
-{{--                                </div>--}}
-{{--                            </td>--}}
-{{--                        @endcan--}}
-{{--                        <td scope="id">{{ $item->id }}</td>--}}
-{{--                        <td scope="title" title="{{ $item->getTitle() }}">--}}
-{{--                            {{ strlen($item->getTitle()) > 65 ? substr($item->getTitle(), 0, 65) . '...' : $item->getTitle() }}--}}
-{{--                        </td>--}}
-{{--                        <td scope="image">--}}
-{{--                            <a href="{{ $item->getImagePath() }}"--}}
-{{--                               class="slide-item"--}}
-{{--                               data-fancybox="sliders" data-caption="{{ $item->getTitle() }}">--}}
-{{--                                <img src="{{ $item->getImagePath() }}"--}}
-{{--                                    class="slide-item-image" />--}}
-{{--                            </a>--}}
-{{--                        </td>--}}
-{{--                        <td scope="href">{!! $item->renderHtmlHref() !!}</td>--}}
-{{--                        <td scope="Order">{{ $item->getAttribute('order') }}</td>--}}
-{{--                        <td scope="status">--}}
-{{--                            <div class="pretty p-switch p-fill dmovie-switch">--}}
-{{--                                <input type="checkbox"--}}
-{{--                                       {{ (int)$item->getAttribute('status') === 1 ? 'checked' : '' }}--}}
-{{--                                       class="status-checkbox"--}}
-{{--                                       value="{{ $item->getAttribute('status') }}"--}}
-{{--                                       data-id="{{ $item->getAttribute('id') }}"--}}
-{{--                                       @cannot('update', \App\Slider::class) disabled @endcannot--}}
-{{--                                />--}}
-{{--                                <div class="state p-success">--}}
-{{--                                    <label class="status-text select-none">--}}
-{{--                                        {{ $item->getStatusLabel() }}--}}
-{{--                                    </label>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </td>--}}
-{{--                        @can('canEditDelete', \App\Slider::class)--}}
-{{--                            <td scope="task">--}}
-{{--                                @can('view', \App\Slider::class)--}}
-{{--                                    <a href="{{ route('sliders.edit', ['slider' => $item->id]) }}"--}}
-{{--                                       type="button"--}}
-{{--                                       class="@cannot('delete', \App\Slider::class)) col-md-12 @else col-md-6 @endcannot--}}
-{{--                                           col-xs-12 btn dmovie-btn dmovie-btn-success"--}}
-{{--                                       title="{{ __('Detail') }}">--}}
-{{--                                        <i class="mdi mdi-account-edit"></i>--}}
-{{--                                    </a>--}}
-{{--                                @endcan--}}
-{{--                                @can('delete', \App\Slider::class)--}}
-{{--                                    <button id="deleteBtn" type="button"--}}
-{{--                                            class="col-md-6 col-xs-12 btn dmovie-btn btn-danger"--}}
-{{--                                            title="{{ __('Delete') }}"--}}
-{{--                                            data-id="{{ $item->getId() }}"--}}
-{{--                                            url="{{ route('sliders.destroy', ['slider' => $item->getId()]) }}">--}}
-{{--                                        <i class="mdi mdi-account-minus"></i>--}}
-{{--                                    </button>--}}
-{{--                                @endcan--}}
-{{--                            </td>--}}
-{{--                        @endcan--}}
-{{--                    </tr>--}}
-{{--                @endforeach--}}
-{{--                </tbody>--}}
-{{--            </table>--}}
-
-            <hr />
-
             <table id="sliders_ajax_dt"
                    class="display nowrap dmovie-table"
-                   cellspacing="0"
-                   width="100%">
+                   cellspacing="0">
                 <thead>
                 <tr>
-                    @can('canEditDelete', \App\Slider::class)<th></th>@endcan
-                    <th>#</th>
-                    <th>{{ __('Title') }}</th>
-                    <th>{{ __('Image') }}</th>
-                    <th>{{ __('Href') }}</th>
-                    <th>{{ __('Status') }}</th>
-                    <th>{{ __('Order') }}</th>
+                    <th class="data-cell-id">ID</th>
+                    <th class="data-cell-title">{{ __('Title') }}</th>
+                    <th class="data-cell-image">{{ __('Image') }}</th>
+                    <th class="data-cell-href">{{ __('Href') }}</th>
+                    <th class="data-cell-status">{{ __('Status') }}</th>
+                    <th class="data-cell-order">{{ __('Order') }}</th>
                     @can('canEditDelete', \App\Slider::class)
-                        <th class="no-sort min-width-65">{{ __('Task') }}</th>
+                        <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                     @endcan
                 </tr>
                 </thead>
             </table>
 
 
-            <button id="btn-test">Test</button>
+            <button id="btn-test" data-toggle="tooltip" >Test</button>
+
+            <button class="dt-button buttons-copy buttons-html5 dmovie-border margin-0-auto" onclick="test();" tabindex="0" aria-controls="sliders_ajax_dt" type="button"><span><i class="mdi mdi-content-copy"></i><span class="m-l-5">Sao chép vào khay nhớ tạm</span></span></button>
+
+            <a href="#" dmovie-tooltip title="hihihihi">ihiiiiiii</a>
         </div>
     </div>
 

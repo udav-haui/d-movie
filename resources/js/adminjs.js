@@ -1,23 +1,36 @@
 require('./bootstrap');
+require('jquery-ui/ui/widgets/tooltip');
 require('jquery-slimscroll');
 require('@progress/kendo-ui');
 window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
+require('jszip');
+var pdfMake = require('pdfmake/build/pdfmake.js');
+var pdfFonts = require('pdfmake/build/vfs_fonts.js');
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 require('datatables.net-dt');
-require('datatables.net-fixedcolumns-dt');
-// require('datatables.net-select-dt');
+require('datatables.net-buttons-dt');
+require('datatables.net-select-dt');
+require('datatables.net-buttons/js/buttons.colVis.js');
+require('datatables.net-buttons/js/buttons.html5.js');
+require('datatables.net-buttons/js/buttons.print.js');
 require('dropify/dist/js/dropify.min');
 require('@fancyapps/fancybox');
 
-$(document).ready(function () {
+$(document).ready(function() {
     "use strict";
 
+    $(document).tooltip({
+        track: true,
+        tooltipClass: 'dmovie-tooltip'
+    });
+
     /* Back top top func */
-    $(window).scroll(function(){
-        if($(window).scrollTop() <= 0){
+    $(window).scroll(function() {
+        if ($(window).scrollTop() <= 0) {
             jQuery('#rocketmeluncur').slideUp(500);
-        }else{
+        } else {
             jQuery('#rocketmeluncur').slideDown(500);
         }
         let ftrocketmeluncur = $("#ft")[0] ? $("#ft")[0] : $(document.body)[0];
@@ -38,17 +51,17 @@ $(document).ready(function () {
         // }
     });
 
-    $('#rocketmeluncur').click(function(){
-        $("html, body").animate({ scrollTop: '0px',display:'none'},{
+    $('#rocketmeluncur').click(function() {
+        $("html, body").animate({ scrollTop: '0px', display: 'none' }, {
             duration: 600,
             easing: 'linear'
         });
 
         var self = this;
-        this.className += ' '+"launchrocket";
-        setTimeout(function(){
+        this.className += ' ' + "launchrocket";
+        setTimeout(function() {
             self.className = 'showrocket';
-        },800)
+        }, 800)
     });
     // .////////////////////////////////
 });
@@ -60,11 +73,12 @@ window.langTextSelector = $('.lang-text') || null;
 window.mainLang = $('html').attr('lang');
 
 window.tableName = '';
+window.dtableSelector = null;
 window.dtable = null;
 
 window.selectedObjects = [];
 
-window.errorTitle = langTextSelector.attr('swl-error-title'),
+window.errorTitle = langTextSelector.attr('swl-error-title');
 window.errorText = langTextSelector.attr('swl-error-text-must-select-one-record');
 window.swlTitle = langTextSelector.attr('swl-title-text');
 window.swlText = '';
@@ -79,51 +93,54 @@ window.swlCancelBtnColor = langTextSelector.attr('swl-cancel-btn-color');
 
 /* DISMISS NOTIFICATION */
 
-$( document ).on('click', '[dmovie-noti-dismiss]', function () {
+$(document).on('click', '[dmovie-noti-dismiss]', function() {
     let notiBlock = $(this).closest('div');
-    notiBlock.slideToggle(500);
+    notiBlock.slideToggle(350);
 });
 
 // GLOBAL ACTION ///////
-/**
- * Select all
- */
-$(document).on('change', '#checkbox-all', function () {
-    // selectedObjects.length = 0;
-    let rows = dtable.rows({ 'search': 'applied' }).nodes();
-    let check = $('input[grid-item-checkbox]', rows);
-    $('input[grid-item-checkbox]', rows).prop('checked', this.checked);
-    let count = 0;
-    check.each(function () {
-        if (count > 100) {
-            screenLoader();
-        }
-        let uid = $(this).val();
-        if (check.is(':checked')) {
-            selectedObjects.push(uid);
-        } else {
-            selectedObjects = window.parent.removeAElement(selectedObjects, uid);
-        }
-        count++;
-    });
-    screenLoader(0);
-    appendToSeletedLabel(selectedObjects.length);
-});
+/* Select all */
+// $(document).on('change', '#checkbox-all', function() {
+//     // selectedObjects.length = 0;
+//     let rows = dtable.rows({ 'search': 'applied' }).nodes();
+//     let check = $('input[grid-item-checkbox]', rows);
+//     // $('input[grid-item-checkbox]', rows).prop('checked', this.checked);
+//     let count = 0;
+//     check.each(function() {
+//         let row = $(this).closest('tr');
+//         row.toggleClass('dmovie-selected');
+//         if (count > 100) {
+//             screenLoader();
+//         }
+//         let uid = $(this).val();
+//         if (check.is(':checked')) {
+//             selectedObjects.push(uid);
+//         } else {
+//             selectedObjects = removeAElement(selectedObjects, uid);
+//         }
+//         count++;
+//     });
+//     screenLoader(0);
+//     appendToSeletedLabel(selectedObjects.length);
+// });
 /* ./ EnD */
 
 /**
  * Check on checkbox item
  */
-$(document).on('change', 'td[scope="checkbox"]', function () {
-    let checkbox = $(this).find('input[grid-item-checkbox]');
-    if (checkbox.prop('checked')) {
-        selectedObjects.push(checkbox.val());
-    } else {
-        let objId = checkbox.val();
-        selectedObjects = window.parent.removeAElement(selectedObjects, objId);
-    }
-    appendToSeletedLabel(selectedObjects.length);
-});
+// $(document).on('change', 'td[scope="checkbox"]', function() {
+//     let checkbox = $(this).find('input[grid-item-checkbox]'),
+//         $row = $(this).closest('tr');
+//     if (checkbox.prop('checked')) {
+//         selectedObjects.push(checkbox.val());
+//         $row.addClass('dmovie-selected');
+//     } else {
+//         let objId = checkbox.val();
+//         selectedObjects = window.parent.removeAElement(selectedObjects, objId);
+//         $row.removeClass('dmovie-selected');
+//     }
+//     appendToSeletedLabel(selectedObjects.length);
+// });
 /** ./End */
 // .////////////////////
 
@@ -139,7 +156,7 @@ $(document).on('change', 'td[scope="checkbox"]', function () {
  * @param failCallback
  * @param alwaysCallback
  */
-window.ajaxRequest = function (
+window.ajaxRequest = function(
     url = '',
     method = '',
     data = {},
@@ -153,14 +170,14 @@ window.ajaxRequest = function (
         method: method,
         data: data,
         datatype: 'json',
-        beforeSend: function () {
+        beforeSend: function() {
             beforeSendCallBack();
         }
-    }).done(function (response) {
+    }).done(function(response) {
         doneCallback(response);
-    }).fail(function (response) {
+    }).fail(function(response) {
         failCallback(response);
-    }).always(function () {
+    }).always(function() {
         if (alwaysCallback != null) {
             alwaysCallback();
         }
@@ -174,7 +191,7 @@ window.ajaxRequest = function (
  * @param data
  * @param trSelector
  */
-window.singleDeleteRecord = function (
+window.singleDeleteRecord = function(
     url = '',
     data = {},
     trSelector = $(document)
@@ -185,12 +202,16 @@ window.singleDeleteRecord = function (
             url,
             'DELETE',
             data,
-            function () {
+            function() {
                 showLoading(trSelector);
             },
-            function (res) {
+            function(res) {
                 if (res.status === 200) {
                     let chkbox = trSelector.find('td[scope="checkbox"] input[type="checkbox"]');
+
+                    if (trSelector.hasClass('selected')) {
+                        selectedObjects = removeAElement(selectedObjects, trSelector.attr('data-id'));
+                    }
 
                     if (chkbox.is(':checked')) {
                         selectedObjects = removeAElement(selectedObjects, chkbox.val());
@@ -203,11 +224,11 @@ window.singleDeleteRecord = function (
                     errorMessage(res.message);
                 }
             },
-            function (res) {
+            function(res) {
                 var errorMsg = res.responseJSON.message;
                 errorMessage(errorMsg);
             },
-            function () {
+            function() {
                 hideLoading(trSelector);
                 appendToSeletedLabel(selectedObjects.length);
             }
@@ -217,21 +238,30 @@ window.singleDeleteRecord = function (
     }
 };
 
-window.multiDeleteRecords = function (
+/**
+ * Multi execute request for multi update records
+ *
+ * @param url
+ * @param method
+ * @param data
+ * @param isClearSelected
+ */
+window.executeRequest = function(
     url = '',
+    method = '',
     data = {},
-
+    isClearSelected = false
 ) {
     try {
         let ajaxDtSelector = $(`#${tableName}_ajax_dt`);
         ajaxRequest(
             url,
-            'DELETE',
+            method,
             data,
-            function () {
+            function() {
                 screenLoader();
             },
-            function (res) {
+            function(res) {
                 if (res.status === 200) {
 
                     reloadDataTable().then(value => {
@@ -240,19 +270,19 @@ window.multiDeleteRecords = function (
                         }
                     });
 
-                    selectedObjects = [];
+                    if (isClearSelected) { selectedObjects = []; }
 
                     successMessage(res.message);
                 } else {
                     errorMessage(res.message);
                 }
             },
-            function (res) {
+            function(res) {
                 let errorMsg = res.responseJSON.message;
                 errorMessage(errorMsg);
                 screenLoader(0);
             },
-            function () {
+            function() {
                 appendToSeletedLabel(selectedObjects.length);
             }
         );
@@ -261,7 +291,7 @@ window.multiDeleteRecords = function (
     }
 };
 
-async function reloadDataTable () {
+async function reloadDataTable() {
     return dtable.draw(false);
 }
 
@@ -270,7 +300,7 @@ async function reloadDataTable () {
  *
  * @param number
  */
-window.appendToSeletedLabel = function (number = 0) {
+window.appendToSeletedLabel = function(number = selectedRowsCount.length) {
     if (selectedRowsCount.length > 0) {
         selectedRowsCount.text(number);
     }
@@ -282,7 +312,7 @@ window.appendToSeletedLabel = function (number = 0) {
  * @returns {jQuery}
  */
 window.initDataTable = function() {
-    let dtableSelector = $(`#${tableName}_data`);
+    dtableSelector = $(`#${tableName}_data`);
     return dtableSelector.DataTable({
         initComplete: initDatatable,
         oLanguage: {
@@ -291,49 +321,202 @@ window.initDataTable = function() {
     });
 };
 
+
+/* Language text */
+let selectAllRowsText = langTextSelector.attr('dt-select-all-rows-text'),
+    deselectRowsText = langTextSelector.attr('dt-deselect-rows-text'),
+    deselectAllRowsText = langTextSelector.attr('dt-deselect-all-rows-text'),
+    deselectCurrentPageRowsText = langTextSelector.attr('dt-deselect-current-rows-text'),
+    colVisibleText = langTextSelector.attr('dt-col-visible-text'),
+    copySelectedRowsText = langTextSelector.attr('dt-copy-selected-rows-text'),
+    exportText = langTextSelector.attr('dt-export-text'),
+    asExcelText = langTextSelector.attr('dt-as-excel-text'),
+    asCsvText = langTextSelector.attr('dt-as-csv-text'),
+    asPdfText = langTextSelector.attr('dt-as-pdf-text'),
+    browserPrintText = langTextSelector.attr('dt-browser-print-text'),
+    allRecordsText = langTextSelector.attr('dt-all-record-text');
 /**
  * Init datatable from server side
  *
+ * @param url
  * @returns {jQuery}
  */
-window.serverSideDatatable = function () {
-    let dtableSelector = $(`#${tableName}_ajax_dt`);
+window.serverSideDatatable = function(url = '') {
+    dtableSelector = $(`#${tableName}_ajax_dt`);
     return dtableSelector.DataTable({
         initComplete: initDatatable,
         serverSide: true,
         processing: true,
-        fixedHeader: true,
+        pagingType: 'full_numbers',
+        dom: 'Blfrtip',
+        buttons: [{
+                extend: 'selectAll',
+                text: `<i class="mdi mdi-checkbox-multiple-marked-outline"></i><span class="m-l-5">${selectAllRowsText}</span>`
+            },
+            {
+                extend: 'collection',
+                text: `<i class="mdi mdi-checkbox-blank-outline"></i><span class="m-l-5">${deselectRowsText}</span>`,
+                buttons: [{
+                        extend: 'selectNone',
+                        text: `<i class="mdi mdi-checkbox-blank-outline"></i><span class="m-l-5" title="${deselectCurrentPageRowsText}">${deselectCurrentPageRowsText}</span>`,
+                    },
+                    {
+                        text: `<i class="mdi mdi-checkbox-blank-outline"></i><span class="m-l-5">${deselectAllRowsText}</span>`,
+                        action: function(e, dt, node, config) {
+                            selectedObjects = [];
+                            appendToSeletedLabel(selectedObjects.length);
+                            dt.draw(false);
+                        }
+                    }
+                ]
+            },
+            {
+                extend: 'colvis',
+                columns: ':not(".no-visible-filter")',
+                text: `<i class="mdi mdi-eye"></i><span class="m-l-5">${colVisibleText}</span>`
+            },
+            {
+                extend: 'copy',
+                text: `<i class="mdi mdi-content-copy"></i><span class="m-l-5">${copySelectedRowsText}</span>`,
+                exportOptions: {
+                    rows: '.selected',
+                    columns: ':visible',
+                    orthogonal: 'fullNotes'
+                }
+            },
+            {
+                extend: 'collection',
+                text: `<i class="ti-export" style="font-size: 1.7rem"></i><span class="m-l-5">${exportText}</span>`,
+                buttons: [{
+                        extend: 'excel',
+                        text: `<i class="mdi mdi-file-excel"></i><span class="m-l-5">${asExcelText}</span>`,
+                        exportOptions: {
+                            rows: '.selected',
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: `<i class="mdi mdi-file-chart"></i><span class="m-l-5">${asCsvText}</span>`,
+                        charset: 'utf-8',
+                        bom: true,
+                        exportOptions: {
+                            rows: '.selected',
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: `<i class="mdi mdi-file-pdf"></i><span class="m-l-5">${asPdfText}</span>`,
+                        exportOptions: {
+                            rows: '.selected',
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: `<i class="mdi mdi-printer"></i><span class="m-l-5">${browserPrintText}</span>`,
+                        exportOptions: {
+                            rows: '.selected',
+                            columns: ':visible'
+                        }
+                    }
+                ]
+            }
+        ],
         lengthMenu: [
             [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, -1],
-            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, "All"]
+            [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, allRecordsText]
         ],
         pageLength: 15,
         ajax: {
-            url: route('sliders.index')
+            url: url,
+            error: function(xhr, error, thrown) {
+                screenLoader(0);
+                errorText = langTextSelector.attr('swl-fail-to-load-data-text');
+                swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
+                showYesNoModal(errorTitle, errorText, swlIcon, function() {
+                    window.location.replace(route(`${tableName}`.index));
+                }, false);
+            },
         },
         oLanguage: {
             sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
+        },
+        drawCallback: function(settings) {
+            var api = this.api();
+
+            var rows = api.rows();
+
+            rows.every(function(rowIdx, tableLoop, rowLoop) {
+                var row = this;
+                let data = row.data(),
+                    rowNode = $(row.node());
+
+                rowNode.attr('data-id', data.id);
+
+                selectedObjects.forEach(eleVal => {
+                    if (data.id === eleVal) {
+                        row.select();
+                    }
+                });
+            });
+        },
+        select: {
+            style: 'multi',
+            selector: 'td:not([not-selector])'
         }
     });
 };
 
-function initDatatable()
-{
+function initDatatable() {
+    dtable.columns(invisibleCols).visible(false);
+    dtableSelector.css({
+        'width': '100%'
+    });
     let dataWrapper = $(`#${tableName}_ajax_dt_wrapper`),
+        exportBtn = dataWrapper.find('.dt-buttons'),
         selectDropdown = dataWrapper.find(`#${tableName}_ajax_dt_length`),
         inputFilter = dataWrapper.find(`#${tableName}_ajax_dt_filter`),
         dropdown = selectDropdown.find(`select`) || null,
         filterInput = inputFilter.find(`input`) || null;
+    exportBtn.css({
+        width: '100%',
+        'margin-bottom': '15px'
+    }).find('.dt-button').addClass('dmovie-border margin-0-auto');
+    dataWrapper.addClass('overflow-x-auto');
     dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-    filterInput.addClass('dmovie-border h-32 p-l-10');
+    filterInput.addClass('dmovie-border h-32 p-l-10').css({
+        width: '350px'
+    });
 };
+
+/* Handle when dt row be select */
+window.handleDtRowSelect = function(table) {
+    table.rows('.selected').every(function(rowIdx) {
+        let objId = table.row(rowIdx).data().id;
+        if (!selectedObjects.includes(objId)) {
+            selectedObjects.push(objId);
+        }
+    });
+
+    appendToSeletedLabel(selectedObjects.length);
+}
+
+window.handleDtRowDeselect = function(table) {
+    table.rows({ selected: false }).every(function(rowIdx) {
+        selectedObjects = removeAElement(selectedObjects, table.row(rowIdx).data().id);
+    });
+
+    appendToSeletedLabel(selectedObjects.length);
+}
 
 /**
  * Show success message
  *
  * @param msg
  */
-window.successMessage = function (msg) {
+window.successMessage = function(msg) {
     let successMsgBlock = $('.success-block') || null;
     if (successMsgBlock !== null) {
         successMsgBlock.slideDown(500).html(disMissBtn + msg);
@@ -345,7 +528,7 @@ window.successMessage = function (msg) {
  *
  * @param msg
  */
-window.errorMessage = function (msg) {
+window.errorMessage = function(msg) {
     let errorMsgBlock = $('.error-block') || null;
     if (errorMsgBlock !== null) {
         errorMsgBlock.removeClass('display-none').slideDown(500).html(disMissBtn + msg);
@@ -357,7 +540,7 @@ window.errorMessage = function (msg) {
  *
  * @param msg
  */
-window.warningMessage = function (msg) {
+window.warningMessage = function(msg) {
     let warningMsgBlock = $('.warning') || null;
     if (warningMsgBlock !== null) {
         warningMsgBlock.removeClass('display-none').slideDown(500).html(disMissBtn + msg);
@@ -373,7 +556,7 @@ window.warningMessage = function (msg) {
  * @param invalidClass
  * @param unnamed
  */
-window.loadRoleSelect2 = function (
+window.loadRoleSelect2 = function(
     selector = $('#role_select2'),
     placeholderRoleText = 'Select role',
     dmovieRoleSelectClass = 'dmovie-role-select2',
@@ -391,23 +574,23 @@ window.loadRoleSelect2 = function (
             type: 'get',
             dataType: 'json',
             delay: 250,
-            beforeSend: function () {
+            beforeSend: function() {
                 window.parent.showLoading($('.' + dmovieRoleSelectClass));
             },
-            success: function () {
+            success: function() {
                 window.parent.hideLoading($('.' + dmovieRoleSelectClass));
             },
-            error: function () {
+            error: function() {
                 window.parent.hideLoading($('.' + dmovieRoleSelectClass));
             },
-            data: function (params) {
+            data: function(params) {
                 return {
                     role_name: params.term,
                 };
             },
-            processResults: function (data) {
+            processResults: function(data) {
                 return {
-                    results: $.map(data.data, function (val, i) {
+                    results: $.map(data.data, function(val, i) {
                         return {
                             id: val.id,
                             text: val.role_name == null || val.role_name === '' ? `ID: ${val.id} - ${unnamed}` : val.role_name
@@ -425,7 +608,7 @@ window.loadRoleSelect2 = function (
  * @param type
  * @constructor
  */
-window.screenLoader = function (type = 1) {
+window.screenLoader = function(type = 1) {
     let show = 1;
     let page = $('body');
     type === show ? page.LoadingOverlay("show", {
@@ -440,21 +623,22 @@ window.screenLoader = function (type = 1) {
 };
 
 /** Show loading for specifier block */
-window.showLoading = function (selector) {
+window.showLoading = function(selector) {
     selector.LoadingOverlay("show", {
         zIndex: 1
     });
 };
-window.hideLoading = function (selector) {
+window.hideLoading = function(selector) {
     selector.LoadingOverlay('hide');
 };
 /** ./END SHOW LOADING FOR BLOCK */
 
-window.showYesNoModal = async function (
+window.showYesNoModal = async function(
     title,
     swalText,
     icon,
     callback,
+    showCancelButton = true,
     confirmButtonColor = swlConfirmBtnColor,
     cancelButtonColor = swlCancelBtnColor,
 ) {
@@ -462,7 +646,7 @@ window.showYesNoModal = async function (
         title: title,
         text: swalText,
         icon: icon,
-        showCancelButton: true,
+        showCancelButton: showCancelButton,
         confirmButtonColor: confirmButtonColor,
         cancelButtonColor: cancelButtonColor,
         confirmButtonText: swlConfirmBtnText,
@@ -475,13 +659,40 @@ window.showYesNoModal = async function (
     })
 };
 
+window.showEnableDisableAlert = function(title = '', options = {}, currentSelect = 0, callback) {
+    Swal.fire({
+        title: title,
+        input: 'select',
+        inputOptions: options,
+        inputValue: currentSelect,
+        customClass: {
+            popup: 'border-radius-0',
+            input: 'margin-0-auto width-100'
+        },
+        showCancelButton: true,
+        cancelButtonText: swlCancelBtnText,
+        inputValidator: function(value) {
+            return new Promise(function(resolve, reject) {
+                if (value !== '') {
+                    resolve();
+                }
+            });
+        }
+    }).then(function(result) {
+        if (result.value) {
+            let newOption = result.value;
+            callback(newOption);
+        }
+    });
+}
+
 /**
  * Show normal alert
  *
  * @param errorTitle
  * @param errorText
  */
-window.normalAlert = function (errorTitle, errorText) {
+window.normalAlert = function(errorTitle, errorText) {
     Swal.fire({
         icon: 'error',
         title: errorTitle,
@@ -496,7 +707,7 @@ window.normalAlert = function (errorTitle, errorText) {
  * @param value
  * @returns {*}
  */
-window.removeAElement = function (arr, value) {
+window.removeAElement = function(arr, value) {
     return arr.filter(function(ele) {
         return ele !== value;
     });
@@ -508,7 +719,7 @@ window.removeAElement = function (arr, value) {
  * @param selector
  * @param langTextSelector
  */
-window.imageDropify = function (selector) {
+window.imageDropify = function(selector) {
     let defaultMsg = '',
         replaceMsg = '',
         removeMsg = '',
@@ -529,7 +740,7 @@ window.imageDropify = function (selector) {
     });
 };
 
-let imgFancybox = $( '[data-fancybox]' ),
+let imgFancybox = $('[data-fancybox]'),
     fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
     fancyboxTxtNext = langTextSelector.attr('fancybox-text-next'),
     fancyboxTxtPrev = langTextSelector.attr('fancybox-text-previous'),

@@ -30,8 +30,17 @@
     <script src="{{ asset('adminhtml/assets/js/html5shiv.js') }}"></script>
     <script src="{{ asset('adminhtml/assets/js/respond.min.js') }}"></script>
     <![endif]-->
+
+    <script>
+        function isRecoverPass(mode) {
+            var link = document.getElementById('to-recover');
+            if (mode === 'recover') {
+                link.click();
+            }
+        }
+    </script>
 </head>
-<body>
+<body onload="isRecoverPass('{{ $mode ?? 'login' }}');">
 <!-- Preloader -->
 <div class="preloader">
     <div class="cssload-speeding-wheel"></div>
@@ -51,7 +60,7 @@
                         {{ session('error') }}
                     </div>
                 @endif
-                <div class="form-group m-t-40">
+                <div class="form-group m-t-40" style="overflow: inherit;">
                     <div class="col-xs-12">
                         <input name="login"
                                class="form-control @if ($errors->has('username') || $errors->has('email')) invalid @endif"
@@ -106,17 +115,29 @@
                     </div>
                 </div>
             </form>
-            <form class="form-horizontal" id="recoverform" action="index.html">
+            <form class="form-horizontal" id="recoverform" method="POST" action="{{ route('password.email') }}">
+                @csrf
                 <div class="form-group ">
                     <div class="col-xs-12">
                         <h3>{{ __('Recover Password') }}</h3>
                         <p class="text-muted color-313131">{{ __('Enter your Email and instructions will be sent to you!') }} </p>
                     </div>
                 </div>
+                @if (session('recover'))
+                    <div class="form-group alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {{ session('recover') }}
+                    </div>
+                @endif
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" style="border-radius: 0;" type="text" required="" placeholder="{{ __
-                        ('Email') }}">
+                        <input name="email"
+                               class="form-control"
+                               style="border-radius: 0;"
+                               type="text"
+                               required
+                               placeholder="{{ __('Email') }}"
+                               value="{{ old('email') }}">
                     </div>
                 </div>
                 <div class="form-group text-center mr--15 ml--15 m-b-0">

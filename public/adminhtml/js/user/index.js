@@ -1,20 +1,42 @@
 $(document).ready(function () {
-    tableName = 'users';
+    'use strict';
 
+    tableName = 'users';
+    swlIcon = langTextSelector.attr('swl-icon-warning-text');
+
+    $.fn.dataTable.defaults.aoColumns = aoColumns;
     $.fn.dataTable.defaults.columnDefs = columnDefs;
     $.fn.dataTable.defaults.order = colOrder;
 
-    dtable = initDataTable();
+    dtable = serverSideDatatable(route('users.index'));
 
-    /**
-     * Delete a user
-     */
-    $(`#${tableName}_data tbody`).on('click', '#deleteUserBtn', function () {
+    /* When dt row is select */
+    dtable.on('select.dt', function () {
+        handleDtRowSelect(dtable);
+    });
+
+    /* When dt row is deselect */
+    dtable.on('deselect.dt', function ( ) {
+        handleDtRowDeselect(dtable);
+    });
+
+    /* Processing overlay */
+    dtable.on('processing.dt', function(e, settings, processing) {
+        $(`#${tableName}_ajax_dt_processing`).css('display', 'none');
+        if (processing) {
+            screenLoader();
+        } else {
+            screenLoader(0);
+        }
+    });
+
+    /* Delete a user */
+    $(`#${tableName}_ajax_dt tbody`).on('click', '#deleteUserBtn', function () {
         let self = $(this);
         let trSelector = self.closest('tr');
         let userId = self.attr('data-id');
         showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
-            deleteRowRecord(
+            singleDeleteRecord(
                 route('users.destroy', {user: userId}).url(),
                 {},
                 trSelector
@@ -22,49 +44,16 @@ $(document).ready(function () {
         } );
     });
 
-    /**
-     * Delete users action
-     */
+    /* Delete users action */
     let deleteUsersBtn = $('._delete-users');
     if (deleteUsersBtn.length > 0) {
         deleteUsersBtn.on('click', function () {
             if (selectedObjects.length > 0) {
                 showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
-                    let count = 0;
-                    dtable.$(`td[scope="checkbox"]`).each(function () {
-                        let checkbox = $(this).find('input');
-                        if (checkbox.is(':checked')) {
-                            let userId = checkbox.val();
-                            let tr = checkbox.closest('tr'),
-                                row = dtable.row(tr);
-                            $(document).ajaxStart(function () {
-                                window.parent.showLoading(dtableSelector);
-                            });
-                            $.ajax({
-                                url: route('users.destroy', {user: userId}).url(),
-                                method: 'DELETE',
-                                datatype: 'json',
-                                success: function (res) {
-                                    if (res.status === 200) {
-                                        selectedObjects = removeAElement(selectedObjects, userId);
+                    let exeUrl = route(`users.multiDestroy`),
+                        data = {ids: selectedObjects};
 
-                                        row.remove().draw(true);
-                                    }
-                                }
-                            });
-                            $(document).ajaxStop(function () {
-                                window.parent.hideLoading(dtableSelector);
-                            });
-                            count++;
-                        }
-                    });
-                    $(document).ajaxSuccess(function () {
-                        let message = langText.attr('users-deleted');
-
-                        window.parent.successMessage(message + count + ' users.');
-
-                        appendToSeletedLabel(selectedObjects.length);
-                    });
+                    executeRequest(exeUrl, "DELETE", data, true);
                 });
             } else {
                 /** If not select any row, then show a alert */
@@ -90,18 +79,14 @@ $(document).ready(function () {
                         swlSlActive = self.attr('swl-select-active-item');
 
                     showStateAlert(swlTitle, swlSlNotActive, swlSlNotVerify, swlSlActive, 1, swlCancelBtnText, function (newState) {
-                        dtable.$('i[scope="change-state"]').each(function () {
-                            let targetBtn = $(this),
-                                userId = targetBtn.attr('user-id');
-
-                            $.each(selectedObjects, function (index, value) {
-                                if (userId === value) {
-                                    let row = targetBtn.closest('tr');
-
-                                    doChangeState(targetBtn, row, value, newState, swlSlNotActive, swlSlNotVerify, swlSlActive);
-                                }
-                            });
-                        });
+                        executeRequest(
+                            route('users.massUpdate'),
+                            'PUT',
+                            {
+                                ids: selectedObjects,
+                                state: newState
+                            }
+                        );
                     });
                 });
             } else {
@@ -151,19 +136,13 @@ $(document).ready(function () {
                                 let roleId = selectRole.val();
 
                                 if (roleId !== null) {
-                                    let roleName = selectRole.text();
-                                    dtable.$('input[type="checkbox"]').each(function () {
-                                        let targetBtn = $(this),
-                                            userId = targetBtn.val();
-
-                                        $.each(selectedObjects, function (index, value) {
-                                            if (userId === value) {
-                                                let row = targetBtn.closest('tr');
-
-                                                doAssignRole(row, userId, roleId, roleName);
-                                            }
-                                        });
-                                    });
+                                    executeRequest(
+                                        route('roles.massAssign', {role: roleId}).url(),
+                                        'POST',
+                                        {
+                                            ids: selectedObjects
+                                        }
+                                    );
 
                                 } else {
                                     let selectRoleErrorText = langText.attr('swl-sl-role-error-text');
@@ -195,11 +174,10 @@ $(document).ready(function () {
 function changeStatus(recordRow ,uid, title, notActive, notVerify, isActive) {
     let self = $(recordRow),
         currentState = self.attr('data-id'),
-        cancelText = self.attr('cancel-text'),
-        row = self.closest('tr');
+        cancelText = self.attr('cancel-text');
 
     showStateAlert(title, notActive, notVerify, isActive, currentState, cancelText, function (newState) {
-        doChangeState(self, row, uid, newState, notActive, notVerify, isActive);
+        doChangeState(uid, newState);
     });
 }
 
@@ -249,73 +227,29 @@ function showStateAlert(title, notActive, notVerify, isActive, currentState = -1
 /**
  * Do change state of user
  *
- * @param targetBtn
- * @param row
  * @param uid
  * @param newState
- * @param notActive
- * @param notVerify
- * @param isActive
  */
-function doChangeState(targetBtn, row, uid, newState, notActive, notVerify, isActive) {
-    $.ajax({
-        url: route('users.changeState'),
-        method: 'POST',
-        data: {
-            user: uid,
-            state: newState
-        },
-        datatype: 'json',
-        beforeSend: function() {
-            window.parent.showLoading(row);
-        },
-        success: function (res) {
-            if (res.status === 200) {
-                window.parent.successMessage(res.message);
-                let statusCol = row.find('td[scope="status"]');
-                targetBtn.attr('data-id', newState);
+function doChangeState(uid, newState) {
 
-                statusCol.find('.status-text').text(
-                    newState === '-1' ? notActive : (newState === '0' ? notVerify : isActive)
-                );
-            } else {
-                window.parent.errorMessage(res.message);
-            }
-            window.parent.hideLoading(row);
-        },
-        error: function () {
-            window.parent.hideLoading(row);
-        }
-    });
+    executeRequest(
+        route('users.massSingleUserUpdate', {user: uid}).url(),
+        'PUT',
+        {state: newState}
+    );
+
 }
 /** ./End */
 
 function doAssignRole(row, userId, roleId, newRoleName) {
-    $.ajax({
-        url: route('roles.doSingAssign'),
-        method: 'POST',
-        data: {
+
+    executeRequest(
+        route('roles.doSingAssign'),
+        "POST",
+        {
             user: userId,
             role: roleId
-        },
-        datatype: 'json',
-        beforeSend: function() {
-            window.parent.showLoading(row);
-        },
-        success: function (res) {
-            if (res.status === 200) {
-                window.parent.successMessage(res.message);
-
-                let roleNameCol = row.find('td[scope="role"]');
-
-                roleNameCol.text(newRoleName);
-            } else {
-                window.parent.errorMessage(res.message);
-            }
-            window.parent.hideLoading(row);
-        },
-        error: function () {
-            window.parent.hideLoading(row);
         }
-    });
+    );
+
 }

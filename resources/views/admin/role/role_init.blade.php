@@ -1,11 +1,13 @@
 <script>
-    window.view = '{{ __('View') }}';
-    window.create = '{{ __('Create') }}';
-    window.edit = '{{ __('Edit') }}';
-    window.deleteText = '{{ __('Delete') }}';
-    window.roleText = '{{ __('Roles manage') }}';
-    window.userText = '{{ __('User manage') }}';
-    let sliderText = '{{ __('Silder manage') }}'
+    let
+    view = '{{ __('View') }}',
+    create = '{{ __('Create') }}',
+    edit = '{{ __('Edit') }}',
+    deleteText = '{{ __('Delete') }}',
+    roleText = '{{ __('Roles manage') }}',
+    userText = '{{ __('User manage') }}',
+    sliderText = '{{ __('Silder manage') }}',
+    filmText = '{{ __('Films manage') }}';
     window.checkedNodes = '{{ old('permissions', $permissionsString ?? null) }}'.length === 0 ? [] :
         '{{ old('permissions', $permissionsString ?? null) }}'.split(',');
     window.permissionData = [{
@@ -32,6 +34,14 @@
                     { id: 'slider-create', text: create, spriteCssClass: "create" },
                     { id: 'slider-edit', text: edit, spriteCssClass: "edit" },
                     { id: 'slider-delete', text: deleteText, spriteCssClass: "delete" }
+                ]
+            },
+            {
+                id: 'film', text: filmText, expanded: true, spriteCssClass: "film-item", items: [
+                    { id: 'film-view', text: view,  spriteCssClass: "view" },
+                    { id: 'film-create', text: create, spriteCssClass: "create" },
+                    { id: 'film-edit', text: edit, spriteCssClass: "edit" },
+                    { id: 'film-delete', text: deleteText, spriteCssClass: "delete" }
                 ]
             },
         ]

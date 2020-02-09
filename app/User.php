@@ -16,6 +16,24 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
+    /* Constant user column */
+    const ID = 'id';
+    const ACCOUNT_TYPE = 'account_type';
+    const CAN_CHANGE_USERNAME = 'can_change_username';
+    const LOGIN_WITH_SOCIAL_ACCOUNT = 'login_with_social_account';
+    const USERNAME = 'username';
+    const NAME = 'name';
+    const EMAIL = 'email';
+    const PASSWORD = 'password';
+    const GENDER = 'gender';
+    const PHONE = 'phone';
+    const ADDRESS = 'address';
+    const AVATAR = 'avatar';
+    const DOB = 'dob';
+    const STATE = 'state';
+    const DESCRIPTION = 'description';
+    const ROLE_ID = 'role_id';
+
     /**
      * Define role permission
      */
@@ -41,13 +59,63 @@ class User extends Authenticatable
         NOT_ACTIVATE = -1;
 
     const FIRST_LOGIN_WITH_SOCIAL_ACCOUNT = 1,
-        CAN_CHANGE_USERNAME = 1,
+        CAN = 1,
         NORMAL_LOGIN = 0;
 
     /** Other */
     const MALE = 0,
         FEMALE = 1,
         OTHER = 2;
+
+    /**
+     * Get user id
+     *
+     * @return string|int
+     */
+    public function getId()
+    {
+        return $this->getAttribute(self::ID);
+    }
+
+    /**
+     * Set id
+     *
+     * @param string|int $id
+     * @return void
+     */
+    public function setId($id)
+    {
+        $this->setAttribute(self::ID, $id);
+    }
+
+    /**
+     * Get d-m-y formatted date
+     *
+     * @return string
+     */
+    public function getDobFormated()
+    {
+        if (!$this->getDob()) {
+            return '';
+        }
+        $dob = explode('-', $this->getDob());
+        return $dob[2] . '/' . $dob[1] . '/' . $dob[0];
+    }
+
+    /**
+     * Format a date to insert to db (Y-m-d)
+     *
+     * @param string $date
+     * @return string
+     */
+    public function formatDate($date)
+    {
+        $dob = explode('/', $date);
+
+        $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
+        return $dob->format('Y-m-d');
+    }
+
     /**
      * Get user date of birth
      *
@@ -55,11 +123,47 @@ class User extends Authenticatable
      */
     public function getDob()
     {
-        if (!$this->attributes['dob']) {
-            return '';
-        }
-        $dob = explode('-', $this->attributes['dob']);
-        return $dob[2] . '/' . $dob[1] . '/' . $dob[0];
+        return $this->getAttribute(self::DOB);
+    }
+
+    /**
+     * Set dob for user with input format d/m/y
+     *
+     * @param string $dob
+     */
+    public function setDob($dob)
+    {
+        $this->setAttribute(self::DOB, $this->formatDate($dob));
+    }
+
+    /**
+     * Get user avatar
+     *
+     * @return string
+     */
+    public function getAvatar()
+    {
+        return $this->getAttribute('avatar');
+    }
+
+    /**
+     * Set avatar path for user
+     *
+     * @param string $avatar
+     */
+    public function setAvatar($avatar)
+    {
+        $this->setAttribute(self::AVATAR, $avatar);
+    }
+
+    /**
+     * Get user avatar path
+     *
+     * @return null|string
+     */
+    public function getAvatarPath()
+    {
+        return $this->getAvatar() ? Data::STORAGE . $this->getAvatar() : '/images/icons/account.png';
     }
 
     /**
@@ -67,9 +171,14 @@ class User extends Authenticatable
      *
      * @return null|string
      */
-    public function getAvatar()
+    public function getRenderAvatarHtml()
     {
-        return $this->avatar ? Data::STORAGE . $this->avatar : '/images/icons/account.png';
+        return "<a href=\"{$this->getAvatarPath()}\"
+            class=\"slide-item\"
+            data-fancybox=\"user-avatar\" data-caption=\"{$this->getName()}\">
+            <img src=\"{$this->getAvatarPath()}\"
+                 class=\"slide-item-image\" />
+        </a>";
     }
 
     /**
@@ -111,14 +220,24 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user gender
+     * Get user gender code
      *
      * @return array|string|null
      */
     public function getGender()
     {
-        return $this->getAttribute('gender') === self::MALE ? __('Male') :
-            ($this->getAttribute('gender') === self::FEMALE ? __('Female') : __('Other'));
+        return $this->getAttribute('gender');
+    }
+
+    /**
+     * Get user gender name
+     *
+     * @return array|string|null
+     */
+    public function getGenderName()
+    {
+        return $this->getGender() === self::MALE ? __('Male') :
+            ($this->getGender() === self::FEMALE ? __('Female') : __('Other'));
     }
 
     /**
@@ -128,7 +247,7 @@ class User extends Authenticatable
      */
     public function getName()
     {
-        return $this->getAttribute('name') ?? __('<i class=\'text-warning\'>Not update</i>');
+        return $this->getAttribute(User::NAME);
     }
 
     /**
@@ -138,7 +257,7 @@ class User extends Authenticatable
      */
     public function canChangeUsername()
     {
-        return $this->can_change_username == self::CAN_CHANGE_USERNAME;
+        return $this->can_change_username == self::CAN;
     }
 
     /**
@@ -148,21 +267,32 @@ class User extends Authenticatable
      */
     public function getUserName()
     {
-        return $this->username ?? __('<i class=\'text-warning\'>Not update</i>');
+        return $this->getAttribute('username');
     }
     /**
      * Get user status
      *
      * @return array|string|null
      */
+    public function getStatusLabel()
+    {
+        return $this->getStatus() === self::ACTIVE ?
+            __("Active") :
+            ($this->getStatus() === self::NOT_VERIFY_BY_ADMIN ?
+                __("Not verify") :
+                __("Not active"));
+    }
+
+    /**
+     * Get user status
+     *
+     * @return int|string
+     */
     public function getStatus()
     {
-        return $this->state === self::ACTIVE ?
-            "Active" :
-            ($this->state === self::NOT_VERIFY_BY_ADMIN ?
-                "Not verify" :
-                "Not active");
+        return $this->getAttribute('state');
     }
+
     /**
      * Get assigned role to user
      *
@@ -220,7 +350,7 @@ class User extends Authenticatable
      */
     public function deleteAvatarFile()
     {
-        return Storage::delete('/public/' . $this->avatar);
+        return Storage::delete('/public/' . $this->getAvatar());
     }
 
     /**
@@ -272,5 +402,13 @@ class User extends Authenticatable
     public function logs()
     {
         return $this->hasMany(Log::class);
+    }
+
+    /**
+     * @param string $token
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
     }
 }

@@ -135,7 +135,7 @@ class RoleController extends Controller
     {
         $this->authorize('update', Role::class);
         try {
-            if ($this->roleRepository->update($request, $role)) {
+            if ($this->roleRepository->update(null, $role, $request->all())) {
                 return redirect(route('roles.index'))
                     ->with('success', __('Role have updated success.'));
             }
@@ -156,7 +156,7 @@ class RoleController extends Controller
         $this->authorize('delete', Role::class);
 
         try {
-            $this->roleRepository->delete($role);
+            $this->roleRepository->delete(null, $role);
             return response()->json([
                 'status' => 200,
                 'message' => __('Role have deleted success.')
@@ -194,7 +194,7 @@ class RoleController extends Controller
         $this->authorize('viewAny', Role::class);
 
         try {
-            $this->roleRepository->doAssign($request);
+            $this->roleRepository->doAssign($request->role, null, $request->user_ids);
 
             return redirect()->route('roles.index')
                 ->with('success', __('Assign role to user successfully.'));
@@ -230,6 +230,33 @@ class RoleController extends Controller
                     'message' => $e->getMessage()
                 ]) :
                 back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Mass assign role to users
+     *
+     * @param Role $role
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function massAssign(Role $role)
+    {
+        $this->authorize('viewAny', Role::class);
+
+        $ids = request('ids');
+
+        try {
+            $this->roleRepository->doAssign(null, $role, $ids);
+            return response()->json([
+                'status' => 200,
+                'message' => __('Assign role to user successfully.')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 

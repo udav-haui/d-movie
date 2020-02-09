@@ -17,6 +17,16 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     protected $model;
 
     /**
+     * Get all records
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|Model[]
+     */
+    public function all()
+    {
+        return $this->model::all();
+    }
+
+    /**
      * Retrieve model
      *
      * @param int|string $id
@@ -78,7 +88,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @return bool
      * @throws Exception
      */
-    public function delete($modelId, $model = null)
+    public function delete($modelId = null, $model = null)
     {
         try {
             $model->delete();
@@ -113,6 +123,21 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     {
         if (array_key_exists('_method', $fields)) {
             unset($fields['_method']);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Remove ids field from request
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function removeIdsKey($fields)
+    {
+        if (array_key_exists('ids', $fields)) {
+            unset($fields['ids']);
         }
 
         return $fields;

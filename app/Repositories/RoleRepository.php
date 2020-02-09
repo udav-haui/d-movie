@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Permission;
+use App\Repositories\Abstracts\CRUDModelAbstract;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Role;
 use App\User;
@@ -14,9 +15,11 @@ use App\User;
  *
  * @package App\Services
  */
-class RoleRepository implements RoleRepositoryInterface
+class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterface
 {
     use LoggerTrait;
+
+    protected $model = Role::class;
 
     /**
      * Store new roles
@@ -28,9 +31,10 @@ class RoleRepository implements RoleRepositoryInterface
     public function store(RoleRequest $request)
     {
         try {
-            $role = Role::create([
+            $role = $this->create([
                 'role_name' => $request->role_name
             ]);
+
             if ($role) {
                 $this->createLog($role, Role::class);
                 if ($request->permissions != null) {
@@ -57,19 +61,22 @@ class RoleRepository implements RoleRepositoryInterface
      * @return bool
      * @throws \Exception
      */
-    public function update(RoleRequest $request, Role $role)
+    public function update($roleId = null, $role = null, $fields = [])
     {
         try {
-            $updatedRole = $role->update([
-                'role_name' => $request->role_name
-            ]);
+            if ($roleId !== null) {
+                $role = $this->find($roleId);
+            }
+
+            $updatedRole = parent::update(null, $role, ['role_name' => $fields['role_name']]);
+
             if ($updatedRole) {
                 $this->updateLog($role, Role::class);
 
                 $role->permissions()->delete();
 
                 /** @var array $permissions */
-                $permissions = explode(',', $request->permissions);
+                $permissions = explode(',', $fields['permissions']);
 
                 foreach ($permissions as $permission) {
                     $updatedPermission = $role->permissions()->create([
@@ -87,10 +94,10 @@ class RoleRepository implements RoleRepositoryInterface
                     $user->save();
                 }
 
-                if ($request->has('users')) {
+                if (array_key_exists('users', $fields)) {
 
                     /** @var array $userIds */
-                    $userIds = $request->users;
+                    $userIds = $fields['users'];
 
                     foreach ($userIds as $id) {
                         $user = User::find($id);
@@ -108,21 +115,20 @@ class RoleRepository implements RoleRepositoryInterface
     /**
      * Delete a role
      *
+     * @param null|int|string $roleId
      * @param Role $role
      * @return bool
      * @throws \Exception
      */
-    public function delete(Role $role)
+    public function delete($roleId = null, $role = null)
     {
+        if ($roleId !== null) {
+            $role = $this->find($roleId);
+        }
         try {
             $role->permissions()->delete();
-            $oldRole = $role;
-            if ($role) {
-                if ($role->delete()) {
-                    $this->deleteLog($oldRole, Role::class);
-                }
-                return true;
-            }
+            parent::delete(null, $role);
+            return true;
         } catch (\Exception $exception) {
             throw new \Exception(__('Ooops, something wrong appended.' . $exception->getMessage()));
         }
@@ -144,15 +150,16 @@ class RoleRepository implements RoleRepositoryInterface
     }
 
     /**
-     * @param AssignRequest $request
+     * @param string|int|null $roleId
+     * @param Role $role
+     * @param array $uids
      */
-    public function doAssign(AssignRequest $request)
+    public function doAssign($roleId = null, $role = null, $uids = [])
     {
-        /** @var Role $role */
-        $role = $this->getRole($request->role);
-
-        /** @var array $uids */
-        $uids = $request->user_ids;
+        if ($roleId !== null) {
+            /** @var Role $role */
+            $role = $this->find($roleId);
+        }
 
         foreach ($uids as $uid) {
             /** @var User $user */

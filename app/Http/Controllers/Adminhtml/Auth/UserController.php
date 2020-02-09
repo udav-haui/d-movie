@@ -21,6 +21,7 @@ class UserController extends Controller
      * @var UserRepositoryInterface
      */
     private $userRepository;
+
     /**
      * @var RoleRepositoryInterface
      */
@@ -49,6 +50,80 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('viewAny', User::class);
+
+        if (request()->ajax()) {
+            $users = User::select(['*']);
+
+            $dataTable = datatables()->of($users);
+
+            $dataTable->editColumn('avatar', function (User $user) {
+                return '<div class="dmovie-flex-container">' . $user->getRenderAvatarHtml() . '</div>';
+            });
+            $dataTable->editColumn('gender', function (User $user) {
+                return $user->getGenderName();
+            });
+            /** @var User $authUser */
+            $authUser = auth()->user();
+            if ($authUser->isAdmin()) {
+                $dataTable->editColumn('role_id', function (User $user) {
+                    return $user->getRoleName();
+                });
+            }
+
+            $htmlRaw = "";
+            $dataTable->addColumn('task', function (User $user) use ($authUser, $htmlRaw) {
+                if ($authUser->can('selfUpdate', $user)) {
+                    $htmlRaw .= "<a href=\"".route('users.edit', ['user' => $user->getId()]) . "\"
+                                   type=\"button\"
+                                   class=\"";
+                    if ($authUser->getAuthIdentifier() === $user->getId() ||
+                        $authUser->cant('delete', \App\User::class)
+                    ) {
+                        $htmlRaw .= "col-md-12";
+                    } else {
+                        $htmlRaw .= "col-md-6";
+                    }
+                    $htmlRaw .= " col-xs-12 btn dmovie-btn dmovie-btn-success\" title=\"";
+                    $htmlRaw .= __('Detail');
+                    $htmlRaw .= "\"><i class=\"mdi mdi-account-edit\"></i></a>";
+                }
+
+                if ($authUser->can('delete', User::class) &&
+                    $authUser->getId() !== $user->getId()
+                ) {
+                    $htmlRaw .= "<button id=\"deleteUserBtn\" type=\"button\"
+                                            class=\"col-md-6 col-xs-12 btn dmovie-btn btn-danger\"
+                                            title=\"" . __('Delete') . "\"
+                                            data-id=\"{$user->getId()}\"
+                                            url=\"" . route('users.destroy', ['user' => $user->id]) ."\">
+                                        <i class=\"mdi mdi-account-minus\"></i>
+                                    </button>";
+                }
+
+                return $htmlRaw;
+            });
+
+            $dataTable->editColumn('state', function (User $user) {
+                $authU = auth()->user();
+                $htmlRaw = "<span class=\"status-text\">
+                                {$user->getStatusLabel()}
+                            </span>";
+                if ($authU->can('cannotSelfUpdate', $user)) {
+                    $htmlRaw .= "<i class=\"ti-reload\"
+                                   data-id=\"{$user->getStatus()}\"
+                                   user-id=\"{$user->getId()}\"
+                                   cancel-text=\"" . __('Cancel') . "\"
+                                   onclick=\"changeStatus(this, '{$user->getId()}', '" . __('Select state') . "', '" .
+                        __('Not active') . "', '". __('Not verify') . "', '" . __('Active') . "');\"
+                                   title=\"".__('Change status') ."\"
+                                   scope=\"change-state\"></i>";
+                }
+
+                return $htmlRaw;
+            });
+
+            return $dataTable->rawColumns(['avatar', 'state', 'href', 'task'])->make();
+        }
 
         $users = $this->userRepository->all();
         return view('admin.user.index', compact('users'));
@@ -80,20 +155,20 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
         $fields = [
-            'account_type' => User::STAFF,
-            'can_change_username' => User::CAN_CHANGE_USERNAME,
-            'login_with_social_account' => User::NORMAL_LOGIN,
-            'username' => $request->username,
-            'name' => $request->name ?? null,
-            'email' => $request->email ?? null,
-            'password' => Hash::make($request->password),
-            'gender' => $request->gender,
-            'phone' => $request->phone ?? null,
-            'address' => $request->address,
-            'dob' => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
-            'state' => User::ACTIVE,
-            'description' => $request->description ?? null,
-            'role_id' => $request->role ?? null
+            USER::ACCOUNT_TYPE => User::STAFF,
+            User::CAN_CHANGE_USERNAME => User::CAN,
+            User::LOGIN_WITH_SOCIAL_ACCOUNT => User::NORMAL_LOGIN,
+            USER::USERNAME => $request->username,
+            User::NAME => $request->name ?? null,
+            User::EMAIL => $request->email ?? null,
+            User::PASSWORD => Hash::make($request->password),
+            User::GENDER => $request->gender,
+            User::PHONE => $request->phone ?? null,
+            User::ADDRESS => $request->address,
+            User::DOB => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
+            User::STATE => User::ACTIVE,
+            User::DESCRIPTION => $request->description ?? null,
+            User::ROLE_ID => $request->role ?? null
         ];
 
         $this->userRepository->create($fields);
@@ -152,9 +227,9 @@ class UserController extends Controller
         $this->authorize('selfUpdate', $user);
 
         try {
-            $this->userRepository->update($request, $user);
+            $this->userRepository->update(null, $user, $request->all());
             return back()->with('success', __('User info have updated.'));
-        } catch (AuthorizationException $exception) {
+        } catch (\Exception $exception) {
             return back()->with('change_info', 'active')
                 ->withError($exception->getMessage())->withInput();
         }
@@ -211,10 +286,71 @@ class UserController extends Controller
             $fields['password'] = Hash::make($request->password);
         }
         try {
-            $this->userRepository->update($request, $user, $fields);
+            $this->userRepository->update(null, $user, $fields);
             return redirect(route('users.index'))->with('success', __('User info have updated.'));
         } catch (\Exception $exception) {
-            return back()->with('error', __('User info have updated.'))->withInput();
+            return back()->with('error', $exception->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Mass update for multi users
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AuthorizationException
+     */
+    public function massUpdate()
+    {
+        $this->authorize('update', User::class);
+
+        $fields = request()->all();
+
+        $ids = request('ids');
+
+        $fields = $this->userRepository->removeIdsKey($fields);
+
+        try {
+            foreach ($ids as $id) {
+                $this->userRepository->update($id, null, $fields);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('Users info have updated.')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Mass update for a user
+     *
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AuthorizationException
+     */
+    public function massSingleUserUpdate(User $user)
+    {
+        $this->authorize('update', User::class);
+
+        $fields = request()->all();
+
+        try {
+            $this->userRepository->update(null, $user, $fields);
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('User info have updated.')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -228,9 +364,7 @@ class UserController extends Controller
         /** @var int $userId */
         $userId = request()->user;
 
-        /** @var User $user */
-        $user = $this->userRepository->get($userId);
-        $this->userRepository->update(request(), $user, ['state' => request('state')]);
+        $this->userRepository->update($userId, null, ['state' => request('state')]);
 
         return response()->json([
             'status' => 200,
@@ -251,7 +385,7 @@ class UserController extends Controller
         $this->authorize('delete', User::class);
 
         try {
-            if ($this->userRepository->destroy($user)) {
+            if ($this->userRepository->delete(null, $user)) {
                 return request()->ajax() ? response()->json([
                     'status' => 200,
                     'message' => __('The user has been deleted.')
@@ -267,6 +401,84 @@ class UserController extends Controller
                 'status' => 400,
                 'message' => $exception->getMessage()
             ]) : back()->with('error', $exception->getMessage());
+        }
+    }
+
+    /**
+     * Multi destroy users
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws AuthorizationException
+     */
+    public function multiDestroy()
+    {
+        $this->authorize('delete', User::class);
+
+        $ids = request('ids');
+
+        try {
+            /** @var string $id */
+            foreach ($ids as $id) {
+                $this->userRepository->delete($id);
+            }
+
+            $message = __('Users was deleted successfully.');
+            return !request()->ajax() ?
+                redirect(route('users.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
+
+    /**
+     * Multi change status of users
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws AuthorizationException
+     */
+    public function multiChangeStatus()
+    {
+        $this->authorize('update', User::class);
+
+
+        $ids = request('ids');
+        $status = request('status');
+
+        try {
+            /** @var string $id */
+            foreach ($ids as $id) {
+                if (!$this->userRepository->update($id, null, ['state' => $status])) {
+                    $message = __('Ooops, something wrong appended.');
+
+                    throw new \Exception($message);
+                }
+            }
+
+            $message = __('The users status has been changed.');
+            return request()->ajax() ? response()->json([
+                'status' => 200,
+                'message' => $message
+            ]) : back()->with('success', $message);
+
+        } catch (\Exception $e) {
+            return request()->ajax() ? response()->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ]) : back()->with('error', $e->getMessage());
         }
     }
 

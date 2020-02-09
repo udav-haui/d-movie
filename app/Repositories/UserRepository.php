@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Helper\Data;
 use App\Http\Requests\UserRequest;
+use App\Repositories\Abstracts\CRUDModelAbstract;
 use App\Repositories\Interfaces\LogRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
@@ -18,9 +18,11 @@ use Illuminate\Support\Facades\Storage;
  *
  * @package App\Services
  */
-class UserRepository implements UserRepositoryInterface
+class UserRepository extends CRUDModelAbstract implements UserRepositoryInterface
 {
     use LoggerTrait;
+
+    protected $model = User::class;
 
     /**
      * @var LogRepositoryInterface
@@ -41,42 +43,50 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Update a user
      *
-     * @param $request
+     * @param string|int|null $userId
      * @param User $user
-     * @param array $otherFields
-     * @return bool
+     * @param array $fields
+     * @return User
+     * @throws Exception
      */
-    public function update($request, User $user, $otherFields = [])
+    public function update($userId = null, $user = null, $fields = [])
     {
-        if (!count($otherFields)) {
-            /** @var array $userData */
-            $userData = $request->all();
+        try {
+            if ($userId !== null) {
+                /** @var User $user */
+                $user = $this->find($userId);
+            }
 
-            if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier()) {
-                if (auth()->user()->cant('update', User::class)) {
-                    if (!$user->canChangeUsername()) {
-                        unset($userData['username']);
-                    } else {
-                        $userData['can_change_username'] = 0;
-                    }
+            if (!$user) {
+                throw new Exception(__('Can not find this user.'));
+            }
+
+            if (array_key_exists(User::AVATAR, $fields)) {
+                if ($user->getAvatar()) {
+                    $user->deleteAvatarFile();
                 }
             }
 
-            $dob = explode('/', $userData['dob']);
-
-            $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
-
-            $userData['dob'] = $dob->format('Y-m-d');
-
-        } else {
-            $userData = $otherFields;
-        }
-
-        if ($user->update($userData)) {
+            if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier()) {
+                if (auth()->user()->cant('update', User::class)) {
+                    if (!$user->canChangeUsername() && array_key_exists('username', $fields)) {
+                        unset($fields[User::USERNAME]);
+                    } else {
+                        if (array_key_exists(User::CAN_CHANGE_USERNAME, $fields)) {
+                            $fields[User::CAN_CHANGE_USERNAME] = 0;
+                        }
+                    }
+                }
+            }
+            if (array_key_exists(User::DOB, $fields)) {
+                $fields[User::DOB] = $this->formatDate($fields[User::DOB]);
+            }
+            $user = parent::update(null, $user, $fields);
             $this->updateLog($user, User::class);
+            return $user;
+        } catch (Exception $e) {
+            throw new Exception(__('Please try again.') . $e->getMessage());
         }
-
-        return true;
     }
 
     /**
@@ -280,20 +290,26 @@ class UserRepository implements UserRepositoryInterface
      * Create new user
      *
      * @param array $fields
-     * @param int $createLog
      * @return User
+     * @throws Exception
      */
-    public function create($fields, $createLog = 1)
+    public function create($fields = [])
     {
-        $isCreateLog = 1;
+        $isCreateLog = false;
+        if (array_key_exists('create_log', $fields)) {
+            $isCreateLog = true;
+            unset($fields['create_log']);
+        }
 
-        $userId = User::query()->insertGetId($fields);
+        try {
+            $user = parent::create($fields);
 
-        $user = User::find($userId);
+            !$isCreateLog ?: $this->createLog($user, User::class);
 
-        $createLog !== $isCreateLog ?: $this->createLog($user, User::class);
-
-        return $user;
+            return $user;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -313,21 +329,31 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Destroy a user
      *
+     * @param string|int $userId
      * @param User $user
      * @return bool
      * @throws Exception
      */
-    public function destroy(User $user)
+    public function delete($userId = null, $user = null)
     {
-        if ($user->delete()) {
-            if ($user->avatar) {
-                $user->deleteAvatarFile();
-            }
-
-            $this->deleteLog($user, User::class);
-
-            return true;
+        if ($userId !== null) {
+            $user = $this->find($userId);
         }
-        return false;
+        if ($user) {
+            try {
+                if ($user->delete()) {
+                    if ($user->getAvatar()) {
+                        $user->deleteAvatarFile();
+                    }
+
+                    $this->deleteLog($user, User::class);
+
+                    return true;
+                }
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
+        }
+        throw new Exception(__('Please try again.'));
     }
 }

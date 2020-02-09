@@ -15,16 +15,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 interface UserRepositoryInterface
 {
     /**
-     * Update a user
-     *
-     * @param $request
-     * @param User $user
-     * @param array $otherFields
-     * @return bool
-     */
-    public function update($request, User $user, $otherFields = []);
-
-    /**
      * Get a user
      *
      * @param int $userId
@@ -122,28 +112,10 @@ interface UserRepositoryInterface
     public function addToInsert($attribute, $value, $fields);
 
     /**
-     * Create new user
-     *
-     * @param array $fields
-     * @param int $createLog
-     * @return User
-     */
-    public function create($fields, $createLog = 1);
-
-    /**
      * Format a date to insert to db
      *
      * @param string $date
      * @return string
      */
     public function formatDate($date);
-
-    /**
-     * Destroy a user
-     *
-     * @param User $user
-     * @return bool
-     * @throws Exception
-     */
-    public function destroy(User $user);
 }

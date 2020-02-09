@@ -78,7 +78,7 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
                 $insertFields = $this->userRepository
                     ->addToInsert(
                         'can_change_username',
-                        \App\User::CAN_CHANGE_USERNAME,
+                        \App\User::CAN,
                         $insertFields
                     );
                 $insertFields = $this->userRepository
@@ -106,7 +106,13 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
                         $insertFields
                     );
 
-                $user = $this->userRepository->create($insertFields, 0);
+                $insertFields = $this->userRepository->addToInsert(
+                    'create_log',
+                    0,
+                    $insertFields
+                );
+
+                $user = $this->userRepository->create($insertFields);
             }
 
             $account->user()->associate($user);

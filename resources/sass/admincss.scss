@@ -1,9 +1,12 @@
 @import url('~select2/dist/css/select2.min.css');
 @import url('~datatables.net-dt/css/jquery.dataTables.min.css');
-// @import url('~datatables.net-select-dt/css/select.dataTables.min.css');
-@import url('https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css');
+//@import url('~datatables.net-buttons-bs4/css/buttons.bootstrap4.css');
+@import url('~datatables.net-buttons-dt/css/buttons.dataTables.css');
 @import url('~@fancyapps/fancybox/dist/jquery.fancybox.min.css');
 @import url('~pretty-checkbox');
+@import url('~jquery-ui/themes/base/all.css');
+@import 'simple_tooltip';
+
 @font-face {
     font-family: Nunito;
     src: url("fonts/Nunito-Regular.ttf");
@@ -18,6 +21,8 @@ $errorBackground: #ff4b4b2b;
 $sucessBackground: #228b221f;
 $borderColor: #32a3a3;
 
+$dmovieColor_1: #006ca308;
+$dmovieColor_2: #006ca308;
 
 body {
     font-family: Nunito, sans-serif !important;
@@ -29,6 +34,15 @@ body {
 @import url('back-to-top-rocket.css');
 
 // .///////////////
+
+.dmovie-tooltip {
+    background: $mainColor2 !important;
+    color: #f2f2f2 !important;
+    border: 1px solid #f2f2f2 !important;
+    border-radius: 0 !important;
+    font-size: 1.5rem !important;
+    box-shadow: 0px 5px 20px 3px rgba(0, 0, 0, .4) !important;
+}
 
 .logo-img {
     position: relative;
@@ -136,6 +150,7 @@ blockquote {
         td{
             border-right: 1px dotted $mainColor2;
             cursor: pointer;
+            border-top: none !important;
         }
         td:nth-last-child(1) {
             border: 0;
@@ -164,6 +179,9 @@ blockquote {
 .dmovie-fix-top-block {
     position: fixed;
     z-index: 999;
+}
+.overflow-x-auto {
+    overflow-x: auto;
 }
 .display-none {
     display: none !important;
@@ -350,14 +368,20 @@ table.dataTable{
     }
 }
 
-.pretty.dmovie-switch {
-    .state {
-        &::before {
-            border-radius: 0;
-        }
-        label {
-            &::before, &::after{
-                border-radius: 10%;
+.dmovie-flex-container {
+    display: flex;
+    justify-content: center;
+
+    .pretty.dmovie-switch {
+        margin-right: 0;
+        .state {
+            &::before {
+                border-radius: 0;
+            }
+            label {
+                &::before, &::after{
+                    border-radius: 10%;
+                }
             }
         }
     }
@@ -387,7 +411,7 @@ table.dataTable{
 }
 
 .margin-0-auto {
-    margin: 0 auto;
+    margin: 0 auto !important;
 }
 .width-100 {
     width: 100%;
@@ -401,6 +425,29 @@ table.dataTable{
 .dmovie-border {
     border: 1px solid $borderColor !important;
     border-radius: 0 !important;
+}
+.dt-button-collection {
+    width: 500px !important;
+    border-radius: 0 !important;
+
+    .dt-button {
+        border-color: $borderColor;
+    }
+    .dt-button.active:not(.disabled) {
+        background-color: $mainColor !important;
+        background-image: none !important;
+        color: #fff0f0;
+    }
+}
+#datatables_buttons_info {
+    border: 2px solid $borderColor;
+    border-radius: 0;
+}
+.selected {
+    background: $dmovieColor_1 !important;
+    .sorting_1 {
+        background: $dmovieColor_2 !important;
+    }
 }
 .invalid {
     outline: red solid 1px !important;

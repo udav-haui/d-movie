@@ -25,25 +25,6 @@ interface RoleRepositoryInterface
     public function store(RoleRequest $request);
 
     /**
-     * Update A role
-     *
-     * @param RoleRequest $request
-     * @param Role $role
-     * @return bool
-     * @throws \Exception
-     */
-    public function update(RoleRequest $request, Role $role);
-
-    /**
-     * Delete a role
-     *
-     * @param Role $role
-     * @return bool
-     * @throws \Exception
-     */
-    public function delete(Role $role);
-
-    /**
      * Get list roles
      *
      * @return Role[]|\Illuminate\Database\Eloquent\Collection
@@ -51,9 +32,11 @@ interface RoleRepositoryInterface
     public function fetch();
 
     /**
-     * @param AssignRequest $request
+     * @param string|int|null $roleId
+     * @param Role $role
+     * @param array $uids
      */
-    public function doAssign(AssignRequest $request);
+    public function doAssign($roleId = null, $role = null, $uids = []);
 
     /**
      * Assign single role to user

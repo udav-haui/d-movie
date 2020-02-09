@@ -204,6 +204,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoriesServiceProvider::class,
+        App\Providers\ModelsServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
 
         RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,

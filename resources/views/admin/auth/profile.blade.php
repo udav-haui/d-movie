@@ -15,8 +15,8 @@
                 <div class="user-bg"> <img width="100%" alt="user" src="{{ asset('images/icons/wall.jpg') }}">
                     <div class="overlay-box">
                         <div class="user-content">
-                            <a href="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}" data-fancybox>
-                                <img src="{{ $user->getAvatar() ?? asset('images/icons/account.png') }}"
+                            <a href="{{ $user->getAvatarPath() }}" data-fancybox>
+                                <img src="{{ $user->getAvatarPath() }}"
                                      class="thumb-lg img-circle dmovie-img-cover"
                                      alt="img" />
                             </a>
@@ -172,7 +172,7 @@
                                                 <input name="dob" type="text" class="form-control @error('dob') invalid @enderror"
                                                     lang="{{ \Session::get('locale', config('app.locale')) }}"
                                                     id="dob-datepicker-autoclose"
-                                                    placeholder="dd/mm/yyyy" value="{{ old('dob', $user->getDob()) }}"/>
+                                                    placeholder="dd/mm/yyyy" value="{{ old('dob', $user->getDobFormated()) }}"/>
                                                 <span class="input-group-addon"><i class="icon-calender"></i></span>
                                             </div>
                                             @error('dob')

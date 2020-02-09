@@ -32,7 +32,7 @@
                     <li>
                         <a href="{{ route('users.show', ['user' => $user->getAuthIdentifier()]) }}">
                             <div class="dmovie-img-cover-container h-30">
-                                <img src="{{ $user->getAvatar() }}"
+                                <img src="{{ $user->getAvatarPath() }}"
                                      alt="user-img" class="img-circle dmovie-img-cover" />
                             </div>
                             <span>{{ $user->name }}

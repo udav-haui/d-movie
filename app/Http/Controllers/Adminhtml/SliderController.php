@@ -42,12 +42,11 @@ class SliderController extends Controller
             $dataTable = datatables()->of($sliders);
 
             $dataTable->editColumn('image', function (Slider $slider) {
-                return $slider->renderImageHtml();
+                return '<div class="dmovie-flex-container">' . $slider->renderImageHtml() . '</div>';
             });
             $dataTable->editColumn('title', function (Slider $slider) {
-                return strlen($slider->getTitle()) > 65 ?
-                    substr($slider->getTitle(), 0, 65) . '...' :
-                    $slider->getTitle();
+                return "<p class='dot-dot-dot' data-toggle='tooltip'
+                        title='{$slider->getTitle()}'>{$slider->getTitle()}</p>";
             });
             $dataTable->editColumn('href', function (Slider $slider) {
                 return $slider->renderHtmlHref();
@@ -72,7 +71,6 @@ class SliderController extends Controller
                     }
 
                     if ($authUser->can('delete', Slider::class)) {
-
                         $cssClass = $authUser->can('update', Slider::class) ? "col-md-6" : "col-md-12";
 
                         $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
@@ -86,11 +84,14 @@ class SliderController extends Controller
 
                     return $htmlRaw;
                 });
+            } else {
+                $dataTable->addColumn('task', '');
             }
 
             $dataTable->editColumn('status', function (Slider $slider) {
                 $authU = auth()->user();
-                $htmlRaw = "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+                $htmlRaw = "<div class=\"dmovie-flex-container\">";
+                $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
                 $htmlRaw .= "<input type=\"checkbox\"";
                 $htmlRaw .= (int)$slider->getStatus() === Slider::ENABLE ? "checked " : "";
                 $htmlRaw .= "class=\"status-checkbox\"".
@@ -105,12 +106,12 @@ class SliderController extends Controller
                                 {$slider->getStatusLabel()}
                           </label>
                     </div>
-                </div>";
+                </div></div>";
 
                 return $htmlRaw;
             });
 
-            return $dataTable->rawColumns(['image', 'status', 'href', 'task'])->make();
+            return $dataTable->rawColumns(['title', 'image', 'status', 'href', 'task'])->make();
         }
 
         $sliders = $this->sliderRepository->allByOrder();
@@ -315,6 +316,42 @@ class SliderController extends Controller
                     'status' => 200,
                     'message' => $message
                 ]);
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
+
+    public function multiChangeStatus()
+    {
+        $this->authorize('update', Slider::class);
+
+        $ids = request('ids');
+        $status = request('status');
+
+        try {
+            foreach ($ids as $id) {
+                $this->sliderRepository->update($id, null, ['status' => $status]);
+            }
+
+            $message = __('Slide items status was updated successfully.');
+            return request()->ajax() ?
+                response()->json([
+                    'status' => 200,
+                    'message' => $message,
+                    'data' => [
+                        'text' => (int)$status === Slider::ENABLE ? __('Enable') : __('Disable')
+                    ]
+                ]) :
+                back()->with('success', $message);
         } catch (Exception $e) {
             $message = $e->getMessage();
             return !request()->ajax() ?
