@@ -15,31 +15,32 @@
     <script>
         invisibleCols = [];
     </script>
-   <script src="{{ asset('adminhtml/js/role.js') }}"></script>
+   <script src="{{ asset('adminhtml/js/role/role.js') }}"></script>
 @endsection
 @section('head.css')
+
 @endsection
 
-@section('content')
+@section('action_button')
     @can('create', \App\Role::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="/admin/roles/create"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                    {{ __('New Role') }}
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="{{ route('roles.assignForm') }}"
-                   class="btn btn-block btn-default waves-effect waves-light dmovie-btn"
-                   type="button">
+            <a href="/admin/roles/create"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                {{ __('New Role') }}
+            </a>
+            <a href="{{ route('roles.assignForm') }}"
+               class="btn waves-effect waves-light dmovie-btn dmovie-btn-large m-r-40 pull-right"
+               type="button">
                     <span class="btn-label">
                         <i class="fa fa-user-plus"></i>
                     </span>{{ __('Assign user') }}
-                </a>
-            </div>
+            </a>
         </div>
     @endcan
+@endsection
+
+@section('content')
+
 
     @include('admin.lang.global_text_lang')
 

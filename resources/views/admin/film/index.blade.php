@@ -119,17 +119,19 @@
     <script src="{{ asset('adminhtml/js/film/index.js') }}"></script>
 @endsection
 
-@section('content')
+@section('action_button')
     @can('create', \App\Repositories\Interfaces\FilmInterface::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="{{ route('films.create') }}"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                    {{ __('New film') }}
-                </a>
-            </div>
+            <a href="{{ route('films.create') }}"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                {{ __('New film') }}
+            </a>
         </div>
     @endcan
+@endsection
+
+@section('content')
+
     {{--  include lang text for js select  --}}
     @include('admin.lang.global_text_lang')
 

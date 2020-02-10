@@ -23,22 +23,29 @@
     <script src="{{ asset('adminhtml/js/user/create.js') }}"></script>
 @endsection
 
-@section('content')
+
+
+@section('action_button')
+
     <div class="row bg-title" id="dmovie-fix-top-block">
-        <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-            <a href="javascript:void(0);"
-               onclick="event.preventDefault(); $('#create-form').submit();"
-               class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                {{ __('Save') }}
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-            <a href="{{ route('users.index') }}"
-               class="btn btn-block btn-default dmovie-btn dmovie-btn-default">
-                {{ __('Back') }}
-            </a>
-        </div>
+        <a href="javascript:void(0);"
+           onclick="event.preventDefault(); $('#create-form').submit();"
+           class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+            {{ __('Save') }}
+        </a>
+        <a href="{{ route('users.index') }}"
+           class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
+            {{ __('Back') }}
+        </a>
     </div>
+
+    @endsection
+
+
+@section('content')
+
+
+
     <div class="row">
         <form id="create-form"
               method="POST"

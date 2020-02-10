@@ -54,5 +54,5 @@ $(document).ready(function () {
      * Profile uploader
      */
     let uploader = $('.avatar-dropify');
-    window.parent.imageDropify(uploader, uploader);
+    window.parent.imageDropify(uploader);
 });

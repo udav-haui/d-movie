@@ -202,17 +202,24 @@
 <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dt-buttons/buttons.flash.js') }}"></script>
 <script src="{{ asset('adminhtml/js/user/index.js') }}"></script>
 @endsection
-@section('content')
+
+@section('action_button')
+
     @can('create', \App\User::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="{{ route('users.create') }}"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                    {{ __('New user') }}
-                </a>
-            </div>
+            <a href="{{ route('users.create') }}"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                {{ __('New user') }}
+            </a>
         </div>
     @endcan
+
+    @endsection
+
+
+
+
+@section('content')
 
     @include('admin.lang.global_text_lang')
 

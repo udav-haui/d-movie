@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers\Adminhtml;
 
+use App\Http\Requests\FilmRequest;
 use App\Repositories\Interfaces\FilmInterface as Film;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
+use Exception;
 use Illuminate\Http\Request;
 
+/**
+ * Class FilmController
+ *
+ * @package App\Http\Controllers\Adminhtml
+ */
 class FilmController extends Controller
 {
     /**
@@ -115,22 +122,32 @@ class FilmController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
-        //
+        $this->authorize('create', Film::class);
+
+        return view('admin.film.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request)
+    public function store(FilmRequest $request)
     {
-        //
+        $this->authorize('create', Film::class);
+        dd($request);
+        try {
+
+        } catch (Exception $e) {
+            back()->with('error', $e->getMessage());
+        }
     }
 
     /**

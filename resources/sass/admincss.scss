@@ -20,9 +20,16 @@ $secondColor2: #00c193;
 $errorBackground: #ff4b4b2b;
 $sucessBackground: #228b221f;
 $borderColor: #32a3a3;
+$borderColor2: #01a1a2;
+
+$warningBg: rgba(255, 195, 109, .4);
+
+$defaultBg: #f8f8f8;
 
 $dmovieColor_1: #006ca308;
 $dmovieColor_2: #006ca308;
+$dmovieColor_3: #f90;
+$dmovieColor_4: #313131;
 
 body {
     font-family: Nunito, sans-serif !important;
@@ -42,6 +49,7 @@ body {
     border-radius: 0 !important;
     font-size: 1.5rem !important;
     box-shadow: 0px 5px 20px 3px rgba(0, 0, 0, .4) !important;
+    z-index: 99999;
 }
 
 .logo-img {
@@ -99,6 +107,10 @@ blockquote {
     background: $secondColor2;
     border-color: $secondColor2;
 }
+.alert-warning {
+    background: $warningBg;
+    color: $dmovieColor_3;
+}
 .alert-dismissable .close, .alert-dismissible .close {
     opacity: .6;
 }
@@ -122,13 +134,16 @@ blockquote {
 .dmovie-btn {
     border-radius: 0;
     font-weight: 600;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    display: inline-block;
+    color: $dmovieColor_4;
     .btn-label {
         background: transparent;
     }
+}
+.dmovie-btn-large {
+    padding: 13px 40px;
 }
 .dmovie-btn-success {
     background: $secondColor2;
@@ -176,9 +191,8 @@ blockquote {
     background: #ffe2d973;
     font-weight: 300;
 }
-.dmovie-fix-top-block {
-    position: fixed;
-    z-index: 999;
+#dmovie-fix-top-block {
+    transition: all .5s ease-in-out;
 }
 .overflow-x-auto {
     overflow-x: auto;
@@ -334,7 +348,7 @@ table.dataTable{
         //content: "\f00c";
         //font-family: 'FontAwesome';
         font-family: "Material Design Icons";
-        color: #313131;
+        color: $dmovieColor_4;
         display: inline-block;
         width: 100%;
         height: 100%;
@@ -385,6 +399,40 @@ table.dataTable{
             }
         }
     }
+}
+.dmovie-tags {
+    padding: 8px;
+}
+.dmovie-tags .bootstrap-tagsinput {
+    border-radius: 0;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    height: 100%;
+    padding: 0;
+
+    .dmovie-tag {
+        background: $mainColor;
+        color: #f2f2f2;
+        display: inline-block;
+    }
+}
+.input-group-btn-vertical {
+    .btn-default {
+        padding: 9px 10px !important;
+        border-radius: 0 !important;
+        border-top-color: $borderColor;
+        border-right-color: $borderColor;
+        border-bottom-color: $borderColor;
+        color: $borderColor;
+    }
+}
+.input-group-addon {
+    border-radius: 0;
+    border-top-color: $borderColor;
+    border-right-color: $borderColor;
+    border-bottom-color: $borderColor;
+    color: $borderColor;
 }
 
 .dmovie-select2-selection-border, .dmovie-textbox-border {
@@ -458,6 +506,12 @@ table.dataTable{
         border-color: transparent;
     }
 }
+
+.invalid-border {
+    border: 1px solid red !important;
+    padding: 0px 10px !important;
+}
+
 .min-width-111 {
     min-width: 111px !important;
 }
@@ -490,4 +544,14 @@ table.dataTable{
 }
 .min-width-50 {
     min-width: 50px !important;
+}
+.fixed {
+    position: fixed;
+    top: 60px;
+    left: 30px;
+    width: calc(100%);
+    z-index: 9;
+    background: $defaultBg;
+    box-shadow: 0px 1px 3px 0px rgba(0,0,0,.2);
+    padding: 10px 10px 9px;
 }

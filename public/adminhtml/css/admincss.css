@@ -2149,6 +2149,7 @@ body {
   border-radius: 0 !important;
   font-size: 1.5rem !important;
   box-shadow: 0px 5px 20px 3px rgba(0, 0, 0, 0.4) !important;
+  z-index: 99999;
 }
 
 .logo-img {
@@ -2218,6 +2219,11 @@ blockquote {
   border-color: #00c193;
 }
 
+.alert-warning {
+  background: rgba(255, 195, 109, 0.4);
+  color: #f90;
+}
+
 .alert-dismissable .close,
 .alert-dismissible .close {
   opacity: 0.6;
@@ -2240,14 +2246,18 @@ blockquote {
 .dmovie-btn {
   border-radius: 0;
   font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   text-transform: uppercase;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  display: inline-block;
+  color: #313131;
 }
 
 .dmovie-btn .btn-label {
   background: transparent;
+}
+
+.dmovie-btn-large {
+  padding: 13px 40px;
 }
 
 .dmovie-btn-success {
@@ -2305,9 +2315,9 @@ blockquote {
   font-weight: 300;
 }
 
-.dmovie-fix-top-block {
-  position: fixed;
-  z-index: 999;
+#dmovie-fix-top-block {
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .overflow-x-auto {
@@ -2514,6 +2524,42 @@ table.dataTable thead .sorting_asc:after {
   border-radius: 10%;
 }
 
+.dmovie-tags {
+  padding: 8px;
+}
+
+.dmovie-tags .bootstrap-tagsinput {
+  border-radius: 0;
+  width: 100%;
+  box-shadow: none;
+  border: none;
+  height: 100%;
+  padding: 0;
+}
+
+.dmovie-tags .bootstrap-tagsinput .dmovie-tag {
+  background: #01a5a0;
+  color: #f2f2f2;
+  display: inline-block;
+}
+
+.input-group-btn-vertical .btn-default {
+  padding: 9px 10px !important;
+  border-radius: 0 !important;
+  border-top-color: #32a3a3;
+  border-right-color: #32a3a3;
+  border-bottom-color: #32a3a3;
+  color: #32a3a3;
+}
+
+.input-group-addon {
+  border-radius: 0;
+  border-top-color: #32a3a3;
+  border-right-color: #32a3a3;
+  border-bottom-color: #32a3a3;
+  color: #32a3a3;
+}
+
 .dmovie-select2-selection-border,
 .dmovie-textbox-border {
   border-color: #32a3a3;
@@ -2601,6 +2647,11 @@ table.dataTable thead .sorting_asc:after {
   border-color: transparent;
 }
 
+.invalid-border {
+  border: 1px solid red !important;
+  padding: 0px 10px !important;
+}
+
 .min-width-111 {
   min-width: 111px !important;
 }
@@ -2643,5 +2694,16 @@ table.dataTable thead .sorting_asc:after {
 
 .min-width-50 {
   min-width: 50px !important;
+}
+
+.fixed {
+  position: fixed;
+  top: 60px;
+  left: 30px;
+  width: calc(100%);
+  z-index: 9;
+  background: #f8f8f8;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
+  padding: 10px 10px 9px;
 }
 

@@ -24,25 +24,35 @@
     <script src="{{ asset('adminhtml/js/slider/create.js') }}"></script>
 @endsection
 
-@section('content')
-    @include('admin.lang.global_text_lang')
+@section('action_button')
+
     <div class="row bg-title" id="dmovie-fix-top-block">
         @can('update', \App\Slider::class)
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="javascript:void(0);"
-                   onclick="event.preventDefault(); $('#create-form').submit();"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success">
-                    {{ __('Save') }}
-                </a>
-            </div>
+            <a href="javascript:void(0);"
+               onclick="event.preventDefault(); $('#create-form').submit();"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                {{ __('Save') }}
+            </a>
         @endcan
-        <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
             <a href="{{ route('sliders.index') }}"
-               class="btn btn-block btn-default dmovie-btn dmovie-btn-default">
+               class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
                 {{ __('Back') }}
             </a>
-        </div>
     </div>
+
+    @endsection
+
+
+
+
+
+
+
+@section('content')
+    @include('admin.lang.global_text_lang')
+
+
+
     <div class="row">
         <form id="create-form"
               method="POST"

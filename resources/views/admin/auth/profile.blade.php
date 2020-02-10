@@ -8,6 +8,9 @@
 @endsection
 @section('content')
     <!-- /.row -->
+
+    @include('admin.lang.global_text_lang')
+
     <!-- .row -->
     <div class="row">
         <div class="@can('selfUpdate', $user) col-md-4 col-xs-12 @else col-md-12 col-xs-12 @endcan">
@@ -165,6 +168,10 @@
                                             </select>
                                         </div>
                                     </div>
+                                </div>
+
+
+
                                     <div class="form-group cold-md-12">
                                         <label class="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">

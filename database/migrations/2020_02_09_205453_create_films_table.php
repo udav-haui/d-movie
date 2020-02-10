@@ -15,6 +15,7 @@ class CreateFilmsTable extends Migration
     {
         Schema::create('films', function (Blueprint $table) {
             $table->bigIncrements('id')->comment('Film identifier');
+            $table->unsignedSmallInteger('status')->comment('Status of film');
             $table->string('title')->comment('Title of film');
             $table->text('poster')->nullable(false)->comment('Poster of film');
             $table->string('director')->nullable(true)->comment('Director of film');

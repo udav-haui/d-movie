@@ -1,0 +1,24 @@
+@import "../plugins/tree-view/tree-view";
+
+.k-in {
+    user-select: none;
+}
+#permission-tree {
+    .k-sprite {
+        background-image: url("../images/coloricons-sprite.png");
+    }
+}
+
+
+.dmovie     { background-position: 0 0; }
+.rootfolder { background-position: 0 -16; }
+.folder     { background-position: 0 -32px; }
+.pdf        { background-position: 0 -48px; }
+.html       { background-position: 0 -64px; }
+.image      { background-position: 0 -80px; }
+.role-item  { background-position: 0 -96px; }
+.view       { background-position: 0 -112px; }
+.create     { background-position: 0 -128px; }
+.edit       { background-position: 0 -144px; }
+.delete     { background-position: 0 -160px; }
+.user-item  { background-position: 0 -176px; }

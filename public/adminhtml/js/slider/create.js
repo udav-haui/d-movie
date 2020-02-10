@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let langText = $('.lang-text');
     /** Status select2 init */
     let stateSelecttor = $('#status');
     if (stateSelecttor.length > 0) {

@@ -21,35 +21,37 @@
 {{--    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.css') }}">--}}
 @endsection
 
-@section('content')
+@section('action_button')
+
+
     @can('create', \App\Role::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="javascript:void(0);"
-                   class="btn btn-block btn-default dmovie-btn dmovie-btn-success"
-                   onclick="event.preventDefault(); $('#assign-form').submit();">
-                    {{ __('Save') }}
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-4 col-xs-12 pull-right">
-                <a href="{{ route('roles.index') }}"
-                   class="btn btn-block btn-default waves-effect waves-light dmovie-btn"
-                   type="button">
+            <a href="javascript:void(0);"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right"
+               onclick="event.preventDefault(); $('#assign-form').submit();">
+                {{ __('Save') }}
+            </a>
+            <a href="{{ route('roles.index') }}"
+               class="btn waves-effect waves-light dmovie-btn dmovie-btn-large m-r-40 pull-right"
+               type="button">
                     <span class="btn-label">
                         <i class="fa fa-chevron-left"></i>
                     </span>{{ __('Back') }}
-                </a>
-            </div>
+            </a>
         </div>
     @endcan
-    <div class="alert alert-danger alert-dismissable error-block display-none">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 
-    </div>
-    <div class="alert alert-success alert-dismissable success-block display-none">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 
-    </div>
+
+    @endsection
+
+
+
+@section('content')
+
+
+
+
 {{--    Send data text to js file --}}
     <input type="hidden" class="lang-text"
            swl-title-text="{{ __('Are you sure?') }}"

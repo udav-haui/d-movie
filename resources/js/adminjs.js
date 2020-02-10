@@ -1,7 +1,7 @@
 require('./bootstrap');
 require('jquery-ui/ui/widgets/tooltip');
+// require('jquery-ui/ui/widgets/datepicker');
 require('jquery-slimscroll');
-require('@progress/kendo-ui');
 window.Swal = window.Swal = require('sweetalert2');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
@@ -64,6 +64,33 @@ $(document).ready(function() {
         }, 800)
     });
     // .////////////////////////////////
+
+    /* fix on top */
+    // cache the element
+    var $navBar = $('#dmovie-fix-top-block');
+    var $navbarHeader = $('.navbar-header');
+
+    if ($navBar.length > 0 && $navbarHeader.length > 0) {
+        var navHeight = $navbarHeader.outerHeight();
+
+        // find original navigation bar position
+        var navPos = $navBar.offset().top;
+        // on scroll
+        $(window).scroll(function() {
+            // get scroll position from top of the page
+            var scrollPos = $(this).scrollTop();
+
+            // check if scroll position is >= the nav position
+            if (scrollPos + navHeight >= navPos) {
+                $navBar.addClass('fixed');
+                $navBar.find('a').removeClass('m-r-40');
+            } else {
+                $navBar.removeClass('fixed');
+                $navBar.find('a').addClass('m-r-40');
+            }
+
+        });
+    }
 });
 
 let disMissBtn = `<button type="button" class="close" dmovie-noti-dismiss>×</button>`,
@@ -300,7 +327,7 @@ async function reloadDataTable() {
  *
  * @param number
  */
-window.appendToSeletedLabel = function(number = selectedRowsCount.length) {
+window.appendToSeletedLabel = function(number = selectedObjects.length) {
     if (selectedRowsCount.length > 0) {
         selectedRowsCount.text(number);
     }
@@ -713,6 +740,16 @@ window.removeAElement = function(arr, value) {
     });
 };
 
+let defaultMsg = '',
+    replaceMsg = '',
+    removeMsg = '',
+    errorMsg = '';
+if (langTextSelector.length > 0) {
+    defaultMsg = langTextSelector.attr('dropify-msg-default');
+    replaceMsg = langTextSelector.attr('dropify-msg-replace');
+    removeMsg = langTextSelector.attr('dropify-msg-remove');
+    errorMsg = langTextSelector.attr('dropify-msg-error');
+}
 /**
  * Init dropify upload
  *
@@ -720,16 +757,6 @@ window.removeAElement = function(arr, value) {
  * @param langTextSelector
  */
 window.imageDropify = function(selector) {
-    let defaultMsg = '',
-        replaceMsg = '',
-        removeMsg = '',
-        errorMsg = '';
-    if (langTextSelector.length > 0) {
-        defaultMsg = langTextSelector.attr('dropify-msg-default');
-        replaceMsg = langTextSelector.attr('dropify-msg-replace');
-        removeMsg = langTextSelector.attr('dropify-msg-remove');
-        errorMsg = langTextSelector.attr('dropify-msg-error');
-    }
     selector.dropify({
         messages: {
             default: defaultMsg,

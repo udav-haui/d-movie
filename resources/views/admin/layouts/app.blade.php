@@ -53,6 +53,9 @@
             <div id="page-wrapper">
                 <main class="container-fluid">
                     @include('admin.layouts.components.titlebar')
+
+                    @yield('action_button')
+
                     @include('admin.layouts.components.normal_notifications')
                     @yield('content')
                     @include('admin.layouts.components.rightsidebar')
