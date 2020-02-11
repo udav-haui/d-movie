@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\CRUDModelInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class CRUDModelAbstract
@@ -158,6 +159,17 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         } catch (Exception $e) {
             throw new Exception(__('We cannot upload your image.'));
         }
+    }
+
+    /**
+     * Delete file file in storage
+     *
+     * @param string $filePath
+     * @return bool
+     */
+    public function deleteLocalFile($filePath)
+    {
+        return Storage::delete('/public/' . $filePath);
     }
 
     /**

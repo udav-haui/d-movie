@@ -197,12 +197,23 @@ class FilmController extends Controller
      *
      * @param FilmRequest $request
      * @param int $filmId
-     * @return void
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(FilmRequest $request, int $filmId)
     {
         $this->authorize('update', Film::class);
+
+        try {
+            /** @var Film $film */
+            $film = $this->filmRepository->update($filmId, null, $request->all());
+
+            return redirect(route('films.index'))
+                ->with('success', __('The :name have updated.', ['name' => $film->getTitle()]));
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

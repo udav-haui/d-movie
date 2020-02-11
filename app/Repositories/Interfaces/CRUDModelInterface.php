@@ -85,6 +85,14 @@ interface CRUDModelInterface
     public function storeImage($image);
 
     /**
+     * Delete file file in storage
+     *
+     * @param string $filePath
+     * @return bool
+     */
+    public function deleteLocalFile($filePath);
+
+    /**
      * Format a date to insert to db
      *
      * @param string $date

@@ -61,6 +61,7 @@
               action="{{ route('films.update', ['film' => $film]) }}"
               class="col-md-12 form-horizontal"
               enctype="multipart/form-data">
+            @method('PUT')
             @csrf
             <div class="row">
                 <div class="col-md-12">
@@ -114,7 +115,6 @@
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <input type="file"
-                                           required
                                            name="poster"
                                            id="poster"
                                            class="dropify col-md-3"
@@ -248,7 +248,7 @@
                                                class="form-control dmovie-border @error('release_date') invalid @enderror"
                                                lang="{{ \Session::get('locale', config('app.locale')) }}"
                                                id="release_date"
-                                               placeholder="dd/mm/yyyy"
+                                               placeholder="yyyy-mm-dd"
                                                value="{{ old('release_date', $film->getReleaseDate()) }}"/>
                                         <span class="input-group-addon"><i class="icon-calender"></i></span>
                                     </div>

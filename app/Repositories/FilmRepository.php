@@ -25,12 +25,14 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
      */
     public function create($fields = [])
     {
+        $filePath = '';
         try {
-            if ($fields[Film::POSTER]) {
-                $fields[Film::POSTER] = $this->storeImage($fields[Film::POSTER]);
+            if (array_key_exists(Film::POSTER, $fields)) {
+                $filePath = $fields[Film::POSTER];
+                $fields[Film::POSTER] = $this->storeImage($filePath);
             }
 
-            if ($fields[Film::RELEASE_DATE]) {
+            if (array_key_exists(Film::RELEASE_DATE, $fields)) {
                 $fields[Film::RELEASE_DATE] = $this->formatDate($fields[Film::RELEASE_DATE]);
             }
 
@@ -40,6 +42,52 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
 
             return $film;
         } catch (\Exception $e) {
+            if (array_key_exists(Film::POSTER, $fields)) {
+                $this->deleteLocalFile($filePath);
+            }
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Update Film data
+     *
+     * @param string|int|null $filmId
+     * @param Film $film
+     * @param array $fields
+     * @return Film
+     * @throws \Exception
+     */
+    public function update($filmId = null, $film = null, $fields = [])
+    {
+        try {
+            if ($filmId !== null) {
+                /** @var Film $film */
+                $film = $this->find($filmId);
+            }
+
+            if ($film) {
+                if ($film->getPoster() && array_key_exists(Film::POSTER, $fields)) {
+                    $this->deleteLocalFile($film->getPoster());
+                    $filePath = $fields[Film::POSTER];
+                    $fields[Film::POSTER] = $this->storeImage($filePath);
+                }
+
+                if (array_key_exists(Film::RELEASE_DATE, $fields)) {
+                    $fields[Film::RELEASE_DATE] = $this->formatDate($fields[Film::RELEASE_DATE]);
+                }
+
+                $film = parent::update(null, $film, $fields);
+
+                $this->updateLog($film, Film::class);
+
+                return $film;
+            }
+
+        } catch (\Exception $e) {
+            if (array_key_exists(Film::POSTER, $fields) && isset($filePath)) {
+                $this->deleteLocalFile($filePath);
+            }
             throw new \Exception($e->getMessage());
         }
     }

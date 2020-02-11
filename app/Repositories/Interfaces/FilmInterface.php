@@ -34,13 +34,6 @@ interface FilmInterface
     const ENABLE = 1;
 
     /**
-     * Delete poster file in storage
-     *
-     * @return bool
-     */
-    public function deleteLocalPoster();
-
-    /**
      * Render to html
      *
      * @return string

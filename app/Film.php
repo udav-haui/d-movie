@@ -12,16 +12,6 @@ class Film extends Model implements FilmInterface
     protected $guarded = [];
 
     /**
-     * Delete poster file in storage
-     *
-     * @return bool
-     */
-    public function deleteLocalPoster()
-    {
-        return Storage::delete('/public/' . $this->getPoster());
-    }
-
-    /**
      * Render to html
      *
      * @return string

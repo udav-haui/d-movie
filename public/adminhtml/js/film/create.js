@@ -31,7 +31,7 @@ $(document).ready(function () {
         monthsShort: ["Thg.1", "Thg.2", "Thg.3", "Thg.4", "Thg.5", "Thg.6", "Thg.7", "Thg.8", "Thg.9", "Thg.10", "Thg.11", "Thg.12"],
         today: "Hôm nay",
         clear: "Xoá",
-        format: "mm/dd/yyyy",
+        format: "yyyy-mm-dd",
         titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
         weekStart: 0
     };

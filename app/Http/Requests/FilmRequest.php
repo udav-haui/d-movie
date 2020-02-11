@@ -53,6 +53,10 @@ class FilmRequest extends FormRequest
             ]
         ];
 
+        if ($this->film) {
+            $rules['poster'] = 'nullable|image';
+        }
+
         return $rules;
     }
 
