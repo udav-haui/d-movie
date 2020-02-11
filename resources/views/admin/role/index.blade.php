@@ -22,7 +22,8 @@
 @endsection
 
 @section('action_button')
-    @can('create', \App\Role::class)
+    <div class="navbar dmovie-fix-top-container">
+        @can('create', \App\Role::class)
         <div class="row bg-title" id="dmovie-fix-top-block">
             <a href="/admin/roles/create"
                class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
@@ -37,6 +38,7 @@
             </a>
         </div>
     @endcan
+    </div>
 @endsection
 
 @section('content')

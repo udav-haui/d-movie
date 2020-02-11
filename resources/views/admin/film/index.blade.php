@@ -18,6 +18,11 @@
 @section('head.css')
 @endsection
 
+@section('head.js')
+    <script src="{{ asset('adminhtml/assets/plugins/jszip/jszip.min.js') }}"></script>
+@endsection
+
+
 @section('bottom.js')
     <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/ellipsis.js') }}"></script>
     <script>
@@ -100,8 +105,7 @@
                 }
             },
             {
-                targets: 'data-cell-trailer',
-                render: $.fn.dataTable.render.ellipsis( 10, true )
+                targets: 'data-cell-trailer'
             },
             {
                 targets: ['data-cell-poster', 'data-cell-status'],
@@ -121,11 +125,13 @@
 
 @section('action_button')
     @can('create', \App\Repositories\Interfaces\FilmInterface::class)
-        <div class="row bg-title" id="dmovie-fix-top-block">
-            <a href="{{ route('films.create') }}"
-               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
-                {{ __('New film') }}
-            </a>
+        <div class="navbar dmovie-fix-top-container">
+            <div class="row bg-title" id="dmovie-fix-top-block">
+                <a href="{{ route('films.create') }}"
+                   class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    {{ __('New film') }}
+                </a>
+            </div>
         </div>
     @endcan
 @endsection

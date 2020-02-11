@@ -2316,6 +2316,7 @@ blockquote {
 }
 
 #dmovie-fix-top-block {
+  min-height: 50px;
   -webkit-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
@@ -2524,6 +2525,26 @@ table.dataTable thead .sorting_asc:after {
   border-radius: 10%;
 }
 
+.slide-item {
+  width: 100px;
+  height: 75px;
+  position: relative;
+  border: 1px solid #32a3a3;
+  display: inline-block;
+}
+
+.slide-item img.slide-item-image {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+
 .dmovie-tags {
   padding: 8px;
 }
@@ -2701,7 +2722,7 @@ table.dataTable thead .sorting_asc:after {
   top: 60px;
   left: 30px;
   width: calc(100%);
-  z-index: 9;
+  z-index: 99;
   background: #f8f8f8;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
   padding: 10px 10px 9px;

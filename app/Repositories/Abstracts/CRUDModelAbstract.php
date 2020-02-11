@@ -3,6 +3,7 @@
 namespace App\Repositories\Abstracts;
 
 use App\Repositories\Interfaces\CRUDModelInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 
@@ -141,5 +142,35 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         }
 
         return $fields;
+    }
+
+    /**
+     * Store image to storage
+     *
+     * @param object $image
+     * @return string
+     * @throws Exception
+     */
+    public function storeImage($image)
+    {
+        try {
+            return $image->store('uploads', 'public');
+        } catch (Exception $e) {
+            throw new Exception(__('We cannot upload your image.'));
+        }
+    }
+
+    /**
+     * Format a date to insert to db
+     *
+     * @param string $date
+     * @return string
+     */
+    public function formatDate($date)
+    {
+        $dob = explode('/', $date);
+
+        $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
+        return $dob->format('Y-m-d');
     }
 }

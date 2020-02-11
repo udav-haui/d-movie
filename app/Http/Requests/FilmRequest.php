@@ -64,7 +64,42 @@ class FilmRequest extends FormRequest
     public function messages()
     {
         return [
+            'title.required' => __('You must input :attribute'),
+            'title.max' => __('You can not input more than :max character'),
+            'poster.image' => __('Please input correct type of :attribute.'),
+            'poster.required' => __('Please select a file.'),
+            'director.required' => __('You must input :attribute'),
+            'director.max' => __('You can not input more than :max character'),
+            'cast.required' => __('You must input :attribute'),
+            'cast.max' => __('You can not input more than :max character'),
+            'genre.required' => __('You must input :attribute'),
+            'genre.max' => __('You can not input more than :max character'),
+            'href.required' => __('You must input :attribute'),
+            'running_time.required' => __('You must input :attribute'),
+            'running_time.numeric' => __('The :attribute must be number.'),
+            'language.max' => __('You can not input more than :max character'),
+            'release_date.date_format' => __('Please input a correct date format (dd/mm/yyyy)'),
+            'mark.required' => __('You must input :attribute'),
+        ];
+    }
 
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'title' => __('Film Title'),
+            'poster' => __('Poster'),
+            'director' => __('Director'),
+            'cast' => __('Cast'),
+            'genre' => __('Genre'),
+            'running_time' => __('Running Time'),
+            'language' => __('Language'),
+            'release_date' => __('Release Date'),
+            'mark' => __('Mark')
         ];
     }
 }

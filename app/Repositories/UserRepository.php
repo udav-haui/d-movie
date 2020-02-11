@@ -313,20 +313,6 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
     }
 
     /**
-     * Format a date to insert to db
-     *
-     * @param string $date
-     * @return string
-     */
-    public function formatDate($date)
-    {
-        $dob = explode('/', $date);
-
-        $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
-        return $dob->format('Y-m-d');
-    }
-
-    /**
      * Destroy a user
      *
      * @param string|int $userId

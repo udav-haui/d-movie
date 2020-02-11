@@ -1,6 +1,8 @@
 $(document).ready(function () {
     'use strict';
 
+    var fancyboxSelector = null;
+
     tableName = 'sliders';
     swlIcon = langTextSelector.attr('swl-icon-warning-text');
 

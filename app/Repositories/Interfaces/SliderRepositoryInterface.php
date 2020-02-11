@@ -30,13 +30,4 @@ interface SliderRepositoryInterface
      * @throws Exception
      */
     public function changeStatus($sliderId, $newStatus);
-
-    /**
-     * Store image to storage
-     *
-     * @param object $image
-     * @return string
-     * @throws Exception
-     */
-    public function storeImage($image);
 }

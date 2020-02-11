@@ -25,19 +25,19 @@
 
 
 @section('action_button')
-
-    <div class="row bg-title" id="dmovie-fix-top-block">
-        <a href="javascript:void(0);"
-           onclick="event.preventDefault(); $('#create-form').submit();"
-           class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
-            {{ __('Save') }}
-        </a>
-        <a href="{{ route('sliders.index') }}"
-           class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
-            {{ __('Back') }}
-        </a>
+    <div class="navbar dmovie-fix-top-container">
+        <div class="row bg-title" id="dmovie-fix-top-block">
+            <a href="javascript:void(0);"
+               onclick="event.preventDefault(); $('#create-form').submit();"
+               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                {{ __('Save') }}
+            </a>
+            <a href="{{ route('sliders.index') }}"
+               class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
+                {{ __('Back') }}
+            </a>
+        </div>
     </div>
-
     @endsection
 
 

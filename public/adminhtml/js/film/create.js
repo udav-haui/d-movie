@@ -10,10 +10,14 @@ $(document).ready(function () {
         tagClass: 'label label-infor dmovie-tag'
     });
 
+    let minText = langTextSelector.attr('minutes');
     $(".vertical-spin").TouchSpin({
         verticalbuttons: true,
         verticalupclass: 'ti-plus',
-        verticaldownclass: 'ti-minus'
+        verticaldownclass: 'ti-minus',
+        min: 0,
+        max: 999,
+        postfix: minText
     });
 
     /**
@@ -37,7 +41,6 @@ $(document).ready(function () {
         autoclose: true,
         language: lang,
         format: 'dd/mm/yyyy',
-        endDate: 'today',
         todayBtn: true,
         todayHighlight: true
     });

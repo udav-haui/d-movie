@@ -14,6 +14,11 @@
 @section('head.css')
     <link rel="stylesheet" href="{{ asset('adminhtml/css/slider/index.css') }}">
 @endsection
+
+@section('head.js')
+    <script src="{{ asset('adminhtml/assets/plugins/jszip/jszip.min.js') }}"></script>
+    @endsection
+
 @section('bottom.js')
 {{--    <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dataTables.checkboxes.min.js') }}"></script>--}}
 <script>
@@ -204,16 +209,16 @@
 @endsection
 
 @section('action_button')
-
-    @can('create', \App\User::class)
-        <div class="row bg-title" id="dmovie-fix-top-block">
-            <a href="{{ route('users.create') }}"
-               class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
-                {{ __('New user') }}
-            </a>
-        </div>
-    @endcan
-
+    <div class="navbar dmovie-fix-top-container">
+        @can('create', \App\User::class)
+            <div class="row bg-title" id="dmovie-fix-top-block">
+                <a href="{{ route('users.create') }}"
+                   class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    {{ __('New user') }}
+                </a>
+            </div>
+        @endcan
+    </div>
     @endsection
 
 

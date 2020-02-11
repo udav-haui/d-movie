@@ -279,6 +279,7 @@
                                            class="avatar-dropify"
                                            data-height="350"
                                            required
+                                           data-default-file="{{ $user->getAvatarPath() ? $user->getAvatarPath() : '' }}"
                                            dropify-msg-default="{{ __('Drag and drop a file here or click') }}"
                                            dropify-msg-replace="{{ __('Drag and drop or click to replace') }}"
                                            dropify-msg-remove="{{ __('Remove') }}"

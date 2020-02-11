@@ -74,4 +74,21 @@ interface CRUDModelInterface
      * @return mixed
      */
     public function removeIdsKey($fields);
+
+    /**
+     * Store image to storage
+     *
+     * @param object $image
+     * @return string
+     * @throws \Exception
+     */
+    public function storeImage($image);
+
+    /**
+     * Format a date to insert to db
+     *
+     * @param string $date
+     * @return string
+     */
+    public function formatDate($date);
 }

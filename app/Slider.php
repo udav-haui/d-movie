@@ -196,8 +196,8 @@ class Slider extends Model
     {
         return $this->getImage() != "" ?
         "<a href=\"{$this->getImagePath()}\"
-            class=\"slide-item\"
-            data-fancybox=\"sliders\" data-caption=\"{$this->getTitle()}\">
+            class=\"slide-item\" dm-fancybox data-fancybox=\"slider\"
+            data-caption=\"{$this->getTitle()}\">
             <img src=\"{$this->getImagePath()}\"
                  class=\"slide-item-image\" />
         </a>" : "<p>" . __('No image') . "</p>";

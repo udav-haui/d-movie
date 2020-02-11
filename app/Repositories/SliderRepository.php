@@ -141,20 +141,4 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
             throw new Exception($e->getMessage());
         }
     }
-
-    /**
-     * Store image to storage
-     *
-     * @param object $image
-     * @return string
-     * @throws Exception
-     */
-    public function storeImage($image)
-    {
-        try {
-            return $image->store('uploads', 'public');
-        } catch (Exception $e) {
-            throw new Exception(__('We cannot upload your image.'));
-        }
-    }
 }

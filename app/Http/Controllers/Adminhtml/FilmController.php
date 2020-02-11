@@ -46,6 +46,17 @@ class FilmController extends Controller
         if (request()->ajax()) {
             $dt = datatables()->of($films);
 
+            $dt->editColumn('trailer', function (Film $film) {
+                return "<div class=\"dmovie-flex-container\">".
+                        "<a dm-fancybox data-fancybox=\"trailer\" class=\"dmovie-fancybox-media slide-item\"".
+                        "href=\"{$film->getTrailer()}\">
+                            <img class=\"card-img-top img-fluid slide-item-image\"".
+                        " title=\"" . __('Preview trailer') ." - " .
+                        "{$film->getTitle()}\" src=\"{$film->getPosterPath()}\" />
+                        </a>".
+                        "</div>";
+            });
+
             $dt->editColumn('poster', function (Film $film) {
                 return '<div class="dmovie-flex-container">' . $film->getRenderHtmlPoster() . '</div>';
             });
@@ -113,7 +124,7 @@ class FilmController extends Controller
 
 
 
-            return $dt->rawColumns(['poster', 'status', 'task'])->make();
+            return $dt->rawColumns(['poster', 'status', 'trailer', 'task'])->make();
         }
 
         return view('admin.film.index', compact('films'));
@@ -136,17 +147,23 @@ class FilmController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(FilmRequest $request)
     {
         $this->authorize('create', Film::class);
-        dd($request);
+
         try {
 
+            /** @var Film $film */
+            $film = $this->filmRepository->create($request->all());
+
+            return redirect(route('films.index'))
+                ->with('success', __('The :name have created.', ['name' => $film->getTitle()]));
+
         } catch (Exception $e) {
-            back()->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -164,24 +181,28 @@ class FilmController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Film  $film
-     * @return \Illuminate\Http\Response
+     * @param int $filmId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Film $film)
+    public function edit(int $filmId)
     {
-        //
+        $this->authorize('update', Film::class);
+        $film = $this->filmRepository->find($filmId);
+        return view('admin.film.edit', compact('film'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Film  $film
-     * @return \Illuminate\Http\Response
+     * @param FilmRequest $request
+     * @param int $filmId
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Film $film)
+    public function update(FilmRequest $request, int $filmId)
     {
-        //
+        $this->authorize('update', Film::class);
     }
 
     /**

@@ -30,7 +30,8 @@
 @endsection
 
 @section('action_button')
-    <div class="row bg-title" id="dmovie-fix-top-block">
+    <div class="navbar dmovie-fix-top-container">
+        <div class="row bg-title" id="dmovie-fix-top-block">
         <div class="col-md-12">
             <a href="javascript:void(0);"
                onclick="event.preventDefault(); $('#create-form').submit();"
@@ -38,12 +39,13 @@
                 <i class="mdi mdi-content-save"></i>
                 {{ __('Save') }}
             </a>
-            <a href="{{ route('sliders.index') }}"
+            <a href="{{ route('films.index') }}"
                class="btn dmovie-btn m-r-40 dmovie-btn-large pull-right">
                 <i class="mdi mdi-arrow-left"></i>
                 {{ __('Back') }}
             </a>
         </div>
+    </div>
     </div>
 @endsection
 
@@ -279,6 +281,7 @@
                                         rows="3"
                                         class="form-control dmovie-border
                                         @error('trailer') invalid @enderror">{{ old('trailer') }}</textarea>
+                                    <label class="help-block">{{ __('Example: ') }}https://www.youtube.com/watch?v=TcMBFSGVi1c</label>
                                     @error('trailer')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror

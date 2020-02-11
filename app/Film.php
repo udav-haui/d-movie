@@ -5,10 +5,21 @@ namespace App;
 use App\Helper\Data;
 use App\Repositories\Interfaces\FilmInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Film extends Model implements FilmInterface
 {
     protected $guarded = [];
+
+    /**
+     * Delete poster file in storage
+     *
+     * @return bool
+     */
+    public function deleteLocalPoster()
+    {
+        return Storage::delete('/public/' . $this->getPoster());
+    }
 
     /**
      * Render to html
@@ -19,8 +30,8 @@ class Film extends Model implements FilmInterface
     {
         return $this->getPoster() !== "" ?
             "<a href=\"{$this->getPosterPath()}\"
-            class=\"slide-item\"
-            data-fancybox=\"sliders\" data-caption=\"{$this->getTitle()}\">
+            class=\"slide-item\" dm-fancybox
+            data-fancybox=\"poster\" data-caption=\"{$this->getTitle()}\">
             <img src=\"{$this->getPosterPath()}\"
                  class=\"slide-item-image\" />
         </a>" : "<p>" . __('No image') . "</p>";

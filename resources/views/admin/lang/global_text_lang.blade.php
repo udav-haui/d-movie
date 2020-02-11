@@ -47,4 +47,5 @@
        dt-all-record-text="{{ __('All') }}"
        swl-fail-to-load-data-text="{{ __('Fail to load data. Click reload to refresh page.') }}"
        swl-refresh-btn-text="{{ __('Refresh') }}"
+       minutes="{{ __('Minutes') }}"
 />

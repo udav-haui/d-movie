@@ -68,9 +68,12 @@ $(document).ready(function() {
     /* fix on top */
     // cache the element
     var $navBar = $('#dmovie-fix-top-block');
-    var $navbarHeader = $('.navbar-header');
+    var $navbarHeader = $('.navbar-default');
 
-    if ($navBar.length > 0 && $navbarHeader.length > 0) {
+    let $navBarContainer = $('.dmovie-fix-top-container');
+    if ($navBar.length > 0 && $navbarHeader.length > 0 && $navBarContainer.length > 0) {
+        $navBarContainer.height(75);
+
         var navHeight = $navbarHeader.outerHeight();
 
         // find original navigation bar position
@@ -102,6 +105,7 @@ window.mainLang = $('html').attr('lang');
 window.tableName = '';
 window.dtableSelector = null;
 window.dtable = null;
+window.$fancybox = null;
 
 window.selectedObjects = [];
 
@@ -507,6 +511,12 @@ function initDatatable() {
         inputFilter = dataWrapper.find(`#${tableName}_ajax_dt_filter`),
         dropdown = selectDropdown.find(`select`) || null,
         filterInput = inputFilter.find(`input`) || null;
+        $fancybox = dataWrapper.find('[dm-fancybox]');
+
+        /** Init fancy box if have */
+        if ($fancybox.length > 0) {
+            initFancybox($fancybox);
+        }
     exportBtn.css({
         width: '100%',
         'margin-bottom': '15px'
@@ -767,8 +777,7 @@ window.imageDropify = function(selector) {
     });
 };
 
-let imgFancybox = $('[data-fancybox]'),
-    fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
+let fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
     fancyboxTxtNext = langTextSelector.attr('fancybox-text-next'),
     fancyboxTxtPrev = langTextSelector.attr('fancybox-text-previous'),
     fancyboxTxtError = langTextSelector.attr('fancybox-text-error'),
@@ -779,36 +788,38 @@ let imgFancybox = $('[data-fancybox]'),
     fancyboxTxtDownload = langTextSelector.attr('fancybox-text-download'),
     fancyboxTxtShare = langTextSelector.attr('fancybox-text-share'),
     fancyboxTxtZoom = langTextSelector.attr('fancybox-text-zoom');
-if (imgFancybox.length > 0) {
-    imgFancybox.fancybox({
-        lang: mainLang,
-        i18n: {
-            en: {
-                CLOSE: "Close",
-                NEXT: "Next",
-                PREV: "Previous",
-                ERROR: "The requested content cannot be loaded. <br/> Please try again later.",
-                PLAY_START: "Start slideshow",
-                PLAY_STOP: "Pause slideshow",
-                FULL_SCREEN: "Full screen",
-                THUMBS: "Thumbnails",
-                DOWNLOAD: "Download",
-                SHARE: "Share",
-                ZOOM: "Zoom"
-            },
-            vi: {
-                CLOSE: fancyboxTxtClose,
-                NEXT: fancyboxTxtNext,
-                PREV: fancyboxTxtPrev,
-                ERROR: fancyboxTxtError,
-                PLAY_START: fancyboxTxtStart,
-                PLAY_STOP: fancyboxTxtPause,
-                FULL_SCREEN: fancyboxTxtFullScreen,
-                THUMBS: fancyboxTxtThumbs,
-                DOWNLOAD: fancyboxTxtDownload,
-                SHARE: fancyboxTxtShare,
-                ZOOM: fancyboxTxtZoom
+window.initFancybox = function (selector) {
+    if (selector.length > 0) {
+        selector.fancybox({
+            lang: mainLang,
+            i18n: {
+                en: {
+                    CLOSE: "Close",
+                    NEXT: "Next",
+                    PREV: "Previous",
+                    ERROR: "The requested content cannot be loaded. <br/> Please try again later.",
+                    PLAY_START: "Start slideshow",
+                    PLAY_STOP: "Pause slideshow",
+                    FULL_SCREEN: "Full screen",
+                    THUMBS: "Thumbnails",
+                    DOWNLOAD: "Download",
+                    SHARE: "Share",
+                    ZOOM: "Zoom"
+                },
+                vi: {
+                    CLOSE: fancyboxTxtClose,
+                    NEXT: fancyboxTxtNext,
+                    PREV: fancyboxTxtPrev,
+                    ERROR: fancyboxTxtError,
+                    PLAY_START: fancyboxTxtStart,
+                    PLAY_STOP: fancyboxTxtPause,
+                    FULL_SCREEN: fancyboxTxtFullScreen,
+                    THUMBS: fancyboxTxtThumbs,
+                    DOWNLOAD: fancyboxTxtDownload,
+                    SHARE: fancyboxTxtShare,
+                    ZOOM: fancyboxTxtZoom
+                }
             }
-        }
-    });
+        });
+    }
 }

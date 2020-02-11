@@ -243,14 +243,21 @@
     "Type some name of character": "Nhập tên vài diễn viên trong phim",
     "Genre": "Thể loại",
     "Running Time": "Thời Lượng",
+    "Running time": "Thời lượng",
     "Select post (recommend 228p x 360p)": "Chọn ảnh áp phích của phim (khuyến nghị kích thước 228x360 pixel)",
     "Language": "Ngôn Ngữ",
+    "Preview trailer": "Xem trailer",
     "Release Date": "Ngày công chiếu",
+    "Release date": "Ngày công chiếu",
     "Type name of Director": "Nhập tên của đạo diễn bộ phim",
     "Length of film": "Độ dài của phim",
     "Mark": "Nhãn",
     "Sort description for this film": "Mô tả ngắn cho bộ phim này",
     "Youtube trailer link for this film": "Đoạn phim giới thiệu phim",
     "Select mark of film": "Chọn nhãn cho bộ phim",
-    "Type some language of this film": "Nhập vài ngôn ngữ của phim."
+    "Type some language of this film": "Nhập vài ngôn ngữ của phim.",
+    "Minutes": "Phút",
+    "The :name have created.": "Phim :name đã được tạo.",
+    "Edit Film": "Sửa thông tin phim",
+    "Example: ": "Ví dụ: "
 }

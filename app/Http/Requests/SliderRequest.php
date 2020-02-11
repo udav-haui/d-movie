@@ -69,6 +69,7 @@ class SliderRequest extends FormRequest
     public function attributes()
     {
         return [
+            'title' => __('Title'),
             'image' => __('Image'),
             'href' => __('Link'),
             'order' => __('Order')

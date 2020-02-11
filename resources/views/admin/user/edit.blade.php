@@ -25,8 +25,8 @@
 
 
 @section('action_button')
-
-    <div class="row bg-title" id="dmovie-fix-top-block">
+    <div class="navbar dmovie-fix-top-container">
+        <div class="row bg-title" id="dmovie-fix-top-block">
         @can('selfUpdate', $user)
             <a href="javascript:void(0);"
                onclick="event.preventDefault(); $('#create-form').submit();"
@@ -39,7 +39,7 @@
                 {{ __('Back') }}
             </a>
     </div>
-
+    </div>
     @endsection
 
 
