@@ -86,6 +86,8 @@
                               action="{{ route('users.update', ['user' => $user]) }}">
                             @csrf
                             {{ method_field('PUT') }}
+
+
                             <div class="row">
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
@@ -106,6 +108,8 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-12" for="name">{{ __('Full Name') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
@@ -118,6 +122,8 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label for="email" class="col-md-12">{{ __('Email') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
@@ -130,6 +136,8 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-12" for="phone">{{ __('Phone') }} <strong class="text-danger">*</strong></label>
                                         <div class="col-md-12">
@@ -141,6 +149,8 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-12" for="address">{{ __('Address') }}</label>
                                         <div class="col-md-12">
@@ -153,7 +163,10 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                 </div>
+
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
                                         <label class="col-md-12" for="gender">{{ __('Gender') }}</label>
@@ -171,6 +184,8 @@
                                 </div>
 
 
+                                <div class="col-md-6 col-xs-12">
+
 
                                     <div class="form-group cold-md-12">
                                         <label class="col-md-12" for="dob-datepicker-autoclose">{{ __('Date of birth') }} <strong class="text-danger">*</strong></label>
@@ -187,6 +202,8 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                     <div class="form-group">
                                         <label class="col-md-12" for="description">{{ __('Description') }}</label>
                                         <div class="col-md-12">
@@ -198,8 +215,12 @@
                                             @enderror
                                         </div>
                                     </div>
+
+
                                 </div>
                             </div>
+
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -209,6 +230,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </form>
                     </div>
                     <div class="tab-pane @if (session('change_pass')) {{ session('change_pass') }} @endif @error('change_pass'){{ $message }}@enderror" id="change_pass">

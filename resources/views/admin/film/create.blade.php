@@ -297,8 +297,8 @@
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <textarea placeholder="{{ __('Sort description for this film') }}"
-                                        name="trailer"
-                                        id="trailer"
+                                        name="description"
+                                        id="description"
                                         rows="5"
                                         class="form-control dmovie-border
                                         @error('description') invalid @enderror">{{ old('description') }}</textarea>

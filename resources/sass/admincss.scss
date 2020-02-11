@@ -161,6 +161,7 @@ blockquote {
     border-right-style: solid;
     border-right-width: 1px;
     border-color: $mainColor2 !important;
+    border-collapse: collapse !important;
     tr {
         td{
             border-right: 1px dotted $mainColor2;

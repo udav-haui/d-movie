@@ -41,6 +41,13 @@ interface FilmInterface
     public function getRenderHtmlPoster();
 
     /**
+     * Get formatted date
+     *
+     * @return string
+     */
+    public function getFormattedDate();
+
+    /**
      * Get poster path
      *
      * @return string
@@ -210,4 +217,11 @@ interface FilmInterface
      * @return void
      */
     public function setTrailer($trailer);
+
+    /**
+     * A film can be show on many cinema
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function cinemas();
 }

@@ -24,9 +24,9 @@
     },
     "select": {
         "rows": {
-            "_": "Đã chọn %d bản ghi",
-            "0": "Nhấp chuột vào dòng để chọn",
-            "1": "1 bản ghi được chọn"
+            "_": " Đã chọn %d bản ghi",
+            "0": " Nhấp chuột vào dòng để chọn",
+            "1": " 1 bản ghi được chọn"
         }
     }
 }

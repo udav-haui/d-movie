@@ -67,7 +67,7 @@ class SliderController extends Controller
 
                         $htmlRaw .= "col-xs-12 btn dmovie-btn dmovie-btn-success\"";
                         $htmlRaw .= "title=\"" . __('Detail') . "\">";
-                        $htmlRaw .= "<i class=\"mdi mdi-account-edit\"></i></a>";
+                        $htmlRaw .= "<i class=\"fa fa-pencil-square-o\"></i></a>";
                     }
 
                     if ($authUser->can('delete', Slider::class)) {
@@ -78,7 +78,7 @@ class SliderController extends Controller
                                             title=\" " . __('Delete') . " \"
                                             data-id=\"{$slider->getId()}\"
                                             url=\"" . route('sliders.destroy', ['slider' => $slider->getId()]) . "\">
-                                        <i class=\"mdi mdi-account-minus\"></i>
+                                        <i class=\"fa fa-trash-o\"></i>
                                     </button>";
                     }
 

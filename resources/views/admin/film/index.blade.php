@@ -86,7 +86,12 @@
             ],
             invisibleCols = ['.data-cell-description'];
         @cannot('canEditDelete', \App\Repositories\Interfaces\FilmInterface::class)
-            console.log('normal');
+            columnDefs = [
+            {
+                targets: '[class^="data-cell-"]',
+                width: '1%',
+            },
+        ];
         @else
             aoColumns.push({
                 data: 'task',
@@ -95,7 +100,21 @@
             });
         columnDefs = [
             {
+                targets: 'data-cell-status',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'status');
+                }
+            },
+            {
                 targets: 'data-cell-title',
+                render: $.fn.dataTable.render.ellipsis( 60, true )
+            },
+            {
+                targets: 'data-cell-cast',
+                render: $.fn.dataTable.render.ellipsis( 60, true )
+            },
+            {
+                targets: 'data-cell-description',
                 render: $.fn.dataTable.render.ellipsis( 60, true )
             },
             {
@@ -108,7 +127,7 @@
                 targets: 'data-cell-trailer'
             },
             {
-                targets: ['data-cell-poster', 'data-cell-status'],
+                targets: '[class^="data-cell-"]',
                 width: '1%',
             },
         ];
@@ -171,7 +190,7 @@
                         @can('update', \App\Repositories\Interfaces\FilmInterface::class)
                             <li>
                                 <a href="javascript:void(0);"
-                                   class="_change-status-sliders"
+                                   class="_change-status"
                                    swl-text="{{ __('Do you want change all status of selected films?') }}"
                                    swl-state-alert-title="{{ __('Select status') }}"
                                    swl-select-disable-item="{{ __('Disable') }}"

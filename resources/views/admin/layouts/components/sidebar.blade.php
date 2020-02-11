@@ -55,17 +55,19 @@
                 </li>
             @endcan
 
-            @can('view', \App\Film::class)
-                <li>
-                    <a href="#" class="waves-effect">
-                        <i class="mdi mdi-av-timer fa-fw" data-icon="v"></i>
-                        <span class="hide-menu"> {{ __('Cinema Manage') }} <span class="fa arrow"></span>
-                            <span class="label label-rouded label-inverse pull-right">3</span>
-                        </span>
+            @can('view', \App\Repositories\Interfaces\FilmInterface::class)
+                <li> <a href="{{ route('films.index') }}" class="waves-effect">
+                        <i class="mdi mdi-filmstrip"></i>
+                        <span class="hide-menu">{{ __('Films Manage') }}</span>
                     </a>
-                    <ul class="nav nav-second-level">
-                        <li> <a href="{{ route('films.index') }}"><i class="fas fa-fw"></i><span class="hide-menu">{{ __('Films Manage') }}</span></a> </li>
-                    </ul>
+                </li>
+            @endcan
+
+            @can('view', \App\Repositories\Interfaces\CinemaInterface::class)
+                <li> <a href="{{ route('cinemas.index') }}" class="waves-effect">
+                        <i class="mdi mdi-film"></i>
+                        <span class="hide-menu">{{ __('Cinemas Manage') }}</span>
+                    </a>
                 </li>
             @endcan
             <li> <a href="#" class="waves-effect"><i class="mdi mdi-format-color-fill fa-fw"></i> <span class="hide-menu">UI Elements<span class="fa arrow"></span> <span class="label label-rouded label-info pull-right">20</span> </span></a>

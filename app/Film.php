@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helper\Data;
 use App\Repositories\Interfaces\FilmInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,16 @@ class Film extends Model implements FilmInterface
             <img src=\"{$this->getPosterPath()}\"
                  class=\"slide-item-image\" />
         </a>" : "<p>" . __('No image') . "</p>";
+    }
+
+    /**
+     * Get formatted date
+     *
+     * @return string
+     */
+    public function getFormattedDate()
+    {
+        return Carbon::make($this->getReleaseDate())->format('d/m/yy');
     }
 
     /**
@@ -251,5 +262,15 @@ class Film extends Model implements FilmInterface
     public function getStatusLabel()
     {
         return (int)$this->getStatus() === self::ENABLE ? __('Enable') : __('Disable');
+    }
+
+    /**
+     * A film can be show on many cinema
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function cinemas()
+    {
+        return $this->belongsToMany(Cinema::class);
     }
 }

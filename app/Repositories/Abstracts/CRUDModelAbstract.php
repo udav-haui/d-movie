@@ -72,7 +72,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $fields = $this->removeMethodField($fields);
 
         if ($modelId !== null) {
-            $model = $this->model::find($modelId);
+            $model = $this->find($modelId);
         }
 
         try {
@@ -87,14 +87,18 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     /**
      * @param null|int|string $modelId
      * @param null|Model $model
-     * @return bool
+     * @return bool|Model
      * @throws Exception
      */
     public function delete($modelId = null, $model = null)
     {
         try {
+            if ($modelId !== null) {
+                $model = $this->find($modelId);
+            }
             $model->delete();
-            return true;
+
+            return $model;
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage());
         }

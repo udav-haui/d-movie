@@ -2278,6 +2278,7 @@ blockquote {
   border-right-style: solid;
   border-right-width: 1px;
   border-color: #006ca3 !important;
+  border-collapse: collapse !important;
 }
 
 .dmovie-table tr {

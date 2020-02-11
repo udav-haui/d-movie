@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Repositories\Interfaces\FilmInterface as Film;
 use App\Rules\UnsignedInteger;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,35 +27,34 @@ class FilmRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'title' => [
+            Film::TITLE => [
                 'required',
                 'max:255'
             ],
-            'poster' => [
+            Film::POSTER => [
                 'required',
                 'image'
             ],
-            'director' => 'required|max:255',
-            'cast' => 'required|max:255',
-            'genre' => 'required|max:255',
-            'running_time' => [
+            Film::DIRECTOR => 'required|max:255',
+            Film::CAST => 'required|max:255',
+            Film::GENRE => 'required|max:255',
+            Film::RUNNING_TIME => [
                 'required',
                 'numeric',
                 new UnsignedInteger
             ],
-            'language' => 'nullable|max:255',
-            'release_date' => [
+            FilM::LANGUAGE => 'nullable|max:255',
+            Film::RELEASE_DATE => [
                 'nullable',
                 'date_format:d/m/Y'
             ],
-            'mark' => [
-                'required',
-                Rule::in(['p', 'c13', 'c16', 'c18'])
+            Film::MARK => [
+                'required'
             ]
         ];
 
         if ($this->film) {
-            $rules['poster'] = 'nullable|image';
+            $rules[Film::POSTER] = 'nullable|image';
         }
 
         return $rules;
@@ -82,7 +82,6 @@ class FilmRequest extends FormRequest
             'running_time.required' => __('You must input :attribute'),
             'running_time.numeric' => __('The :attribute must be number.'),
             'language.max' => __('You can not input more than :max character'),
-            'release_date.date_format' => __('Please input a correct date format (dd/mm/yyyy)'),
             'mark.required' => __('You must input :attribute'),
         ];
     }

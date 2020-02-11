@@ -3,6 +3,7 @@
     <button type="button" class="close" dmovie-noti-dismiss>×</button>
     @if (session('error')) {{ session('error') }} @endif
 </div>
+
 <div class="alert alert-success alert-dismissable success-block"
      @if (!session('success')) style="display: none;" @endif >
     <button type="button" class="close" dmovie-noti-dismiss>×</button>

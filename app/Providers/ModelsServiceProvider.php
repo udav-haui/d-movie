@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Cinema;
 use App\Film;
+use App\Repositories\Interfaces\CinemaInterface;
 use App\Repositories\Interfaces\FilmInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,5 +18,6 @@ class ModelsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(FilmInterface::class, Film::class);
+        $this->app->bind(CinemaInterface::class, Cinema::class);
     }
 }

@@ -108,6 +108,7 @@ window.dtable = null;
 window.$fancybox = null;
 
 window.selectedObjects = [];
+window.exeDeleteRoute = null;
 
 window.errorTitle = langTextSelector.attr('swl-error-title');
 window.errorText = langTextSelector.attr('swl-error-text-must-select-one-record');
@@ -311,9 +312,9 @@ window.executeRequest = function(
             function(res) {
                 let errorMsg = res.responseJSON.message;
                 errorMessage(errorMsg);
-                screenLoader(0);
             },
             function() {
+                screenLoader(0);
                 appendToSeletedLabel(selectedObjects.length);
             }
         );
@@ -459,7 +460,7 @@ window.serverSideDatatable = function(url = '') {
             [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, -1],
             [5, 10, 15, 20, 25, 50, 100, 200, 500, 1000, allRecordsText]
         ],
-        pageLength: 15,
+        pageLength: 10,
         ajax: {
             url: url,
             error: function(xhr, error, thrown) {
@@ -511,12 +512,12 @@ function initDatatable() {
         inputFilter = dataWrapper.find(`#${tableName}_ajax_dt_filter`),
         dropdown = selectDropdown.find(`select`) || null,
         filterInput = inputFilter.find(`input`) || null;
-        $fancybox = dataWrapper.find('[dm-fancybox]');
+    $fancybox = dataWrapper.find('[dm-fancybox]');
 
-        /** Init fancy box if have */
-        if ($fancybox.length > 0) {
-            initFancybox($fancybox);
-        }
+    /** Init fancy box if have */
+    if ($fancybox.length > 0) {
+        initFancybox($fancybox);
+    }
     exportBtn.css({
         width: '100%',
         'margin-bottom': '15px'
@@ -788,7 +789,7 @@ let fancyboxTxtClose = langTextSelector.attr('fancybox-text-close'),
     fancyboxTxtDownload = langTextSelector.attr('fancybox-text-download'),
     fancyboxTxtShare = langTextSelector.attr('fancybox-text-share'),
     fancyboxTxtZoom = langTextSelector.attr('fancybox-text-zoom');
-window.initFancybox = function (selector) {
+window.initFancybox = function(selector) {
     if (selector.length > 0) {
         selector.fancybox({
             lang: mainLang,

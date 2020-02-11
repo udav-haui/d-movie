@@ -57,7 +57,19 @@ Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
 
             /** FILM SECTION */
 
+            Route::delete('films/mass/destroy', 'FilmController@massDestroy')
+                ->name('films.massDestroy');
+            Route::put('films/mass/update', 'FilmController@massUpdate')
+                ->name('films.massUpdate');
             Route::resource('films', 'FilmController');
+
+             /** Cinema Section */
+
+            Route::delete('cinemas/mass/destroy', 'CinemaController@massDestroy')
+                ->name('cinemas.massDestroy');
+            Route::put('cinemas/mass/update', 'CinemaController@massUpdate')
+                ->name('cinemas.massUpdate');
+            Route::resource('cinemas', 'CinemaController');
         });
 //        Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 //        Route::post('login', 'Auth\LoginController@login');

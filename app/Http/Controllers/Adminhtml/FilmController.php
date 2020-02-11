@@ -100,7 +100,7 @@ class FilmController extends Controller
 
                         $htmlRaw .= "col-xs-12 btn dmovie-btn dmovie-btn-success\"";
                         $htmlRaw .= "title=\"" . __('Detail') . "\">";
-                        $htmlRaw .= "<i class=\"mdi mdi-account-edit\"></i></a>";
+                        $htmlRaw .= "<i class=\"fa fa-pencil-square-o\"></i></a>";
                     }
 
                     if ($authU->can('delete', Film::class)) {
@@ -111,7 +111,7 @@ class FilmController extends Controller
                                             title=\" " . __('Delete') . " \"
                                             data-id=\"{$film->getId()}\"
                                             url=\"" . route('films.destroy', ['film' => $film->getId()]) . "\">
-                                        <i class=\"mdi mdi-account-minus\"></i>
+                                        <i class=\"fa fa-trash-o\"></i>
                                     </button>";
                     }
 
@@ -219,11 +219,127 @@ class FilmController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Film  $film
-     * @return \Illuminate\Http\Response
+     * @param int $filmId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Film $film)
+    public function destroy(int $filmId)
     {
-        //
+        $this->authorize('delete', Film::class);
+
+        try {
+            /** @var Film $film */
+            $film = $this->filmRepository->delete($filmId, null);
+
+            $message = __('The :name film have deleted.', ['name' => $film->getTitle()]);
+            return !request()->ajax() ?
+                redirect(route('films.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (Exception $e) {
+            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+
+        }
+    }
+
+    /**
+     * Mass destroy film
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function massDestroy()
+    {
+        $this->authorize('delete', Film::class);
+
+        try {
+            $films = request('films');
+
+            $deletedFilmCount = 0;
+
+            /** @var string $film */
+            foreach ($films as $film) {
+                /** @var Film $film */
+                $this->filmRepository->delete($film, null);
+
+                $deletedFilmCount++;
+            }
+
+            $message = __(':num films have deleted.', ['num' => $deletedFilmCount]);
+            return !request()->ajax() ?
+                redirect(route('films.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (Exception $e) {
+            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
+
+    /**
+     * Multi update
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function massUpdate()
+    {
+        $this->authorize('update', Film::class);
+
+        try {
+            $deletedFilmCount = 0;
+
+            $films = request('films');
+            $fields = request('fields');
+
+            foreach ($films as $film) {
+                if (!$this->filmRepository->update($film, null, $fields)) {
+                    throw new Exception(__('We can update film have id :id', ['id' => $film]));
+                }
+                $deletedFilmCount++;
+            }
+
+            $message = __(':num films have updated.', ['num' => $deletedFilmCount]);
+            return !request()->ajax() ?
+                redirect(route('films.index'))
+                    ->with('success', $message) :
+                response()->json([
+                    'status' => 200,
+                    'message' => $message
+                ]);
+        } catch (Exception $e) {
+            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
     }
 }

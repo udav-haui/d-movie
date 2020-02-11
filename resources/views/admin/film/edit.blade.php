@@ -55,6 +55,7 @@
 @section('content')
     @include('admin.lang.global_text_lang')
 
+
     <div class="row">
         <form id="edit-form"
               method="POST"
@@ -248,8 +249,8 @@
                                                class="form-control dmovie-border @error('release_date') invalid @enderror"
                                                lang="{{ \Session::get('locale', config('app.locale')) }}"
                                                id="release_date"
-                                               placeholder="yyyy-mm-dd"
-                                               value="{{ old('release_date', $film->getReleaseDate()) }}"/>
+                                               placeholder="dd/mm/yyyy"
+                                               value="{{ old('release_date', $film->getFormattedDate()) }}"/>
                                         <span class="input-group-addon"><i class="icon-calender"></i></span>
                                     </div>
                                     @error('release_date')
@@ -306,8 +307,8 @@
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <textarea placeholder="{{ __('Sort description for this film') }}"
-                                              name="trailer"
-                                              id="trailer"
+                                              name="description"
+                                              id="description"
                                               rows="5"
                                               class="form-control dmovie-border
                                         @error('description') invalid @enderror">{{ old('description', $film->getDescription()) }}</textarea>

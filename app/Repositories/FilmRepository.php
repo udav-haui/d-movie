@@ -92,4 +92,33 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
         }
     }
 
+    /**
+     * @param int|string|null $filmId
+     * @param null|Film $film
+     * @return Film|bool|\Illuminate\Database\Eloquent\Model|void
+     * @throws \Exception
+     */
+    public function delete($filmId = null, $film = null)
+    {
+        try {
+            if ($filmId !== null) {
+                $film = $this->find($filmId);
+            }
+            if ($film) {
+                if ($film->getPoster()) {
+                    $this->deleteLocalFile($film->getPoster());
+                }
+
+                parent::delete(null, $film);
+
+                $this->deleteLog($film, Film::class);
+
+                return $film;
+            }
+            throw new \Exception(__('We cant find this film.'));
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
 }

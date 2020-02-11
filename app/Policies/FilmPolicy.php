@@ -21,6 +21,12 @@ class FilmPolicy
         //
     }
 
+    /**
+     * User be can edit or update this model
+     *
+     * @param User $user
+     * @return bool
+     */
     public function canEditDelete(User $user)
     {
         return $user->isAdmin() ||

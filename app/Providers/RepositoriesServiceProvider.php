@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\CinemaRepository;
 use App\Repositories\FilmRepository;
+use App\Repositories\Interfaces\CinemaRepositoryInterface;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
 use App\Repositories\Interfaces\LogRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
@@ -41,5 +43,6 @@ class RepositoriesServiceProvider extends ServiceProvider
         $this->app->singleton(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->singleton(SliderRepositoryInterface::class, SliderRepository::class);
         $this->app->singleton(FilmRepositoryInterface::class, FilmRepository::class);
+        $this->app->singleton(CinemaRepositoryInterface::class, CinemaRepository::class);
     }
 }
