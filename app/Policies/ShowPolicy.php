@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Repositories\Interfaces\ShowInterface as Show;
+use App\Show;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

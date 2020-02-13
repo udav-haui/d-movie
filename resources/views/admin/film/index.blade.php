@@ -85,7 +85,7 @@
                 }
             ],
             invisibleCols = ['.data-cell-description'];
-        @cannot('canEditDelete', \App\Repositories\Interfaces\FilmInterface::class)
+        @cannot('canEditDelete', \App\Film::class)
             columnDefs = [
             {
                 targets: '[class^="data-cell-"]',
@@ -143,7 +143,7 @@
 @endsection
 
 @section('action_button')
-    @can('create', \App\Repositories\Interfaces\FilmInterface::class)
+    @can('create', \App\Film::class)
         <div class="navbar dmovie-fix-top-container">
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('films.create') }}"
@@ -174,11 +174,11 @@
                         <span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border width-100">
-                        @if (!auth()->user()->can('delete', \App\Repositories\Interfaces\FilmInterface::class) && !auth()->user()->can('update',
-                        \App\Repositories\Interfaces\FilmInterface::class))
+                        @if (!auth()->user()->can('delete', \App\Film::class) && !auth()->user()->can('update',
+                        \App\Film::class))
                             <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
                         @endif
-                        @can('delete', \App\Repositories\Interfaces\FilmInterface::class)
+                        @can('delete', \App\Film::class)
                             <li>
                                 <a href="javascript:void(0);"
                                    class="_delete-sliders"
@@ -187,7 +187,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('update', \App\Repositories\Interfaces\FilmInterface::class)
+                        @can('update', \App\Film::class)
                             <li>
                                 <a href="javascript:void(0);"
                                    class="_change-status"
@@ -231,7 +231,7 @@
                     <th class="data-cell-release_date">{{ __('Release date') }}</th>
                     <th class="data-cell-mark">{{ __('Mark') }}</th>
                     <th class="data-cell-trailer">{{ __('Trailer') }}</th>
-                    @can('canEditDelete', \App\Repositories\Interfaces\FilmInterface::class)
+                    @can('canEditDelete', \App\Film::class)
                         <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                     @endcan
                 </tr>

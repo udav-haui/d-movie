@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-<?php /** @var \App\Repositories\Interfaces\CinemaInterface $cinema */ ?>
+<?php /** @var \App\Cinema $cinema */ ?>
 
 @section('app.title')
     {{ $cinema->getName() }} - {{ __('Edit') }}

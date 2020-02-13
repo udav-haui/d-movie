@@ -1,4 +1,3 @@
-var detailsDtSelectedRows = [];
 $(document).ready(function () {
     'use strict';
     var template = Handlebars.compile($("#shows-template").html()),
@@ -12,7 +11,7 @@ $(document).ready(function () {
     $.fn.dataTable.defaults.order = colOrder;
 
     /* Draw data table */
-    dtable = serverSideDatatable(route('cinemas.index'));
+    dtable = serverSideDatatable(route('cinemas.index'), invisibleCols);
 
     /* When dt row is select */
     dtable.on('select.dt', function () {
@@ -67,8 +66,6 @@ $(document).ready(function () {
         let self = $(this);
         let url = self.attr('url');
         let tr = self.closest('tr');
-        console.log(url);
-        console.log(tr);
         showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
             singleDeleteRecord(
                 url,
@@ -118,24 +115,6 @@ $(document).ready(function () {
 
     });
 
-    /* Change status switch */
-    $(document).on('change', '[dmovie-details-dt]', function () {
-        let self = $(this);
-
-        self.is(':checked') ? self.val(1) : self.val(0);
-
-        let show = self.attr('data-id'),
-            exeUrl = route('shows.massUpdate'),
-            data = {
-                shows: [show],
-                fields: {
-                    status: self.val()
-                }
-            };
-
-        executeRequest(exeUrl, 'PUT', data);
-
-    });
 
     /* Change status of films */
     let multiChangeStatus = $('._change-status');
@@ -221,38 +200,73 @@ function initTable(tableId, data) {
     $.fn.dataTable.defaults.aoColumns = detailsAoCol;
     $.fn.dataTable.defaults.columnDefs = detailsColumnDefs;
     $.fn.dataTable.defaults.order = [[0, 'asc']];
-    detailDt = serverSideDatatable(data.shows_url, $('#' + tableId + '_ajax_dt'), tableId);
+
+    detailDt = serverSideDatatable(data.shows_url, [], tableId);
 
     /* When dt row is select */
     detailDt.on('select.dt', function () {
-        handleDetailsDtRowSelect(detailDt, detailsDtSelectedRows);
+        handleDetailsDtRowSelect(detailDt);
 
-        console.log(detailsDtSelectedRows);
     });
 
     /* When dt row is deselect */
     detailDt.on('deselect.dt', function ( ) {
-        handleDetailsDtRowDeselect(detailDt, detailsDtSelectedRows);
+        handleDetailsDtRowDeselect(detailDt);
 
-        console.log(detailsDtSelectedRows);
+    });
+
+
+    /* Change status switch */
+    $(document).on('change', '[dmovie-details-dt]', function () {
+        let self = $(this);
+
+        self.is(':checked') ? self.val(1) : self.val(0);
+
+        let show = self.attr('data-id'),
+            exeUrl = route('shows.massUpdate'),
+            data = {
+                shows: [show],
+                fields: {
+                    status: self.val()
+                }
+            };
+
+        executeRequest(exeUrl, 'PUT', data, detailDt);
+
+    });
+
+    /* Delete cinema */
+    $(`#${tableId}_ajax_dt tbody`).on('click', '#detailDeleteBtn', function () {
+        let self = $(this);
+        let url = self.attr('url');
+        let tr = self.closest('tr');
+        console.log(self);
+        showYesNoModal(swlTitle, swlSingDeleteText, swlIcon, function () {
+
+            executeRequest(url, 'DELETE', {}, detailDt);
+
+            // singleDeleteRecord(
+            //     url,
+            //     {},
+            //     tr
+            // );
+        } );
     });
 }
 
 /* Handle when details dt row be select */
-function handleDetailsDtRowSelect (table, localSelectedObj) {
+function handleDetailsDtRowSelect (table) {
     table.rows('.selected').every(function(rowIdx) {
         let objId = table.row(rowIdx).data().id;
-        if (!localSelectedObj.includes(objId)) {
-            localSelectedObj.push(objId);
+        if (!detailsSelectedObjects.includes(objId)) {
+            detailsSelectedObjects.push(objId);
         }
     });
 }
 
 /* Handle when details dt row be deselect */
-function handleDetailsDtRowDeselect (table, localSelectedObj) {
+function handleDetailsDtRowDeselect (table) {
     table.rows({ selected: false }).every(function(rowIdx) {
-        localSelectedObj = removeAElement(localSelectedObj, table.row(rowIdx).data().id);
-
-        console.log(table.row(rowIdx).data().id);
+        detailsSelectedObjects = removeAElement(detailsSelectedObjects, table.row(rowIdx).data().id);
     });
 }

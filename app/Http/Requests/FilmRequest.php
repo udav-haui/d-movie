@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Repositories\Interfaces\FilmInterface as Film;
+use App\Film;
 use App\Rules\UnsignedInteger;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

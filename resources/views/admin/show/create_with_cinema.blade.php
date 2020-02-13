@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 <?php
-    /** @var \App\Repositories\Interfaces\CinemaInterface $cinema */
+    /** @var \App\Cinema $cinema */
 ?>
 
 @section('app.title')

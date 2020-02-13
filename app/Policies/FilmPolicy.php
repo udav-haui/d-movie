@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Repositories\Interfaces\FilmInterface as Film;
+use App\Film;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

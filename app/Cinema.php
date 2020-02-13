@@ -2,12 +2,36 @@
 
 namespace App;
 
-use App\Repositories\Interfaces\CinemaInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class Cinema extends Model implements CinemaInterface
+/**
+ * Class Cinema
+ *
+ * @package App
+ */
+class Cinema extends Model
 {
     protected $guarded = [];
+
+    /** Constant fields of table */
+    const ID = 'id';
+    const STATUS = 'status';
+    const NAME = 'name';
+    const ADDRESS = 'address';
+    const PROVINCE = 'province';
+    const PHONE = 'phone';
+    const DESCRIPTION = 'description';
+
+    /** Constant permission of model */
+    const VIEW = 'cinema-view';
+    const CREATE = 'cinema-create';
+    const EDIT = 'cinema-edit';
+    const DELETE = 'cinema-delete';
+
+    /** Constant status var*/
+    const ENABLE = 1;
+    const DISABLE = 0;
+
 
     public function getStatusLabel()
     {

@@ -7,8 +7,8 @@ use App\Http\Requests\CinemaRequest;
 use App\Repositories\Interfaces\CinemaRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use App\Repositories\Interfaces\CinemaInterface as Cinema;
-use App\Repositories\Interfaces\ShowInterface as Show;
+use App\Cinema;
+use App\Show;
 
 /**
  * Class CinemaController
@@ -68,7 +68,7 @@ class CinemaController extends Controller
                 if ($authU->can('delete', Show::class)) {
                     $cssClass = $authU->can('update', Show::class) ? "col-md-6" : "col-md-12";
 
-                    $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
+                    $htmlRaw .= "<button id=\"detailDeleteBtn\" type=\"button\"
                                             class=\"{$cssClass} col-xs-12 btn dmovie-btn btn-danger\"
                                             title=\" " . __('Delete') . " \"
                                             data-id=\"{$show->getId()}\"

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Adminhtml;
 
 use App\Http\Requests\FilmRequest;
-use App\Repositories\Interfaces\FilmInterface as Film;
+use App\Film;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
 use Exception;
@@ -309,19 +309,21 @@ class FilmController extends Controller
         $this->authorize('update', Film::class);
 
         try {
-            $deletedFilmCount = 0;
+            $updatedFilm = [];
 
             $films = request('films');
             $fields = request('fields');
 
             foreach ($films as $film) {
-                if (!$this->filmRepository->update($film, null, $fields)) {
+                /** @var Film $film */
+                $film = $this->filmRepository->update($film, null, $fields);
+                if (!$film) {
                     throw new Exception(__('We can update film have id :id', ['id' => $film]));
                 }
-                $deletedFilmCount++;
+                array_push($updatedFilm, $film->getTitle());
             }
 
-            $message = __(':num films have updated.', ['num' => $deletedFilmCount]);
+            $message = __(':num films have updated.', ['num' => implode(', ', $updatedFilm)]);
             return !request()->ajax() ?
                 redirect(route('films.index'))
                     ->with('success', $message) :

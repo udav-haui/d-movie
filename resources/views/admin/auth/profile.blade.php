@@ -6,6 +6,15 @@
 @section('app.description')
     {{ __(':name\'s Profile', ['name' => $user->name]) }}
 @endsection
+
+
+@section('facebook_sdk')
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v6.0&appId=721583655037839&autoLogAppEvents=1"></script>
+
+    @endsection
+
 @section('content')
     <!-- /.row -->
 
@@ -334,6 +343,16 @@
                     Continue
                 </button>
             </form>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="fb-like" data-href="https://dmovie.vn/admin/users/{{ $user->getId() }}" data-width="" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
+        </div>
+        <div class="col-md-12">
+            <div class="fb-comments" data-href="https://dmovie.vn/admin/users/{{ $user->getId() }}" data-width="" data-numposts="5"></div>
         </div>
     </div>
     <!-- /.row -->

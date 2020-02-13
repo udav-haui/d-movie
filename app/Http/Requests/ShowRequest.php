@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Repositories\Interfaces\ShowInterface as Show;
+use App\Show;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShowRequest extends FormRequest

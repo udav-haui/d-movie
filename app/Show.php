@@ -9,9 +9,25 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Show extends Model implements \App\Repositories\Interfaces\ShowInterface
+class Show extends Model
 {
     protected $guarded = [];
+
+    /** Constant field for show model */
+    const ID = 'id';
+    const STATUS = 'status';
+    const NAME = 'name';
+    const CINEMA_ID = 'cinema_id';
+
+    /** Constant status var */
+    const ENABLE = 1;
+    const DISABLE = 0;
+
+    /** Constant permission */
+    const VIEW = 'show-view';
+    const CREATE = 'show-create';
+    const EDIT = 'show-edit';
+    const DELETE = 'show-delete';
 
     /**
      * @inheritDoc

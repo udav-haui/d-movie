@@ -52,7 +52,7 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         if (request()->ajax()) {
-            $users = User::select(['*']);
+            $users = $this->userRepository->all();
 
             $dataTable = datatables()->of($users);
 

@@ -8,7 +8,7 @@ $(document).ready(function () {
     $.fn.dataTable.defaults.columnDefs = columnDefs;
     $.fn.dataTable.defaults.order = colOrder;
 
-    dtable = serverSideDatatable(route('users.index'));
+    dtable = serverSideDatatable(route('users.index'), invisibleCols);
 
     /* When dt row is select */
     dtable.on('select.dt', function () {

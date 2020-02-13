@@ -3,14 +3,41 @@
 namespace App;
 
 use App\Helper\Data;
-use App\Repositories\Interfaces\FilmInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
-class Film extends Model implements FilmInterface
+/**
+ * Class Film
+ *
+ * @package App
+ */
+class Film extends Model
 {
     protected $guarded = [];
+
+    /** Constant field of film */
+    const ID = 'id';
+    const STATUS = 'status';
+    const TITLE = 'title';
+    const POSTER = 'poster';
+    const DIRECTOR = 'director';
+    const CAST = 'cast';
+    const GENRE = 'genre';
+    const RUNNING_TIME = 'running_time';
+    const LANGUAGE = 'language';
+    const DESCRIPTION = 'description';
+    const RELEASE_DATE = 'release_date';
+    const MARK = 'mark';
+    const TRAILER = 'trailer';
+
+    /** Constant permission code for this model */
+    const VIEW = 'film-view';
+    const CREATE = 'film-create';
+    const EDIT = 'film-edit';
+    const DELETE = 'film-delete';
+
+    /** Constant status of film */
+    const ENABLE = 1;
 
     /**
      * Render to html
@@ -269,8 +296,8 @@ class Film extends Model implements FilmInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function cinemas()
+    public function shows()
     {
-        return $this->belongsToMany(Cinema::class);
+        return $this->belongsToMany(Show::class);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Repositories\Interfaces\CinemaInterface as Cinema;
+use App\Cinema;
 
 /**
  * Class CinemaRequest

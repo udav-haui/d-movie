@@ -11,7 +11,7 @@ $(document).ready(function () {
     $.fn.dataTable.defaults.order = colOrder;
 
     /* Draw data table */
-    dtable = serverSideDatatable(route('sliders.index'));
+    dtable = serverSideDatatable(route('sliders.index'), invisibleCols);
 
     /* When dt row is select */
     dtable.on('select.dt', function () {

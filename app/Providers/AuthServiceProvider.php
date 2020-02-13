@@ -9,11 +9,11 @@ use App\Policies\ShowPolicy;
 use App\Policies\SliderPolicy;
 use App\Policies\UserPolicy;
 use App\Role;
-use App\Repositories\Interfaces\ShowInterface as Show;
+use App\Show;
 use App\Slider;
 use App\User;
-use App\Repositories\Interfaces\FilmInterface as Film;
-use App\Repositories\Interfaces\CinemaInterface as Cinema;
+use App\Film;
+use App\Cinema;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

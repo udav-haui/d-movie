@@ -55,7 +55,7 @@
                 </li>
             @endcan
 
-            @can('view', \App\Repositories\Interfaces\FilmInterface::class)
+            @can('view', \App\Film::class)
                 <li> <a href="{{ route('films.index') }}" class="waves-effect">
                         <i class="mdi mdi-filmstrip"></i>
                         <span class="hide-menu">{{ __('Films Manage') }}</span>
@@ -63,7 +63,7 @@
                 </li>
             @endcan
 
-            @can('view', \App\Repositories\Interfaces\CinemaInterface::class)
+            @can('view', \App\Cinema::class)
                 <li> <a href="{{ route('cinemas.index') }}" class="waves-effect">
                         <i class="mdi mdi-film"></i>
                         <span class="hide-menu">{{ __('Cinemas Manage') }}</span>

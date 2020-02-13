@@ -2,8 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
+/**
+ * Class CreateShowsTable
+ */
 class CreateShowsTable extends Migration
 {
     /**
@@ -14,12 +16,12 @@ class CreateShowsTable extends Migration
     public function up()
     {
         Schema::create('shows', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedSmallInteger('status')->default(0);
-            $table->string('name')->default('Unnamed');
-            $table->unsignedBigInteger('cinema_id')->index();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->bigIncrements('id')->comment('Show identifier');
+            $table->unsignedSmallInteger('status')->default(0)->comment('Show status');
+            $table->string('name')->default('Unnamed')->comment('Show name');
+            $table->unsignedBigInteger('cinema_id')->index()->comment('Define the cinema which the show is belong to.');
+            $table->timestamp('created_at')->useCurrent()->comment('Create time');
+            $table->timestamp('updated_at')->useCurrent()->comment('Update time');
         });
     }
 

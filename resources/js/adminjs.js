@@ -111,6 +111,7 @@ window.dtable = null;
 window.$fancybox = null;
 
 window.selectedObjects = [];
+window.detailsSelectedObjects = [];
 window.exeDeleteRoute = null;
 
 window.errorTitle = langTextSelector.attr('swl-error-title');
@@ -285,6 +286,7 @@ window.executeRequest = function(
     url = '',
     method = '',
     data = {},
+    dtbl = dtable,
     isClearSelected = false
 ) {
     try {
@@ -299,7 +301,7 @@ window.executeRequest = function(
             function(res) {
                 if (res.status === 200) {
 
-                    reloadDataTable().then(value => {
+                    reloadDataTable(dtbl).then(value => {
                         if (value) {
                             screenLoader(0);
                         }
@@ -326,8 +328,8 @@ window.executeRequest = function(
     }
 };
 
-async function reloadDataTable() {
-    return dtable.draw(false);
+async function reloadDataTable(dtbl = dtable) {
+    return dtbl.draw(false);
 }
 
 /**
@@ -346,10 +348,34 @@ window.appendToSeletedLabel = function(number = selectedObjects.length) {
  *
  * @returns {jQuery}
  */
-window.initDataTable = function() {
+window.initDataTable = function(invisCols = []) {
     dtableSelector = $(`#${tableName}_data`);
     return dtableSelector.DataTable({
-        initComplete: initDatatable,
+        initComplete: function() {
+            let dtb = this.DataTable();
+            dtb.columns(invisCols).visible(false);
+            let dataWrapper = $(`#${tableName}_data_wrapper`),
+                exportBtn = dataWrapper.find('.dt-buttons'),
+                selectDropdown = dataWrapper.find(`#${tableName}_data_length`),
+                inputFilter = dataWrapper.find(`#${tableName}_data_filter`),
+                dropdown = selectDropdown.find(`select`) || null,
+                filterInput = inputFilter.find(`input`) || null;
+            $fancybox = dataWrapper.find('[dm-fancybox]');
+
+            /** Init fancy box if have */
+            if ($fancybox.length > 0) {
+                initFancybox($fancybox);
+            }
+            exportBtn.css({
+                width: '100%',
+                'margin-bottom': '15px'
+            }).find('.dt-button').addClass('dmovie-border margin-0-auto');
+            dataWrapper.addClass('overflow-x-auto');
+            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
+            filterInput.addClass('dmovie-border h-32 p-l-10').css({
+                width: '350px'
+            });
+        },
         oLanguage: {
             sUrl: `/adminhtml/assets/plugins/datatables/i18n/${mainLang}.json`
         }
@@ -376,10 +402,35 @@ let selectAllRowsText = langTextSelector.attr('dt-select-all-rows-text'),
  * @param url
  * @returns {jQuery}
  */
-window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName}_ajax_dt`)) {
-    // dtableSelector = $(`#${tableName}_ajax_dt`);
+window.serverSideDatatable = function(url = '', invisCols, tblName = tableName) {
+    let dtableSelector = $(`#${tblName}_ajax_dt`);
+
     return dtableSelector.DataTable({
-        initComplete: initDatatable,
+        initComplete: function() {
+            let dtb = this.DataTable();
+            dtb.columns(invisCols).visible(false);
+            let dataWrapper = $(`#${tblName}_ajax_dt_wrapper`),
+                exportBtn = dataWrapper.find('.dt-buttons'),
+                selectDropdown = dataWrapper.find(`#${tblName}_ajax_dt_length`),
+                inputFilter = dataWrapper.find(`#${tblName}_ajax_dt_filter`),
+                dropdown = selectDropdown.find(`select`) || null,
+                filterInput = inputFilter.find(`input`) || null;
+            $fancybox = dataWrapper.find('[dm-fancybox]');
+
+            /** Init fancy box if have */
+            if ($fancybox.length > 0) {
+                initFancybox($fancybox);
+            }
+            exportBtn.css({
+                width: '100%',
+                'margin-bottom': '15px'
+            }).find('.dt-button').addClass('dmovie-border margin-0-auto');
+            dataWrapper.addClass('overflow-x-auto');
+            dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
+            filterInput.addClass('dmovie-border h-32 p-l-10').css({
+                width: '350px'
+            });
+        },
         serverSide: true,
         processing: true,
         pagingType: 'full_numbers',
@@ -398,8 +449,10 @@ window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName
                     {
                         text: `<i class="mdi mdi-checkbox-blank-outline"></i><span class="m-l-5">${deselectAllRowsText}</span>`,
                         action: function(e, dt, node, config) {
-                            selectedObjects = [];
-                            appendToSeletedLabel(selectedObjects.length);
+                            if (tblName === tableName) {
+                                selectedObjects = [];
+                                appendToSeletedLabel(selectedObjects.length);
+                            }
                             dt.draw(false);
                         }
                     }
@@ -475,7 +528,7 @@ window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName
                     errorText = langTextSelector.attr('swl-fail-to-load-data-text');
                     swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
                     showYesNoModal(errorTitle, errorText, swlIcon, function() {
-                        window.location.replace(route(`${tableName}`.index));
+                        window.location.replace(route(`${tblName}`.index));
                     }, false);
                 }
             },
@@ -494,8 +547,14 @@ window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName
                     rowNode = $(row.node());
 
                 rowNode.attr('data-id', data.id);
+                let selectedObjs = [];
+                if (tblName === tableName) {
+                    selectedObjs = selectedObjects;
+                } else {
+                    selectedObjs = detailsSelectedObjects;
+                }
 
-                selectedObjects.forEach(eleVal => {
+                selectedObjs.forEach(eleVal => {
                     if (data.id === eleVal) {
                         row.select();
                     }
@@ -506,31 +565,6 @@ window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName
             style: 'multi',
             selector: 'td:not([not-selector])'
         }
-    });
-};
-
-function initDatatable() {
-    dtable.columns(invisibleCols).visible(false);
-    let dataWrapper = $(`#${tableName}_ajax_dt_wrapper`),
-        exportBtn = dataWrapper.find('.dt-buttons'),
-        selectDropdown = dataWrapper.find(`#${tableName}_ajax_dt_length`),
-        inputFilter = dataWrapper.find(`#${tableName}_ajax_dt_filter`),
-        dropdown = selectDropdown.find(`select`) || null,
-        filterInput = inputFilter.find(`input`) || null;
-    $fancybox = dataWrapper.find('[dm-fancybox]');
-
-    /** Init fancy box if have */
-    if ($fancybox.length > 0) {
-        initFancybox($fancybox);
-    }
-    exportBtn.css({
-        width: '100%',
-        'margin-bottom': '15px'
-    }).find('.dt-button').addClass('dmovie-border margin-0-auto');
-    dataWrapper.addClass('overflow-x-auto');
-    dropdown.addClass('dmovie-textbox-border h-32 p-l-10');
-    filterInput.addClass('dmovie-border h-32 p-l-10').css({
-        width: '350px'
     });
 };
 

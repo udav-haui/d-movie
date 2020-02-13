@@ -59,7 +59,7 @@
                 }
             ],
             invisibleCols = ['.data-cell-description'];
-        @cannot('canEditDelete', \App\Repositories\Interfaces\CinemaInterface::class)
+        @cannot('canEditDelete', \App\Cinema::class)
             columnDefs = [
             {
                 targets: '[class^="data-cell-"]',
@@ -67,7 +67,7 @@
             },
         ];
         @else
-            @can('view', \App\Repositories\Interfaces\ShowInterface::class)
+            @can('view', \App\Show::class)
                 aoColumns.unshift(
                     {
                         className: 'get-shows-control',
@@ -149,7 +149,7 @@
             detailsColumnDefs = [];
 
 
-        @cannot('canEditDelete', \App\Repositories\Interfaces\ShowInterface::class)
+        @cannot('canEditDelete', \App\Show::class)
             detailsColumnDefs = [
             {
                 targets: '[class^="data-cell-"]',
@@ -204,7 +204,7 @@
     </script>
     <script id="shows-template" type="text/x-handlebars-template">
         <div class="label label-info">{{ __('List Shows of ') }}<code>@{{ name }}</code></div>
-        @can('create', \App\Repositories\Interfaces\ShowInterface::class)
+        @can('create', \App\Show::class)
             <div class="row">
                 <div class="col-md-12 m-t-15">
                     <a href="@{{ createWithCinemaRouter id }}" class="btn dmovie-btn dmovie-btn-success">{{ __('New Show') }}</a>
@@ -217,7 +217,7 @@
                 <th>ID</th>
                 <th>{{ __('Status') }}</th>
                 <th>{{ __('Name') }}</th>
-                @can('canEditDelete', \App\Repositories\Interfaces\ShowInterface::class)
+                @can('canEditDelete', \App\Show::class)
                     <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                 @endcan
             </tr>
@@ -229,7 +229,7 @@
 @endsection
 
 @section('action_button')
-    @can('create', \App\Repositories\Interfaces\CinemaInterface::class)
+    @can('create', \App\Cinema::class)
         <div class="navbar dmovie-fix-top-container">
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('cinemas.create') }}"
@@ -247,7 +247,7 @@
     @include('admin.lang.global_text_lang')
 
 
-    @can('canEditDelete', App\Repositories\Interfaces\CinemaInterface::class)
+    @can('canEditDelete', App\Cinema::class)
         <div class="row m-b-15">
             <div class="col-md-3 col-lg-2">
                 <div class="btn-group width-100">
@@ -260,11 +260,11 @@
                         <span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu border-radius-0 dmovie-border width-100">
-                        @if (!auth()->user()->can('delete', App\Repositories\Interfaces\CinemaInterface::class) && !auth()->user()->can('update',
-                        App\Repositories\Interfaces\CinemaInterface::class))
+                        @if (!auth()->user()->can('delete', App\Cinema::class) && !auth()->user()->can('update',
+                        App\Cinema::class))
                             <li><a href="javascript:void(0);">{{ __('Not action available for you') }}</a></li>
                         @endif
-                        @can('delete', App\Repositories\Interfaces\CinemaInterface::class)
+                        @can('delete', App\Cinema::class)
                             <li>
                                 <a href="javascript:void(0);"
                                    class="_delete-action"
@@ -273,7 +273,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('update', App\Repositories\Interfaces\CinemaInterface::class)
+                        @can('update', App\Cinema::class)
                             <li>
                                 <a href="javascript:void(0);"
                                    class="_change-status"
@@ -304,7 +304,7 @@
                    cellspacing="0">
                 <thead>
                 <tr>
-                    @can('view', \App\Repositories\Interfaces\ShowInterface::class)
+                    @can('view', \App\Show::class)
                         <th class="data-cell-details"></th>
                     @endcan
                     <th class="data-cell-id">ID</th>
@@ -314,7 +314,7 @@
                     <th class="data-cell-province">{{ __('Province') }}</th>
                     <th class="data-cell-phone">{{ __('Phone') }}</th>
                     <th class="data-cell-description">{{ __('Description') }}</th>
-                    @can('canEditDelete', \App\Repositories\Interfaces\CinemaInterface::class)
+                    @can('canEditDelete', \App\Cinema::class)
                         <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                     @endcan
                 </tr>

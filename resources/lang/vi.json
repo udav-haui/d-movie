@@ -263,7 +263,7 @@
     "The :name film have deleted.": "Phim :name đã bị xoá.",
     "We cant find this film.": "Chúng tôi không tìm thấy bản ghi này.",
     ":num films have deleted.": ":num phim đã bị xoá.",
-    ":num films have updated.": ":num phim đã được cập nhật.",
+    ":num films have updated.": "Phim :num đã được cập nhật.",
     "We can update film have id :id": "Chúng tôi không thể cập nhật phim có id là: :id",
     "Do you want change all status of selected films?": "Bạn có muốn đặt trạng thái cho các bản ghi này không?",
     "Cinemas Manage": "Quản Lý Rạp Chiếu",

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Adminhtml;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShowRequest;
 use App\Repositories\Interfaces\CinemaRepositoryInterface;
-use App\Repositories\Interfaces\ShowInterface as Show;
+use App\Show;
 use App\Repositories\Interfaces\ShowRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -113,12 +113,15 @@ class ShowController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Show  $show
-     * @return \Illuminate\Http\Response
+     * @param \App\Show $show
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Show $show)
     {
-        //
+        $this->authorize('update', Show::class);
+
+        return view('admin.show.edit', compact('show'));
     }
 
     /**

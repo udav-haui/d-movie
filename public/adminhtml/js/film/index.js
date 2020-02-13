@@ -9,7 +9,7 @@ $(document).ready(function () {
     $.fn.dataTable.defaults.order = colOrder;
 
     /* Draw data table */
-    dtable = serverSideDatatable(route('films.index'));
+    dtable = serverSideDatatable(route('films.index'), invisibleCols);
 
     /* When dt row is select */
     dtable.on('select.dt', function () {
