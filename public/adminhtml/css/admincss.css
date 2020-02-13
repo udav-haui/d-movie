@@ -2272,6 +2272,32 @@ blockquote {
   background: #00bd95;
 }
 
+div[id^=details-dt-] {
+  margin-top: 15px;
+}
+
+.dmovie-table.details-table {
+  border: 1px solid #01a5a0 !important;
+}
+
+.dmovie-table.details-table thead tr th {
+  background: #01a5a0;
+}
+
+.dmovie-table.details-table tbody tr td {
+  border-right: 1px dotted #01a5a0;
+  cursor: pointer;
+  border-top: none !important;
+}
+
+.dmovie-table.details-table tbody tr td:nth-last-child(1) {
+  border: 0;
+}
+
+.dmovie-border-top {
+  border-top: 1px solid #006ca3 !important;
+}
+
 .dmovie-table {
   border-left-width: 1px;
   border-left-style: solid;
@@ -2304,6 +2330,10 @@ blockquote {
 
 .dmovie-table tr th:nth-last-child(1) {
   border-right: none !important;
+}
+
+.dmovie-table tr.shown {
+  border-bottom: 1px solid #006ca3;
 }
 
 .dmovie-error-box {

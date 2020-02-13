@@ -169,4 +169,14 @@ class Cinema extends Model implements CinemaInterface
     {
         $this->setAttribute(self::DESCRIPTION, $description);
     }
+
+    /**
+     * A cinema has many show
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function shows()
+    {
+        return $this->hasMany(Show::class);
+    }
 }

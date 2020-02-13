@@ -260,6 +260,7 @@ class UserController extends Controller
 
         // expr1 ?: expr2 , return expr1 if expr1 is true and expr2 when expr1 false
         !auth()->user()->isAdmin() ?: $fields['role_id'] = $request->role ?? null;
+
         if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier() &&
             !auth()->user()->can('update', User::class)
         ) {

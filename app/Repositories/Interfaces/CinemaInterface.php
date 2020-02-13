@@ -146,4 +146,11 @@ interface CinemaInterface
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function films();
+
+    /**
+     * A cinema has many show
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function shows();
 }

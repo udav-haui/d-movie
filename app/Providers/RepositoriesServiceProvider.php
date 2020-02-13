@@ -8,11 +8,13 @@ use App\Repositories\Interfaces\CinemaRepositoryInterface;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
 use App\Repositories\Interfaces\LogRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Interfaces\ShowRepositoryInterface;
 use App\Repositories\Interfaces\SliderRepositoryInterface;
 use App\Repositories\Interfaces\SocialAccountRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\LogRepository;
 use App\Repositories\RoleRepository;
+use App\Repositories\ShowRepository;
 use App\Repositories\SliderRepository;
 use App\Repositories\SocialAccountRepository;
 use App\Repositories\UserRepository;
@@ -44,5 +46,6 @@ class RepositoriesServiceProvider extends ServiceProvider
         $this->app->singleton(SliderRepositoryInterface::class, SliderRepository::class);
         $this->app->singleton(FilmRepositoryInterface::class, FilmRepository::class);
         $this->app->singleton(CinemaRepositoryInterface::class, CinemaRepository::class);
+        $this->app->singleton(ShowRepositoryInterface::class, ShowRepository::class);
     }
 }

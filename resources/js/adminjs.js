@@ -15,6 +15,9 @@ require('datatables.net-select-dt');
 require('datatables.net-buttons/js/buttons.colVis.js');
 require('datatables.net-buttons/js/buttons.html5.js');
 require('datatables.net-buttons/js/buttons.print.js');
+
+window.Handlebars = window.Handlebars = require("handlebars");
+
 require('dropify/dist/js/dropify.min');
 require('@fancyapps/fancybox');
 
@@ -373,8 +376,8 @@ let selectAllRowsText = langTextSelector.attr('dt-select-all-rows-text'),
  * @param url
  * @returns {jQuery}
  */
-window.serverSideDatatable = function(url = '') {
-    dtableSelector = $(`#${tableName}_ajax_dt`);
+window.serverSideDatatable = function(url = '', dtableSelector = $(`#${tableName}_ajax_dt`)) {
+    // dtableSelector = $(`#${tableName}_ajax_dt`);
     return dtableSelector.DataTable({
         initComplete: initDatatable,
         serverSide: true,
@@ -464,12 +467,17 @@ window.serverSideDatatable = function(url = '') {
         ajax: {
             url: url,
             error: function(xhr, error, thrown) {
-                screenLoader(0);
-                errorText = langTextSelector.attr('swl-fail-to-load-data-text');
-                swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
-                showYesNoModal(errorTitle, errorText, swlIcon, function() {
-                    window.location.replace(route(`${tableName}`.index));
-                }, false);
+                if (xhr.responseJSON.status === 403) {
+                    let noPermissionText = langTextSelector.attr('swl-error-403-text');
+                    screenLoader(0);
+                    normalAlert(errorTitle, noPermissionText);
+                } else {
+                    errorText = langTextSelector.attr('swl-fail-to-load-data-text');
+                    swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
+                    showYesNoModal(errorTitle, errorText, swlIcon, function() {
+                        window.location.replace(route(`${tableName}`.index));
+                    }, false);
+                }
             },
         },
         oLanguage: {
@@ -503,9 +511,6 @@ window.serverSideDatatable = function(url = '') {
 
 function initDatatable() {
     dtable.columns(invisibleCols).visible(false);
-    dtableSelector.css({
-        'width': '100%'
-    });
     let dataWrapper = $(`#${tableName}_ajax_dt_wrapper`),
         exportBtn = dataWrapper.find('.dt-buttons'),
         selectDropdown = dataWrapper.find(`#${tableName}_ajax_dt_length`),

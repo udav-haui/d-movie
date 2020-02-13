@@ -7,7 +7,9 @@
     roleText = '{{ __('Roles manage') }}',
     userText = '{{ __('User manage') }}',
     sliderText = '{{ __('Silder manage') }}',
-    filmText = '{{ __('Films manage') }}';
+    filmText = '{{ __('Films manage') }}',
+    cinemaText = '{{ __('Cinemas manage') }}',
+    showText = '{{ __('Shows manage') }}';
     window.checkedNodes = '{{ old('permissions', $permissionsString ?? null) }}'.length === 0 ? [] :
         '{{ old('permissions', $permissionsString ?? null) }}'.split(',');
     window.permissionData = [{
@@ -42,6 +44,22 @@
                     { id: 'film-create', text: create, spriteCssClass: "create" },
                     { id: 'film-edit', text: edit, spriteCssClass: "edit" },
                     { id: 'film-delete', text: deleteText, spriteCssClass: "delete" }
+                ]
+            },
+            {
+                id: 'cinema', text: cinemaText, expanded: true, spriteCssClass: "cinema-item", items: [
+                    { id: 'cinema-view', text: view,  spriteCssClass: "view" },
+                    { id: 'cinema-create', text: create, spriteCssClass: "create" },
+                    { id: 'cinema-edit', text: edit, spriteCssClass: "edit" },
+                    { id: 'cinema-delete', text: deleteText, spriteCssClass: "delete" }
+                ]
+            },
+            {
+                id: 'show', text: showText, expanded: true, spriteCssClass: "show-item", items: [
+                    { id: 'show-view', text: view,  spriteCssClass: "view" },
+                    { id: 'show-create', text: create, spriteCssClass: "create" },
+                    { id: 'show-edit', text: edit, spriteCssClass: "edit" },
+                    { id: 'show-delete', text: deleteText, spriteCssClass: "delete" }
                 ]
             },
         ]

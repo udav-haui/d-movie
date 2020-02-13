@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
     $admin = \App\Helper\Data::getAdminPath();
 
@@ -69,7 +67,20 @@ Route::group(['middleware' => ['locale','prefix' ,'first.use']], function () {
                 ->name('cinemas.massDestroy');
             Route::put('cinemas/mass/update', 'CinemaController@massUpdate')
                 ->name('cinemas.massUpdate');
+            Route::get('cinemas/{cinema}/get-shows', 'CinemaController@getShows')
+                ->name('cinemas.getShows');
+
             Route::resource('cinemas', 'CinemaController');
+
+            /** Show Section */
+            Route::get('shows/create/{cinemaId}', 'ShowController@createWithCinema')
+                ->name('shows.createWithCinema');
+
+            Route::delete('shows/mass/destroy', 'ShowController@massDestroy')
+                ->name('shows.massDestroy');
+            Route::put('shows/mass/update', 'ShowController@massUpdate')
+                ->name('shows.massUpdate');
+            Route::resource('shows', 'ShowController');
         });
 //        Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 //        Route::post('login', 'Auth\LoginController@login');

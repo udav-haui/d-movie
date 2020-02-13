@@ -285,5 +285,18 @@
     ":num cinemas have updated.": "Thông tin của :num rạp đã được cập nhật",
     "Do you want change all status of selected cinemas?": "Bạn có muốn thay đổi trạng thái của các rạp đã chọn?",
     "The :name cinema have updated.": "Rạp :name đã được cập nhật.",
-    "We cant complete this action.": "Chúng tôi không thể hoàn tất hành động này"
+    "We cant complete this action.": "Chúng tôi không thể hoàn tất hành động này",
+    "New Show For <code>:cName</code>": "Phòng chiếu mới cho rạp <code>:cName</code>",
+    "New Show": "Phòng chiếu mới",
+    "Shows Manage": "Quản Lý Phòng Chiếu",
+    "Shows manage": "Quản lý phòng chiếu",
+    "Show Name": "Tên Phòng Chiếu",
+    "Show name": "Tên phòng chiếu",
+    "Type a name for new show room": "Nhập tên cho phòng chiếu mới",
+    "The :sName show have created.": "Phòng chiếu :sName đã được tạo.",
+    "The :attribute has been exist.": ":attribute đã tồn tại.",
+    "The show :name have deleted.": "Phòng chiếu :name đã bị xóa.",
+    "List Shows of ": "Danh sách các phòng chiếu của rạp ",
+    ":num shows have updated.": ":num phòng chiếu được cập nhật.",
+    "We can let see this content.": "Chúng tôi không thể để bạn xem nội dung này được."
 }

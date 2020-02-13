@@ -155,6 +155,36 @@ blockquote {
         background: $secondColor;
     }
 }
+div[id^="details-dt-"] {
+    margin-top: 15px;
+}
+
+.dmovie-table.details-table {
+    border: 1px solid $mainColor !important;
+    thead {
+        tr {
+            th {
+                background: $mainColor;
+            }
+        }
+    }
+    tbody {
+        tr {
+            td{
+                border-right: 1px dotted $mainColor;
+                cursor: pointer;
+                border-top: none !important;
+
+            }
+            td:nth-last-child(1) {
+                border: 0;
+            }
+        }
+    }
+}
+.dmovie-border-top {
+    border-top: 1px solid $mainColor2 !important;
+}
 .dmovie-table {
     border-left-width: 1px;
     border-left-style: solid;
@@ -162,6 +192,7 @@ blockquote {
     border-right-width: 1px;
     border-color: $mainColor2 !important;
     border-collapse: collapse !important;
+
     tr {
         td{
             border-right: 1px dotted $mainColor2;
@@ -180,6 +211,9 @@ blockquote {
         }
         th:nth-last-child(1) {
             border-right: none !important;
+        }
+        &.shown {
+            border-bottom: 1px solid $mainColor2;
         }
     }
 }

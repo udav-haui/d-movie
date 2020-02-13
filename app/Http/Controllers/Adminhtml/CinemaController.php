@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Adminhtml;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Repositories\Interfaces\CinemaRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\CinemaInterface as Cinema;
+use App\Repositories\Interfaces\ShowInterface as Show;
 
 /**
  * Class CinemaController
@@ -32,10 +34,85 @@ class CinemaController extends Controller
     }
 
     /**
+     * Get list shows of cinema
+     *
+     * @param int $cinemaId
+     * @return Collection
+     * @throws \Exception
+     */
+    public function getShows(int $cinemaId)
+    {
+        $this->authorize('view', Show::class);
+
+        $shows = $this->cinemaRepository->find($cinemaId)->shows();
+        $dt = datatables()->of($shows);
+        $authU = auth()->user();
+
+        if ($authU->can('canEditDelete', Show::class)) {
+            $htmlRaw = "";
+            $dt->addColumn('task', function (Show $show) use ($authU, $htmlRaw) {
+                if ($authU->can('update', Show::class)) {
+                    $htmlRaw .= "<a href=\"" . route('shows.edit', ['show' => $show->getId()]) . "\"
+                                   type=\"button\" class=\"";
+                    if ($authU->cant('delete', Show::class)) {
+                        $htmlRaw .= "col-md-12 ";
+                    } else {
+                        $htmlRaw .= 'col-md-6 ';
+                    }
+
+                    $htmlRaw .= "col-xs-12 btn dmovie-btn dmovie-btn-success\"";
+                    $htmlRaw .= "title=\"" . __('Detail') . "\">";
+                    $htmlRaw .= "<i class=\"fa fa-pencil-square-o\"></i></a>";
+                }
+
+                if ($authU->can('delete', Show::class)) {
+                    $cssClass = $authU->can('update', Show::class) ? "col-md-6" : "col-md-12";
+
+                    $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
+                                            class=\"{$cssClass} col-xs-12 btn dmovie-btn btn-danger\"
+                                            title=\" " . __('Delete') . " \"
+                                            data-id=\"{$show->getId()}\"
+                                            url=\"" . route('shows.destroy', ['show' => $show->getId()]) . "\">
+                                        <i class=\"fa fa-trash-o\"></i>
+                                    </button>";
+                }
+
+                return $htmlRaw;
+            });
+        } else {
+            $dt->addColumn('task', '');
+        }
+
+        $dt->editColumn('status', function (Show $show) use ($authU) {
+            $htmlRaw = "<div class=\"dmovie-flex-container\">";
+            $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+            $htmlRaw .= "<input type=\"checkbox\"";
+            $htmlRaw .= (int)$show->getStatus() === Show::ENABLE ? "checked " : "";
+            $htmlRaw .= "dmovie-details-dt class=\"status-checkbox\"".
+                "value=\"{$show->getId()}\"".
+                "data-id=\"{$show->getId()}\"";
+            if ($authU->cant('update', Show::class)) {
+                $htmlRaw .= "disabled";
+            }
+            $htmlRaw .= "/>";
+            $htmlRaw .= "<div class=\"state p-success\">
+                          <label class=\"status-text select-none\">
+                                {$show->getStatusLabel()}
+                          </label>
+                    </div>
+                </div></div>";
+
+            return $htmlRaw;
+        });
+        return $dt->rawColumns(['task', 'status'])->make();
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Exception
      */
     public function index()
     {
@@ -45,6 +122,11 @@ class CinemaController extends Controller
 
         if (request()->ajax()) {
             $dt = datatables()->of($cinemas);
+
+            $dt->addColumn('shows_url', function (Cinema $cinema) {
+                return route('cinemas.getShows', ['cinema' => $cinema->getId()]);
+            });
+
             $authU = auth()->user();
 
             $dt->editColumn('status', function (Cinema $cinema) use ($authU) {
@@ -52,7 +134,7 @@ class CinemaController extends Controller
                 $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
                 $htmlRaw .= "<input type=\"checkbox\"";
                 $htmlRaw .= (int)$cinema->getStatus() === Cinema::ENABLE ? "checked " : "";
-                $htmlRaw .= "class=\"status-checkbox\"".
+                $htmlRaw .= "dmovie-switch-dt class=\"status-checkbox\"".
                     "value=\"{$cinema->getId()}\"".
                     "data-id=\"{$cinema->getId()}\"";
                 if ($authU->cant('update', Cinema::class)) {

@@ -27,7 +27,7 @@
     <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/ellipsis.js') }}"></script>
     <script>
         let columnDefs = [],
-            colOrder = [[0, 'asc']],
+            colOrder = [[1, 'asc']],
             aoColumns = [
                 {
                     data: 'id',
@@ -67,12 +67,108 @@
             },
         ];
         @else
-        aoColumns.push({
+            @can('view', \App\Repositories\Interfaces\ShowInterface::class)
+                aoColumns.unshift(
+                    {
+                        className: 'get-shows-control',
+                        orderable: false,
+                        searchable: false,
+                        width: '1%',
+                        data: null,
+                        defaultContent: '',
+                        render: function () {
+                            return '<i class="fa fa-angle-double-right"></i>';
+
+                        }
+                    },
+                );
+            @endcan
+            aoColumns.push({
+                data: 'task',
+                sortable: false,
+                orderable: false
+            });
+            columnDefs = [
+                {
+                    targets: 'data-cell-details',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).attr('scope', 'details');
+                    }
+                },
+                {
+                    targets: 'data-cell-status',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).attr('scope', 'status');
+                    }
+                },
+                {
+                    targets: 'data-cell-name',
+                    render: $.fn.dataTable.render.ellipsis( 60, true )
+                },
+                {
+                    targets: 'data-cell-address',
+                    render: $.fn.dataTable.render.ellipsis( 60, true )
+                },
+                {
+                    targets: 'data-cell-description',
+                    render: $.fn.dataTable.render.ellipsis( 60, true )
+                },
+                {
+                    targets: 'data-cell-task',
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).attr('not-selector', '');
+                    }
+                },
+                {
+                    targets: '[class^="data-cell-"]',
+                    width: '1%',
+                },
+            ];
+        @endcannot
+        columnDefs.push({
+            targets: ['no-sort'],
+            orderable: false
+        });
+    </script>
+    <script>
+
+        let detailsAoCol = [
+                {
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                }
+            ],
+            detailsColumnDefs = [];
+
+
+        @cannot('canEditDelete', \App\Repositories\Interfaces\ShowInterface::class)
+            detailsColumnDefs = [
+            {
+                targets: '[class^="data-cell-"]',
+                width: '1%',
+            },
+        ];
+        @else
+        detailsAoCol.push({
             data: 'task',
             sortable: false,
             orderable: false
         });
-        columnDefs = [
+        detailsColumnDefs = [
+            {
+                targets: 'data-cell-id',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('scope', 'id');
+                }
+            },
             {
                 targets: 'data-cell-status',
                 createdCell: function (td, cellData, rowData, row, col) {
@@ -81,14 +177,6 @@
             },
             {
                 targets: 'data-cell-name',
-                render: $.fn.dataTable.render.ellipsis( 60, true )
-            },
-            {
-                targets: 'data-cell-address',
-                render: $.fn.dataTable.render.ellipsis( 60, true )
-            },
-            {
-                targets: 'data-cell-description',
                 render: $.fn.dataTable.render.ellipsis( 60, true )
             },
             {
@@ -103,10 +191,38 @@
             },
         ];
         @endcannot
-        columnDefs.push({
+
+
+        detailsColumnDefs.push({
             targets: ['no-sort'],
             orderable: false
         });
+
+        Handlebars.registerHelper("createWithCinemaRouter", function (cId) {
+            return route('shows.createWithCinema', {cinemaId: cId}).url();
+        })
+    </script>
+    <script id="shows-template" type="text/x-handlebars-template">
+        <div class="label label-info">{{ __('List Shows of ') }}<code>@{{ name }}</code></div>
+        @can('create', \App\Repositories\Interfaces\ShowInterface::class)
+            <div class="row">
+                <div class="col-md-12 m-t-15">
+                    <a href="@{{ createWithCinemaRouter id }}" class="btn dmovie-btn dmovie-btn-success">{{ __('New Show') }}</a>
+                </div>
+            </div>
+        @endcan
+        <table class="table details-table dmovie-table" id="details-dt-shows-@{{id}}_ajax_dt">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{{ __('Status') }}</th>
+                <th>{{ __('Name') }}</th>
+                @can('canEditDelete', \App\Repositories\Interfaces\ShowInterface::class)
+                    <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
+                @endcan
+            </tr>
+            </thead>
+        </table>
     </script>
     <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/dt-buttons/buttons.flash.js') }}"></script>
     <script src="{{ asset('adminhtml/js/cinema/index.js') }}"></script>
@@ -188,6 +304,9 @@
                    cellspacing="0">
                 <thead>
                 <tr>
+                    @can('view', \App\Repositories\Interfaces\ShowInterface::class)
+                        <th class="data-cell-details"></th>
+                    @endcan
                     <th class="data-cell-id">ID</th>
                     <th class="data-cell-status">{{ __('Status') }}</th>
                     <th class="data-cell-name">{{ __('Name') }}</th>

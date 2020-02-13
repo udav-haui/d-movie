@@ -60,7 +60,6 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
             if (!$user) {
                 throw new Exception(__('Can not find this user.'));
             }
-
             if (array_key_exists(User::AVATAR, $fields)) {
                 if ($user->getAvatar()) {
                     $user->deleteAvatarFile();
@@ -78,9 +77,7 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
                     }
                 }
             }
-            if (array_key_exists(User::DOB, $fields)) {
-                $fields[User::DOB] = $this->formatDate($fields[User::DOB]);
-            }
+
             $user = parent::update(null, $user, $fields);
             $this->updateLog($user, User::class);
             return $user;

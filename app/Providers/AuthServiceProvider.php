@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Policies\CinemaPolicy;
 use App\Policies\FilmPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\ShowPolicy;
 use App\Policies\SliderPolicy;
 use App\Policies\UserPolicy;
 use App\Role;
+use App\Repositories\Interfaces\ShowInterface as Show;
 use App\Slider;
 use App\User;
 use App\Repositories\Interfaces\FilmInterface as Film;
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Slider::class => SliderPolicy::class,
         Film::class => FilmPolicy::class,
         Cinema::class => CinemaPolicy::class,
+        Show::class => ShowPolicy::class,
     ];
 
     /**
