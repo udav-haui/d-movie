@@ -11,6 +11,6 @@ class ShowSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(\App\Show::class, 500)->create();
     }
 }

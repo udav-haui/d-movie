@@ -201,9 +201,9 @@
                                         <div class="col-md-12">
                                             <div class="input-group">
                                                 <input name="dob" type="text" class="form-control @error('dob') invalid @enderror"
-                                                    lang="{{ \Session::get('locale', config('app.locale')) }}"
+                                                    data-language="{{ \Session::get('locale', config('app.locale')) }}"
                                                     id="dob-datepicker-autoclose"
-                                                    placeholder="dd/mm/yyyy" value="{{ old('dob', $user->getDobFormated()) }}"/>
+                                                    placeholder="dd-mm-yyyy" value="{{ old('dob', $user->getDobFormatted()) }}"/>
                                                 <span class="input-group-addon"><i class="icon-calender"></i></span>
                                             </div>
                                             @error('dob')
@@ -367,9 +367,15 @@
     <li class="active">{{ $user->name }}</li>
 @endsection
 @section('bottom.js')
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/datepicker.min.js') }}"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/i18n/datepicker.' . Session::get('locale', config('app.locale')) . '.js') }}"></script>
     <script src="{{ asset('adminhtml/js/profile.js') }}"></script>
 @endsection
 @section('head.css')
+    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/air-datepicker/css/datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminhtml/css/profile.css') }}">
+@endsection
+@section('head.js')
+
 @endsection
 

@@ -47,7 +47,7 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
     ) {
         $account = $this->getSocialAccount($provider, $providerUser->getId());
         if ($account) {
-            return $account->user;
+            return $account->getUser();
         } else {
             $account = new SocialAccount([
                 'provider_user_id' => $providerUser->getId(),
@@ -108,7 +108,7 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
 
                 $insertFields = $this->userRepository->addToInsert(
                     'create_log',
-                    0,
+                    false,
                     $insertFields
                 );
 

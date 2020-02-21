@@ -54,7 +54,7 @@ $(document).ready(function () {
                 showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
                     let exeUrl = route(`films.massDestroy`),
                         data = {films: selectedObjects};
-                    executeRequest(exeUrl, 'DELETE', data, true);
+                    executeRequest(exeUrl, 'DELETE', data, null, true);
                 });
             } else {
                 /** If not select any row, then show a alert */
@@ -63,6 +63,29 @@ $(document).ready(function () {
         })
     }
 
+
+
+
+    /* Change status switch */
+    $(document).on('change', '[dmovie-switch--dt]', function () {
+        let self = $(this);
+
+        self.is(':checked') ? self.val(1) : self.val(0);
+
+        let film = self.attr('data-id'),
+            exeUrl = self.attr('url'),
+            dataField = self.attr('data-field'),
+
+            data = {
+                films: [film],
+                fields: {
+                    [dataField]: self.val()
+                }
+            };
+
+        executeRequest(exeUrl, 'PUT', data);
+
+    });
 
 
     /* Change status switch */
@@ -161,6 +184,86 @@ $(document).ready(function () {
                 normalAlert(errorTitle, errorText);
             }
 
+        });
+    }
+
+    let multiAction = $('._change--status--action');
+    if (multiAction.length > 0) {
+        multiAction.on('click', function () {
+            let $this = $(this),
+                swlText = $this.attr('swl-text');
+            if (selectedObjects.length > 0) {
+                showYesNoModal(swlTitle, swlText, swlIcon, function () {
+                    let titleText = $this.attr('swl-option-alert-title'),
+                        yesText = $this.attr('swl-select-yes-item'),
+                        noText = $this.attr('swl-select-no-item'),
+                        options = {
+                            '0': noText,
+                            '1': yesText
+                        };
+                    showEnableDisableAlert(
+                        titleText,
+                        options,
+                        0,
+                        function (newStatus) {
+                            let exeUrl = route('films.massUpdate'),
+                                field = $this.attr('data-field'),
+                                data = {
+                                    films: selectedObjects,
+                                    fields: {
+                                        [field]: newStatus
+                                    }
+                                };
+                            try {
+                                ajaxRequest(
+                                    exeUrl,
+                                    'PUT',
+                                    data,
+                                    function () {
+                                        screenLoader();
+                                    },
+                                    function (res) {
+                                        if (res.status === 200) {
+                                            selectedObjects.forEach(value => {
+                                                dtable.$(`td[scope="${field}"]`).each(function () {
+                                                    let checkbox = $(this).find('input'),
+                                                        id = checkbox.val();
+                                                    if (id === value) {
+                                                        let switcher = checkbox,
+                                                            isChecked = parseInt(newStatus) === 1;
+
+                                                        switcher.prop('checked', isChecked);
+
+                                                        $(this).find('.status-text').text(parseInt(newStatus) === 1 ? yesText : noText);
+
+                                                    }
+                                                });
+                                            });
+
+                                            topRightAlert(res.message);
+
+                                            successMessage(res.message);
+                                        } else {
+                                            errorMessage(res.message);
+                                        }
+                                    },
+                                    function (res) {
+                                        let errorMsg = res.responseJSON.message;
+                                        errorMessage(errorMsg);
+                                    },
+                                    function () {
+                                        screenLoader(0);
+                                    }
+                                );
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }
+                    );
+                });
+            } else {
+                normalAlert(errorTitle, errorText);
+            }
         });
     }
 

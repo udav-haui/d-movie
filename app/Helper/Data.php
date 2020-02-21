@@ -4,6 +4,10 @@ namespace App\Helper;
 
 class Data
 {
+    /** Constant language value */
+    const VIETNAM = 'vi';
+    const ENGLISH = 'en';
+
     /** @var string Define actions name */
     const CREATE = 'create';
     const UPDATE = 'update';

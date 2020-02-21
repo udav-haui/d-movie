@@ -27,7 +27,8 @@
         aoColumns = [
             {
                 data: 'id',
-                name: 'id'
+                name: 'id',
+                className: 'no-visible-filter'
             },
             {
                 data: 'username',
@@ -98,7 +99,6 @@
         columnDefs = [
         {
             targets: 'data-cell-id',
-            className: 'no-visible-filter',
             createdCell: function (td, cellData, rowData, row, col) {
                 $(td).attr('data-id', rowData.id);
                 $(td).attr('scope', 'id');
@@ -161,10 +161,10 @@
                 }
             },
             {
-                targets: 'data-cell-status',
+                targets: 'data-cell-state',
                 createdCell: function (td, cellData, rowData, row, col) {
                     $(td).attr('data-id', rowData.id);
-                    $(td).attr('scope', 'status');
+                    $(td).attr('scope', 'state');
                 }
             },
             {
@@ -214,6 +214,7 @@
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('users.create') }}"
                    class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    <i class="icon-user-follow"></i>
                     {{ __('New user') }}
                 </a>
             </div>
@@ -304,7 +305,7 @@
                         <th class="data-cell-address">{{ __('Address') }}</th>
                         <th class="data-cell-avatar">{{ __('Avatar') }}</th>
                         <th class="data-cell-dob">{{ __('Date of Birth') }}</th>
-                        <th class="data-cell-status">{{ __('Status') }}</th>
+                        <th class="data-cell-state">{{ __('Status') }}</th>
                         <th class="data-cell-description">{{ __('Description') }}</th>
                         @if (auth()->user()->isAdmin())
                             <th class="data-cell-id">{{ __('Role name') }}</th>

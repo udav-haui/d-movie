@@ -79,59 +79,8 @@
             </div>
 
         </div>
-        <div class="row">
-            <?php $usersSelect = old('users', $relatedUsers) ?? [] ?>
-            <select name="users[]" multiple id="users_select" class="col-md-12 display-none">
-                @foreach($usersSelect as $user)
-                    <option scope="users" value="{{ $user }}" selected>{{ $user }}</option>
-                    @endforeach
-            </select>
-        </div>
     </form>
 
     <input class="lang-text display-none"
            main-lang="{{ str_replace('_', '-', app()->getLocale()) }}"/>
-    <div class="row">
-        <div class="col-md-12 table-responsive">
-            <table id="users_data" class="display nowrap dmovie-table"
-                   cellspacing="0"
-                   width="100%">
-                <thead>
-                <tr>
-                    <th class="no-sort"></th>
-                    <th>#</th>
-                    <th>{{ __('Username') }}</th>
-                    <th>{{ __('Full Name') }}</th>
-                    <th>{{ __('Email') }}</th>
-                </tr>
-                </thead>
-                <tfoot>
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>{{ __('Username') }}</th>
-                    <th>{{ __('Full Name') }}</th>
-                    <th>{{ __('Email') }}</th>
-                </tr>
-                </tfoot>
-                <tbody>
-                @foreach($users as $user)
-                    <tr>
-                        <td scope="checkbox">
-                            <div class="dmovie-checkbox dmovie-checkbox-custom">
-                                <input data-id="{{ $user->id }}" id="checkbox-{{ $user->id }}" type="checkbox"
-                                       class="display-none user-checkbox" @if (in_array($user->id, $usersSelect)) checked="" @endif>
-                                <label for="checkbox-{{ $user->id }}" class="cursor-pointer"></label>
-                            </div>
-                        </td>
-                        <td scope="id">{{ $user->id }}</td>
-                        <td scope="username">{{ $user->username ?? __('Not updated!') }}</td>
-                        <td scope="username">{{ $user->name ?? __('Not updated!') }}</td>
-                        <td scope="username">{{ $user->email ?? __('Not updated!') }}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
 @endsection

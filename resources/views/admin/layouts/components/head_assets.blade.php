@@ -7,9 +7,11 @@
 <!-- animation CSS -->
 <link href="{{ asset('adminhtml/assets/css/animate.css') }}" rel="stylesheet">
 <!-- Date picker plugins css -->
-<link href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+{{--<link href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">--}}
 <!-- Calendar CSS -->
 <link href="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/fullcalendar.css') }}" rel="stylesheet" />
+<!-- toast CSS -->
+<link href="{{ asset('adminhtml/assets/plugins/bower_components/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
 <!-- Custom CSS -->
 <link href="{{ asset('adminhtml/assets/css/style.css') }}" rel="stylesheet">
 <!-- color CSS -->
@@ -23,3 +25,4 @@
 <script src="{{ asset('adminhtml/assets/js/html5shiv.js') }}"></script>
 <script src="{{ asset('adminhtml/assets/js/respond.min.js') }}"></script>
 <![endif]-->
+

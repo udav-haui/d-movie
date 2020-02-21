@@ -3,10 +3,12 @@
 namespace App\Repositories\Abstracts;
 
 use App\Repositories\Interfaces\CRUDModelInterface;
+use App\Repositories\LoggerTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use function Sodium\add;
 
 /**
  * Class CRUDModelAbstract
@@ -15,17 +17,129 @@ use Illuminate\Support\Facades\Storage;
  */
 abstract class CRUDModelAbstract implements CRUDModelInterface
 {
+    use LoggerTrait;
+
     /** @var Model */
     protected $model;
 
     /**
+     * @param array $ids
+     * @return \Illuminate\Support\Collection
+     */
+    public function getByIds(array $ids = [])
+    {
+        $data = collect();
+
+        foreach ($ids as $id) {
+            $model = $this->find($id);
+            $data->add($model);
+        }
+
+        return $data;
+    }
+
+    /**
      * Get all records
      *
-     * @return \Illuminate\Database\Eloquent\Collection|Model[]
+     * @param array $withTbl
+     * @param bool $isVisible
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Collection|Model[]
      */
-    public function all()
+    public function all($withTbl = [], $isVisible = false)
     {
-        return $this->model::all();
+        $collection = $this->model::query();
+        if ($isVisible) {
+            $collection = $collection->whereStatus(1);
+        }
+
+        if (!empty($withTbl)) {
+            $collection = $collection->with($withTbl);
+        }
+        return $collection->get();
+    }
+
+    /**
+     * Search data by array key-value
+     *
+     * @param null $collection
+     * @param array $fields
+     * @return \Illuminate\Database\Eloquent\Builder
+     * @throws Exception
+     */
+    public function searchBy($collection = null, $fields = [])
+    {
+        try {
+            if ($collection === null) {
+                $collection = $this->model::query();
+            }
+
+            foreach ($fields as $key => $value) {
+                $collection = $collection->where($key, 'like', '%' . $value . '%');
+            }
+
+            return $collection;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Get visible data
+     *
+     * @param null $collection
+     * @param array $withTbl
+     * @return mixed
+     * @throws Exception
+     */
+    public function getVisible($collection = null, $withTbl = [])
+    {
+        try {
+            if ($collection === null) {
+                $collection = $this->model::query();
+            }
+
+            if (!empty($withTbl)) {
+                $collection = $collection->with($withTbl);
+            }
+
+            $collection = $collection->where('status', $this->model::ENABLE);
+
+            return $collection;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Filter data
+     *
+     * @param null $query
+     * @param array $filterArr
+     * @param array $with
+     * @return \Illuminate\Database\Eloquent\Builder|null
+     * @throws Exception
+     */
+    public function getFilter($query = null, $filterArr = [], $with = [])
+    {
+        try {
+            if ($query === null) {
+                $query = $this->model::query();
+            }
+
+            if (!empty($filterArr)) {
+                foreach ($filterArr as $key => $value) {
+                    $query = $query->where($key, $value);
+                }
+            }
+
+            if (!empty($with)) {
+                $query = $query->with($with);
+            }
+
+            return $query;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -43,15 +157,21 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * Create new record for model
      *
      * @param array $fields
+     * @param bool $isWriteLog
      * @return mixed
      * @throws Exception
      */
-    public function create($fields = [])
+    public function create($fields = [], bool $isWriteLog = true)
     {
         $fields = $this->removeTokenField($fields);
 
         try {
-            return $this->model::create($fields);
+            $model = $this->model::create($fields);
+
+            if ($isWriteLog) {
+                $this->createLog($model, $this->model);
+            }
+            return $model;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -61,12 +181,13 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * Update model data
      *
      * @param string|int|null $modelId
-     * @param array $fields
      * @param Model|null $model
+     * @param array $fields
+     * @param bool $isWriteLog
      * @return Model
      * @throws Exception
      */
-    public function update($modelId = null, $model = null, $fields = [])
+    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true)
     {
         $fields = $this->removeTokenField($fields);
         $fields = $this->removeMethodField($fields);
@@ -77,7 +198,9 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
 
         try {
             $model->update($fields);
-
+            if ($isWriteLog) {
+                $this->updateLog($model, $this->model);
+            }
             return $model;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -87,17 +210,20 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     /**
      * @param null|int|string $modelId
      * @param null|Model $model
+     * @param bool $isWriteLog
      * @return bool|Model
      * @throws Exception
      */
-    public function delete($modelId = null, $model = null)
+    public function delete($modelId = null, $model = null, bool $isWriteLog = true)
     {
         try {
             if ($modelId !== null) {
                 $model = $this->find($modelId);
             }
             $model->delete();
-
+            if ($isWriteLog) {
+                $this->deleteLog($model, $this->model);
+            }
             return $model;
         } catch (Exception $exception) {
             throw new Exception($exception->getMessage());
@@ -182,11 +308,8 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @param string $date
      * @return string
      */
-    public function formatDate($date)
+    public function formatDate(string $date)
     {
-        $dob = explode('/', $date);
-
-        $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
-        return $dob->format('Y-m-d');
+        return Carbon::make($date)->format('Y-m-d');
     }
 }

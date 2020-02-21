@@ -39,7 +39,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'dob' => [
                 'nullable',
-                'date_format:d/m/Y'
+                'date_format:d-m-Y'
             ]
         ];
 
@@ -73,7 +73,7 @@ class UpdateUserRequest extends FormRequest
             'phone.regex' => __('Please input a correct Vietnam :attribute'),
             'phone.required' => __('You must input :attribute'),
             'dob.required' => __('You must input :attribute'),
-            'dob.date_format' => __('Please input a correct date format (dd/mm/yyyy)'),
+            'dob.date_format' => __('Please input a correct date format (dd-mm-yyyy)'),
             'password.required' => __('You must input :attribute'),
             'password.min' => __(':attribute need at least :min character'),
         ];

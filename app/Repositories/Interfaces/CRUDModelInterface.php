@@ -14,9 +14,29 @@ interface CRUDModelInterface
     /**
      * Get all records
      *
+     * @param array $withOpts
+     * @param bool $isVisible
      * @return \Illuminate\Database\Eloquent\Collection|Model[]
      */
-    public function all();
+    public function all($withOpts = [], $isVisible = false);
+
+    /**
+     * Search data by array key-value
+     *
+     * @param null $collection
+     * @param array $fields
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function searchBy($collection = null, $fields = []);
+
+    /**
+     * Get visible data
+     *
+     * @param null $collection
+     * @param array $withTbl
+     * @return mixed
+     */
+    public function getVisible($collection = null, $withTbl = []);
 
     /**
      * Retrieve model
@@ -30,26 +50,29 @@ interface CRUDModelInterface
      * Create new record for model
      *
      * @param array $fields
+     * @param bool $isWriteLog
      * @return mixed
      */
-    public function create($fields = []);
+    public function create($fields = [], bool $isWriteLog = true);
 
     /**
      * Update model data
      *
      * @param string|int|null $modelId
-     * @param array $fields
      * @param Model|null $model
+     * @param array $fields
+     * @param bool $isWriteLog
      * @return void
      */
-    public function update($modelId = null, $model = null, $fields = []);
+    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true);
 
     /**
      * @param null|string|int $modelId
      * @param null|Model $model
+     * @param bool $isWriteLog
      * @return bool
      */
-    public function delete($modelId, $model = null);
+    public function delete($modelId, $model = null, bool $isWriteLog = true);
 
     /**
      * Remove _token field.
@@ -57,7 +80,7 @@ interface CRUDModelInterface
      * @param array $fields
      * @return array
      */
-    public function removeTokenField($fields);
+    public function removeTokenField(array $fields);
 
     /**
      * Remove _method field if exist
@@ -65,7 +88,7 @@ interface CRUDModelInterface
      * @param array $fields
      * @return array
      */
-    public function removeMethodField($fields);
+    public function removeMethodField(array $fields);
 
     /**
      * Remove ids field from request
@@ -73,7 +96,7 @@ interface CRUDModelInterface
      * @param array $fields
      * @return mixed
      */
-    public function removeIdsKey($fields);
+    public function removeIdsKey(array $fields);
 
     /**
      * Store image to storage
@@ -98,5 +121,5 @@ interface CRUDModelInterface
      * @param string $date
      * @return string
      */
-    public function formatDate($date);
+    public function formatDate(string $date);
 }

@@ -36,18 +36,17 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
             ]);
 
             if ($role) {
-                $this->createLog($role, Role::class);
                 if ($request->permissions != null) {
                     $permissions = explode(',', $request->permissions);
                     foreach ($permissions as $permission) {
-                        $createdPermission = $role->permissions()->create([
+                        $role->permissions()->create([
                             'permission_code' => $permission
                         ]);
-                        $this->createLog($createdPermission, Permission::class);
+                        // $this->createLog($createdPermission, Permission::class);
                     }
                 }
-                return true;
             }
+            return $role;
         } catch (\Exception $exception) {
             throw new \Exception(__('Ooops, something wrong appended.' . $exception->getMessage()));
         }
@@ -56,57 +55,32 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
     /**
      * Update A role
      *
-     * @param RoleRequest $request
+     * @param null $roleId
      * @param Role $role
-     * @return bool
+     * @param array $fields
+     * @param bool $isWriteLog
+     * @return \Illuminate\Database\Eloquent\Model
      * @throws \Exception
      */
-    public function update($roleId = null, $role = null, $fields = [])
+    public function update($roleId = null, $role = null, $fields = [], bool $isWriteLog = true)
     {
         try {
             if ($roleId !== null) {
                 $role = $this->find($roleId);
             }
+            $role->permissions()->delete();
 
-            $updatedRole = parent::update(null, $role, ['role_name' => $fields['role_name']]);
+            /** @var array $permissions */
+            $permissions = explode(',', $fields['permissions']);
 
-            if ($updatedRole) {
-                $this->updateLog($role, Role::class);
-
-                $role->permissions()->delete();
-
-                /** @var array $permissions */
-                $permissions = explode(',', $fields['permissions']);
-
-                foreach ($permissions as $permission) {
-                    $updatedPermission = $role->permissions()->create([
-                        'permission_code' => $permission
-                    ]);
-
-                    $this->createLog($updatedPermission, Permission::class);
-                }
-                /** @var \Illuminate\Database\Eloquent\Collection $relatedUsers */
-                $relatedUsers = $role->users;
-
-                // Dissociate all current related user
-                foreach ($relatedUsers as $user) {
-                    $user->role()->dissociate();
-                    $user->save();
-                }
-
-                if (array_key_exists('users', $fields)) {
-
-                    /** @var array $userIds */
-                    $userIds = $fields['users'];
-
-                    foreach ($userIds as $id) {
-                        $user = User::find($id);
-
-                        $this->assignUser($role, $user);
-                    }
-                }
-                return true;
+            foreach ($permissions as $permission) {
+                $role->permissions()->create([
+                    'permission_code' => $permission
+                ]);
             }
+            $role = parent::update(null, $role, ['role_name' => $fields['role_name']]);
+
+            return $role;
         } catch (\Exception $exception) {
             throw new \Exception(__('Ooops, something wrong appended.') . ' - ' . $exception->getMessage());
         }
@@ -117,10 +91,11 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
      *
      * @param null|int|string $roleId
      * @param Role $role
+     * @param bool $isWriteLog
      * @return bool
      * @throws \Exception
      */
-    public function delete($roleId = null, $role = null)
+    public function delete($roleId = null, $role = null, bool $isWriteLog = true)
     {
         if ($roleId !== null) {
             $role = $this->find($roleId);
@@ -204,15 +179,5 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
     public function getRole($roleId)
     {
         return Role::findOrFail($roleId);
-    }
-
-    /**
-     * Get all role
-     *
-     * @return Role[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function all()
-    {
-        return Role::all();
     }
 }

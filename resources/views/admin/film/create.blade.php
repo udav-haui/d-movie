@@ -19,11 +19,15 @@
 
 @section('head.css')
 
+    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/air-datepicker/css/datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
     <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}">
 @endsection
 
 @section('bottom.js')
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/datepicker.min.js') }}"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/i18n/datepicker.' .
+Session::get('locale', config('app.locale')) . '.js') }}"></script>
     <script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js') }}"></script>
     <script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
     <script src="{{ asset('adminhtml/js/film/create.js') }}"></script>
@@ -72,7 +76,7 @@
                                 <div class="col-md-3 col-xs-12">
                                     <select name="status" id="status"
                                             class="bs-select-hidden"
-                                            data-style="form-control">
+                                            data-style="form-control" dmovie-select2>
                                         <option value="1"
                                             {{ old('status') !== NULL && (int)old('status') === 1 ? 'selected' : '' }}>
                                             {{ __('Enable') }}
@@ -88,7 +92,7 @@
                             {{-- Title --}}
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="title">
-                                    {{ __('Film Title') }}
+                                    {{ __('Film Title') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <input placeholder="{{ __('Type title of film') }}"
@@ -107,7 +111,7 @@
                             {{-- Poster --}}
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="poster">
-                                    {{ __('Poster') }}
+                                    {{ __('Poster') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <input type="file" required name="poster" id="image" class="dropify col-md-3" />
@@ -121,7 +125,7 @@
                             {{-- Director --}}
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="director">
-                                    {{ __('Director') }}
+                                    {{ __('Director') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <input placeholder="{{ __('Type name of Director') }}"
@@ -131,7 +135,7 @@
                                         class="form-control dmovie-border
                                         @error('director') invalid @enderror"
                                         value="{{ old('director') }}"/>
-                                    @error('order')
+                                    @error('director')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -140,7 +144,7 @@
                             {{-- Cast --}}
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="cast">
-                                    {{ __('Cast') }}
+                                    {{ __('Cast') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <div class="tags-default dmovie-border dmovie-tags
@@ -162,7 +166,7 @@
                             {{-- Genre --}}
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="genre">
-                                    {{ __('Genre') }}
+                                    {{ __('Genre') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <div class="tags-default dmovie-border dmovie-tags
@@ -186,7 +190,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-5 col-xs-12 cursor-pointer"
                                        for="running_time">
-                                    {{ __('Running Time') }}
+                                    {{ __('Running Time') }} <strong class="text-danger">*</strong>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <input
@@ -238,9 +242,11 @@
                                         <input name="release_date"
                                                type="text"
                                                class="form-control dmovie-border @error('release_date') invalid @enderror"
-                                               lang="{{ \Session::get('locale', config('app.locale')) }}"
+                                               data-language="{{ \Session::get('locale', config('app.locale')) }}"
                                                id="release_date"
-                                               placeholder="dd/mm/yyyy" value="{{ old('release_date') }}"/>
+                                               placeholder="dd-mm-yyyy" value="{{ old('release_date') }}"
+                                               dmovie-datepicker
+                                        />
                                         <span class="input-group-addon"><i class="icon-calender"></i></span>
                                     </div>
                                     @error('release_date')
@@ -265,6 +271,75 @@
                                         <option value="c18" {{ old('mark') != 'c18' ? '' : 'selected' }}>{{ __('C18') }}</option>
                                     </select>
                                     <label class="help-block">{{ __('Select mark of film') }}</label>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Is Coming Soon -->
+                            <div class="form-group">
+                                <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="is_coming_soon">
+                                    {{ __('Is Coming Soon') }}
+                                </label>
+                                <div class="col-md-3 col-xs-12">
+                                    <select name="is_coming_soon" id="is_coming_soon"
+                                            class="bs-select-hidden"
+                                            data-style="form-control"
+                                            dmovie-select2>
+                                        <option value="1"
+                                            {{ old('is_coming_soon') !== NULL && (int)old('is_coming_soon') === \App\Film::YES ? 'selected' : '' }}>
+                                            {{ __('Yes') }}
+                                        </option>
+                                        <option value="0"
+                                            {{ old('is_coming_soon') !== NULL && (int)old('is_coming_soon') === \App\Film::NO ? 'selected' : '' }}>
+                                            {{ __('No') }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Is Open Sale Ticket -->
+                            <div class="form-group">
+                                <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="is_open_sale_ticket">
+                                    {{ __('Is Open Sale Ticket') }}
+                                </label>
+                                <div class="col-md-3 col-xs-12">
+                                    <select name="is_open_sale_ticket" id="is_open_sale_ticket"
+                                            class="bs-select-hidden"
+                                            data-style="form-control"
+                                            dmovie-select2>
+                                        <option value="1"
+                                            {{ old('is_open_sale_ticket') !== NULL && (int)old('is_open_sale_ticket') === \App\Film::YES ? 'selected' : '' }}>
+                                            {{ __('Yes') }}
+                                        </option>
+                                        <option value="0"
+                                            {{ old('is_open_sale_ticket') !== NULL && (int)old('is_open_sale_ticket') === \App\Film::NO ? 'selected' : '' }}>
+                                            {{ __('No') }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <!-- Is Sneak Show -->
+                            <div class="form-group">
+                                <label class="control-label col-md-5 col-xs-12 cursor-pointer" for="is_sneak_show">
+                                    {{ __('Is Sneak Show') }}
+                                </label>
+                                <div class="col-md-3 col-xs-12">
+                                    <select name="is_sneak_show" id="is_sneak_show"
+                                            class="bs-select-hidden"
+                                            data-style="form-control"
+                                            dmovie-select2>
+                                        <option value="0"
+                                            {{ old('is_sneak_show') !== NULL && (int)old('is_sneak_show') === \App\Film::NO ? 'selected' : '' }}>
+                                            {{ __('No') }}
+                                        </option>
+                                        <option value="1"
+                                            {{ old('is_sneak_show') !== NULL && (int)old('is_sneak_show') === \App\Film::YES ? 'selected' : '' }}>
+                                            {{ __('Yes') }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
 

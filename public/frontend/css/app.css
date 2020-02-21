@@ -1,0 +1,89 @@
+
+#rocketmeluncur {
+    position: fixed;
+    bottom: 25px;
+    z-index: 7;
+    display: none;
+    visibility: hidden;
+    width: 26px;
+    height: 48px;
+    right: 25px;
+    background: url(/images/Ask-blue.png?18dfa356db420fc5a6d9cf33379efc83) no-repeat 50% 0;
+    opacity: 0;
+    -webkit-transition: visibility .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), -webkit-transform .6s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    transition: visibility .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), -webkit-transform .6s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    transition: visibility .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), transform .6s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    transition: visibility .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), transform .6s cubic-bezier(0.6, 0.04, 0.98, 0.335), -webkit-transform .6s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+}
+
+#rocketmeluncur i {
+    display: block;
+    margin-top: 48px;
+    height: 14px;
+    background: url(/images/Ask-blue.png?18dfa356db420fc5a6d9cf33379efc83) no-repeat 50% -48px;
+    opacity: .5;
+    -webkit-transition: -webkit-transform .2s;
+    transition: -webkit-transform .2s;
+    transition: transform .2s;
+    transition: transform .2s, -webkit-transform .2s;
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 0
+}
+
+#rocketmeluncur:hover {
+    background-position: 50% -62px
+}
+
+#rocketmeluncur:hover i {
+    background-position: 50% 100%;
+    -webkit-animation: flaming .7s infinite;
+    animation: flaming .7s infinite
+}
+
+#rocketmeluncur.showrocket {
+    visibility: visible;
+    opacity: 1
+}
+
+#rocketmeluncur.launchrocket {
+    background-position: 50% -62px;
+    opacity: 0;
+    -webkit-transform: translateY(-800px);
+    transform: translateY(-800px);
+    pointer-events: none
+}
+
+#rocketmeluncur.launchrocket i {
+    background-position: 50% 100%;
+    -webkit-transform: scale(1.4, 3.2);
+    transform: scale(1.4, 3.2)
+}
+.w-50 {
+  width: 50% !important;
+}
+
+.w-25 {
+  width: 25% !important;
+}
+
+.w-75 {
+  width: 75% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.display-flex {
+  display: -webkit-box !important;
+  display: flex !important;
+}
+
+.gg-background {
+  background-color: #ea4335 !important;
+}
+
+.btn-3:hover {
+  color: #fff;
+}
+

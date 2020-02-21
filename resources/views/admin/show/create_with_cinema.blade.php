@@ -103,7 +103,7 @@
                                             class="bs-select-hidden"
                                             data-style="form-control"
                                             dmovie-select2
-                                            disabled>
+                                            disabled style="width: 100%">
                                         <option value="{{ $cinema->getId() }}"
                                             {{ old('cinema_id', $cinema->getId()) }}>
                                             {{ $cinema->getName() }}

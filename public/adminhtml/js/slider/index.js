@@ -1,8 +1,6 @@
 $(document).ready(function () {
     'use strict';
 
-    var fancyboxSelector = null;
-
     tableName = 'sliders';
     swlIcon = langTextSelector.attr('swl-icon-warning-text');
 
@@ -150,7 +148,7 @@ $(document).ready(function () {
                 showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
                     let exeUrl = route(`sliders.multiDestroy`),
                         data = {ids: selectedObjects};
-                    executeRequest(exeUrl, 'DELETE', data, true);
+                    executeRequest(exeUrl, 'DELETE', data, dtable,true);
                 });
             } else {
                 /** If not select any row, then show a alert */

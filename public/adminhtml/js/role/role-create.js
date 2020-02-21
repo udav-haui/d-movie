@@ -19,13 +19,27 @@ $(document).ready(function () {
                     let parentNodeId = parentNode.id;
                     if (nodes[i].id === parentNodeId + '-create' ||
                         nodes[i].id === parentNodeId + '-edit' ||
-                        nodes[i].id === parentNodeId + '-delete') {
+                        nodes[i].id === parentNodeId + '-delete' ||
+                        nodes[i].id === parentNodeId + '-view'
+                    ) {
+                        let thisNode = nodes[i].parent().parent().parent();
+                        if (thisNode[0].id !== undefined) {
+                            if (thisNode[0].id.includes('-view')) {
+                                let item = treeView.dataSource.get( thisNode.parent().parent().parent().id + '-view');
+                                if (item !== undefined) {
+                                    item.set('checked', true);
+                                }
+                                thisNode[0].set('checked', true)
+                            }
+                        }
                         let item = treeView.dataSource.get( parentNodeId + '-view');
                         item.set('checked', true);
                         if (!checkedNodes.includes(item.id)) { checkedNodes.push(item.id); }
                     }
                 }
-                checkedNodes.push(nodes[i].id);
+                if (!checkedNodes.includes(nodes[i].id)) {
+                    checkedNodes.push(nodes[i].id);
+                }
             }
 
             if (nodes[i].hasChildren) {

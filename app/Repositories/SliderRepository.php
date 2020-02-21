@@ -25,10 +25,11 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
      * Create new Slide item image
      *
      * @param array $fields
+     * @param bool $isWriteLog
      * @return mixed
      * @throws Exception
      */
-    public function create($fields = [])
+    public function create($fields = [], bool $isWriteLog = true)
     {
         try {
             if ($fields['image']) {
@@ -37,11 +38,7 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
                 $fields['image'] = $this->storeImage($uploadImage);
             }
 
-            $slider = parent::create($fields);
-
-            $this->createLog($slider, \App\Slider::class);
-
-            return $slider;
+            return parent::create($fields);
         } catch (Exception $exception) {
             if ($fields['image']) {
                 Storage::delete('/public/' . $fields['image']);
@@ -55,12 +52,13 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
      * Update model data
      *
      * @param string|int|null $sliderId
-     * @param array $fields
      * @param Slider $slider
+     * @param array $fields
+     * @param bool $isWriteLog
      * @return Slider|Model
      * @throws Exception
      */
-    public function update($sliderId = null, $slider = null, $fields = [])
+    public function update($sliderId = null, $slider = null, $fields = [], bool $isWriteLog = true)
     {
         try {
             if (array_key_exists('image', $fields)) {
@@ -91,10 +89,11 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
     /**
      * @param null|int|string $sliderId
      * @param null|Slider $slider
+     * @param bool $isWriteLog
      * @return bool
      * @throws Exception
      */
-    public function delete($sliderId = null, $slider = null)
+    public function delete($sliderId = null, $slider = null, bool $isWriteLog = true)
     {
         if ($sliderId != null) {
             $slider = $this->find($sliderId);

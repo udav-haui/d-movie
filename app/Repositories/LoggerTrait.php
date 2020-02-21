@@ -4,7 +4,13 @@ namespace App\Repositories;
 
 use App\Helper\Data;
 use App\Repositories\Interfaces\LogRepositoryInterface;
+use Log;
 
+/**
+ * Trait LoggerTrait
+ *
+ * @package App\Repositories
+ */
 trait LoggerTrait
 {
     /**
@@ -28,17 +34,18 @@ trait LoggerTrait
      *
      * @param \Illuminate\Database\Eloquent\Model $modelData
      * @param string $modelNamespace
+     * @param null $fullOldData
      * @param array $extraFields
      * @return void
      */
-    public function updateLog($modelData, $modelNamespace, $extraFields = [])
+    public function updateLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
                 $extraFields,
                 Data::UPDATE_MSG,
-                $modelData,
+                $fullOldData ?? $modelData,
                 Data::UPDATE,
                 $modelNamespace,
                 $modelData->id
@@ -48,6 +55,8 @@ trait LoggerTrait
             auth()->user(),
             $fields
         );
+        Log::channel('dmovie-update')
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has updated [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
     }
 
     /**
@@ -55,17 +64,18 @@ trait LoggerTrait
      *
      * @param \Illuminate\Database\Eloquent\Model $modelData
      * @param string $modelNamespace
+     * @param null $fullOldData
      * @param array $extraFields
      * @return void
      */
-    public function createLog($modelData, $modelNamespace, $extraFields = [])
+    public function createLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
                 $extraFields,
                 Data::CREATE_MSG,
-                $modelData,
+                $fullOldData ?? $modelData,
                 Data::CREATE,
                 $modelNamespace,
                 $modelData->id
@@ -75,6 +85,8 @@ trait LoggerTrait
             auth()->user(),
             $fields
         );
+        Log::channel('dmovie-create')
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has created [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
     }
 
     /**
@@ -82,17 +94,18 @@ trait LoggerTrait
      *
      * @param \Illuminate\Database\Eloquent\Model $modelData
      * @param string $modelNamespace
+     * @param null $fullOldData
      * @param array $extraFields
      * @return void
      */
-    public function deleteLog($modelData, $modelNamespace, $extraFields = [])
+    public function deleteLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
                 $extraFields,
                 Data::DELETE_MSG,
-                $modelData,
+                $fullOldData ?? $modelData,
                 Data::DELETE,
                 $modelNamespace,
                 $modelData->id
@@ -102,6 +115,8 @@ trait LoggerTrait
             auth()->user(),
             $fields
         );
+        Log::channel('dmovie-delete')
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has deleted [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
     }
 
     /**

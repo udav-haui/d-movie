@@ -49,4 +49,6 @@
        swl-refresh-btn-text="{{ __('Refresh') }}"
        minutes="{{ __('Minutes') }}"
        swl-error-403-text="{{ __('We can let see this content.') }}"
+       sl2-select-cinema-placeholder-text="{{ __('Select a cinema') }}"
+       head-success-text="{{ __('Success') }}"
 />

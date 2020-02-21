@@ -95,13 +95,6 @@ interface UserRepositoryInterface
     public function fetchAllStaff();
 
     /**
-     * Fetch all user
-     *
-     * @return User[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function all();
-
-    /**
      * Add field for insert
      *
      * @param string $attribute
@@ -110,12 +103,4 @@ interface UserRepositoryInterface
      * @return array
      */
     public function addToInsert($attribute, $value, $fields);
-
-    /**
-     * Format a date to insert to db
-     *
-     * @param string $date
-     * @return string
-     */
-    public function formatDate($date);
 }

@@ -11,6 +11,6 @@ class FilmSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Film::class, 500)->create();
+        factory(\App\Film::class, 100)->create();
     }
 }

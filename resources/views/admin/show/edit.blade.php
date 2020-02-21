@@ -6,31 +6,28 @@
 ?>
 
 @section('app.title')
-    {{ __('Edit Show of :cName', ['cName' => $cinema->getName()]) }}
+    {{ __('Edit Show') }}
 @endsection
 
-@section('app.description'){{ __('Edit Show of :cName', ['cName' => $cinema->getName()]) }}
+@section('app.description'){{ __('Edit Show') }}
 @endsection
 
 @section('titlebar.breadcrumb')
     <li><a href="/admin">{{ __('Dashboard') }}</a></li>
-    <li><a href="{{ route('cinemas.edit', ['cinema' => $cinema]) }}">{{ $cinema->getName() }}</a></li>
+    <li><a href="{{ route('shows.index') }}">{{ __('Shows manage') }}</a></li>
     <li class="active">{{ $show->getName() }}</li>
 @endsection
 
 @section('titlebar.title')
-    {{ __('Edit Show of :cName', ['cName' => $cinema->getName()]) }}
+    {{ __('Edit Show') }}
 @endsection
 
 @section('head.css')
 
-    <link href="{{ asset('adminhtml/assets/plugins/bower_components/summernote/summernote-lite.css') }}" rel="stylesheet">
 @endsection
 
 @section('bottom.js')
 
-    <script src="{{ asset('adminhtml/assets/plugins/bower_components/summernote/summernote-lite.min.js') }}"></script>
-    <script src="{{ asset('adminhtml/assets/plugins/bower_components/summernote/lang/summernote-vi-VN.js') }}"></script>
     <script src="{{ asset('adminhtml/js/show/ce.js') }}"></script>
 @endsection
 
@@ -44,7 +41,7 @@
                     <i class="mdi mdi-content-save"></i>
                     {{ __('Save') }}
                 </a>
-                <a href="{{ url()->previous() }}"
+                <a href="{{ route('shows.index') }}"
                    class="btn dmovie-btn m-r-40 dmovie-btn-large pull-right">
                     <i class="mdi mdi-arrow-left"></i>
                     {{ __('Back') }}
@@ -98,13 +95,10 @@
                                     {{ __('Cinema Name') }}
                                 </label>
                                 <div class="col-md-3 col-xs-12">
-                                    <input type="hidden"
-                                           name="cinema_id"
-                                           value="{{ $cinema->getId() }}" />
                                     <select id="cinema_id"
-                                            class="bs-select-hidden"
-                                            data-style="form-control"
-                                            dmovie-select2>
+                                            name="cinema_id"
+                                            class="form-control bs-select-hidden"
+                                            style="width: 100%">
                                         <option value="{{ $cinema->getId() }}"
                                             {{ old('cinema_id', $cinema->getId()) }}>
                                             {{ $cinema->getName() }}

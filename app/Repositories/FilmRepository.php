@@ -20,10 +20,11 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
      * Create new record for new Film
      *
      * @param array $fields
+     * @param bool $isWriteLog
      * @return mixed
      * @throws \Exception
      */
-    public function create($fields = [])
+    public function create($fields = [], bool $isWriteLog = true)
     {
         $filePath = '';
         try {
@@ -37,8 +38,6 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
             }
 
             $film = parent::create($fields);
-
-            $this->createLog($film, Film::class);
 
             return $film;
         } catch (\Exception $e) {
@@ -55,10 +54,11 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
      * @param string|int|null $filmId
      * @param Film $film
      * @param array $fields
+     * @param bool $isWriteLog
      * @return Film
      * @throws \Exception
      */
-    public function update($filmId = null, $film = null, $fields = [])
+    public function update($filmId = null, $film = null, $fields = [], bool $isWriteLog = true)
     {
         try {
             if ($filmId !== null) {
@@ -79,8 +79,6 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
 
                 $film = parent::update(null, $film, $fields);
 
-                $this->updateLog($film, Film::class);
-
                 return $film;
             }
 
@@ -95,10 +93,11 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
     /**
      * @param int|string|null $filmId
      * @param null|Film $film
+     * @param bool $isWriteLog
      * @return Film|bool|\Illuminate\Database\Eloquent\Model|void
      * @throws \Exception
      */
-    public function delete($filmId = null, $film = null)
+    public function delete($filmId = null, $film = null, bool $isWriteLog = true)
     {
         try {
             if ($filmId !== null) {
@@ -110,8 +109,6 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
                 }
 
                 parent::delete(null, $film);
-
-                $this->deleteLog($film, Film::class);
 
                 return $film;
             }

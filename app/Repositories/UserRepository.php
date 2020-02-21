@@ -46,10 +46,11 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
      * @param string|int|null $userId
      * @param User $user
      * @param array $fields
+     * @param bool $isWriteLog
      * @return User
      * @throws Exception
      */
-    public function update($userId = null, $user = null, $fields = [])
+    public function update($userId = null, $user = null, $fields = [], bool $isWriteLog = true)
     {
         try {
             if ($userId !== null) {
@@ -68,19 +69,19 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
 
             if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier()) {
                 if (auth()->user()->cant('update', User::class)) {
-                    if (!$user->canChangeUsername() && array_key_exists('username', $fields)) {
+                    if (!$user->canChangeUsername() && array_key_exists(User::USERNAME, $fields)) {
                         unset($fields[User::USERNAME]);
                     } else {
-                        if (array_key_exists(User::CAN_CHANGE_USERNAME, $fields)) {
-                            $fields[User::CAN_CHANGE_USERNAME] = 0;
-                        }
+                        $fields[User::CAN_CHANGE_USERNAME] = User::CANT;
                     }
                 }
             }
 
-            $user = parent::update(null, $user, $fields);
-            $this->updateLog($user, User::class);
-            return $user;
+            if (array_key_exists(User::DOB, $fields)) {
+                $fields[User::DOB] = $this->formatDate($fields[User::DOB]);
+            }
+
+            return parent::update(null, $user, $fields);
         } catch (Exception $e) {
             throw new Exception(__('Please try again.') . $e->getMessage());
         }
@@ -262,9 +263,11 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
     /**
      * Fetch all user
      *
+     * @param array $withTbl
+     * @param bool $isVisible
      * @return User[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function all()
+    public function all($withTbl = [], $isVisible = false)
     {
         return User::whereAccountType(User::STAFF)->get();
     }
@@ -287,23 +290,19 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
      * Create new user
      *
      * @param array $fields
+     * @param bool $isWriteLog
      * @return User
      * @throws Exception
      */
-    public function create($fields = [])
+    public function create($fields = [], bool $isWriteLog = true)
     {
-        $isCreateLog = false;
         if (array_key_exists('create_log', $fields)) {
-            $isCreateLog = true;
+            $isWriteLog = $fields['create_log'];
             unset($fields['create_log']);
         }
 
         try {
-            $user = parent::create($fields);
-
-            !$isCreateLog ?: $this->createLog($user, User::class);
-
-            return $user;
+            return parent::create($fields, $isWriteLog);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -314,10 +313,11 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
      *
      * @param string|int $userId
      * @param User $user
+     * @param bool $isWriteLog
      * @return bool
      * @throws Exception
      */
-    public function delete($userId = null, $user = null)
+    public function delete($userId = null, $user = null, bool $isWriteLog = true)
     {
         if ($userId !== null) {
             $user = $this->find($userId);

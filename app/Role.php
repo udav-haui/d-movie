@@ -8,6 +8,8 @@ class Role extends Model
 {
     protected $guarded = [];
 
+    protected $with = ['users', 'permissions'];
+
     /**
      * Define role permission
      */

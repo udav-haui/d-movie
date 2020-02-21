@@ -5,4 +5,34 @@
 @import 'variables';
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+//@import '~bootstrap/scss/bootstrap';
+
+// Back to top
+
+@import url('back-to-top-rocket.css');
+
+// .///////////////
+
+.w-50 {
+    width: 50% !important;
+}
+.w-25 {
+    width: 25% !important;
+}
+.w-75 {
+    width: 75% !important;
+}
+.w-100 {
+    width: 100% !important;
+}
+.display-flex {
+    display: flex !important;
+}
+.gg-background {
+    background-color: #ea4335 !important;
+}
+.btn-3 {
+    &:hover {
+        color: #fff;
+    }
+}

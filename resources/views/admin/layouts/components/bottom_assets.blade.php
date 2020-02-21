@@ -10,7 +10,10 @@
 <!--Wave Effects -->
 <script src="{{ asset('adminhtml/assets/js/waves.js') }}"></script>
 <!-- Date Picker Plugin JavaScript -->
-<script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+{{--<script src="{{ asset('adminhtml/assets/plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>--}}
+
+{{--Toast noti--}}
+<script src="{{ asset('adminhtml/assets/plugins/bower_components/toast-master/js/jquery.toast.js') }}"></script>
 <!-- chartist chart -->
 {{--<script src="{{ asset('adminhtml/assets/plugins/bower_components/chartist-js/dist/chartist.min.js') }}"></script>--}}
 {{--<script src="{{ asset('adminhtml/assets/plugins/bower_components/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js') }}"></script>--}}
@@ -20,4 +23,4 @@
 {{--<script src="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/cal-init.js') }}"></script>--}}
 <!-- Custom Theme JavaScript -->
 <script src="{{ asset('adminhtml/assets/js/custom.js') }}"></script>
-<script src="{{ asset('adminhtml/assets/js/dashboard1.js') }}"></script>
+{{--<script src="{{ asset('adminhtml/assets/js/dashboard1.js') }}"></script>--}}

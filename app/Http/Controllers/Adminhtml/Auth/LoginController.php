@@ -127,11 +127,6 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
          return $request->only($this->username(), 'password');
-//        return [
-//            $this->username() => $request->{$this->username()},
-//            'password' => $request->password,
-//            'state' => 1
-//        ];
     }
 
     /**
@@ -143,16 +138,6 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if ($user->isCustomerAccount()) {
-            $this->guard()->logout();
-
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            return $this->loggedOut($request) ?: back()
-                ->with('error', __('You can not login in here.'));
-        }
         if (!$user->isActive()) {
             $this->guard()->logout();
 
@@ -160,7 +145,7 @@ class LoginController extends Controller
 
             $request->session()->regenerateToken();
 
-            return $user->state === \App\User::NOT_VERIFY_BY_ADMIN ? $this->loggedOut($request) ?: back()
+            return $user->getStatus() === \App\User::NOT_VERIFY_BY_ADMIN ? $this->loggedOut($request) ?: back()
                 ->with('error', __('Your account has not been activated.'))->withInput() :
                 $this->loggedOut($request) ?: back()
                     ->with('error', __('Your account has been deactivate.'))->withInput();
@@ -176,9 +161,11 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $this->guard()->logout();
-        $prefix = Session::get('prefix');
+
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
-        return $this->loggedOut($request) ?: redirect($prefix . '/login');
+
+        return $this->loggedOut($request) ?: redirect(route('login'));
     }
 }

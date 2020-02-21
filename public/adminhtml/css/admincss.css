@@ -2272,6 +2272,10 @@ blockquote {
   background: #00bd95;
 }
 
+[id$=_ajax_dt_wrapper] {
+  min-height: 500px;
+}
+
 div[id^=details-dt-] {
   margin-top: 15px;
 }
@@ -2334,6 +2338,10 @@ div[id^=details-dt-] {
 
 .dmovie-table tr.shown {
   border-bottom: 1px solid #006ca3;
+}
+
+.sidebar {
+  z-index: 100000;
 }
 
 .dmovie-error-box {
@@ -2527,6 +2535,20 @@ table.dataTable thead .sorting_asc:after {
   opacity: 1;
 }
 
+.dmovie-checkbox-override label:before {
+  width: 20px;
+  height: 20px;
+  border-color: #32a3a3;
+}
+
+.dmovie-checkbox-override label:after {
+  font-size: 1.9rem;
+  top: -20.9%;
+  left: -2.5%;
+  -webkit-transition: opacity 0.25s ease-out;
+  transition: opacity 0.25s ease-out;
+}
+
 .selected-rows-label-container {
   padding: 6px 12px;
 }
@@ -2577,7 +2599,7 @@ table.dataTable thead .sorting_asc:after {
 }
 
 .dmovie-tags {
-  padding: 8px;
+  min-height: 38px;
 }
 
 .dmovie-tags .bootstrap-tagsinput {
@@ -2586,6 +2608,11 @@ table.dataTable thead .sorting_asc:after {
   box-shadow: none;
   border: none;
   height: 100%;
+  padding: 7px 12px;
+}
+
+.dmovie-tags .bootstrap-tagsinput input {
+  width: 100%;
   padding: 0;
 }
 
@@ -2660,6 +2687,13 @@ table.dataTable thead .sorting_asc:after {
   border-radius: 0 !important;
 }
 
+.dt-buttons {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
 .dt-button-collection {
   width: 500px !important;
   border-radius: 0 !important;
@@ -2678,6 +2712,29 @@ table.dataTable thead .sorting_asc:after {
 #datatables_buttons_info {
   border: 2px solid #32a3a3;
   border-radius: 0;
+}
+
+.dmovie-datepicker .datepicker--pointer {
+  border-top-color: #32a3a3;
+  border-right-color: #32a3a3;
+}
+
+.dmovie-datepicker .datepicker--cell.-selected-,
+.dmovie-datepicker .datepicker--cell.-selected-.-current- {
+  background: #00bd95;
+}
+
+.dmovie-datepicker .datepicker--cell.-selected-.-focus- {
+  background: #01a5a0;
+}
+
+.clockpicker-popover {
+  border-color: #32a3a3 !important;
+  border-radius: 0 !important;
+}
+
+.clockpicker-popover .arrow {
+  border-bottom-color: #32a3a3 !important;
 }
 
 .selected {
@@ -2702,6 +2759,11 @@ table.dataTable thead .sorting_asc:after {
 .invalid-border {
   border: 1px solid red !important;
   padding: 0px 10px !important;
+}
+
+.jq-toast-single {
+  font-family: Nunito, sans-serif;
+  font-size: 1.5rem;
 }
 
 .min-width-111 {
@@ -2757,5 +2819,75 @@ table.dataTable thead .sorting_asc:after {
   background: #f8f8f8;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
   padding: 10px 10px 9px;
+}
+
+.size-32 {
+  width: 32px;
+}
+
+.display-block {
+  display: block !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.w-25 {
+  width: 25% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.w-75 {
+  width: 75% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+d-mark-1 {
+  color: #f2f2f2;
+  background-color: #2cabe3;
+}
+
+d-mark-1:hover {
+  font-size: 100%;
+}
+
+d-mark-create,
+d-mark-update,
+d-mark-delete,
+d-mark-1,
+d-mark-model {
+  padding: 2px 4px;
+  font-size: 95%;
+  border-radius: 4px;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+  font-weight: 800;
+}
+
+d-mark-create {
+  color: #fff;
+  background: rgba(4, 118, 180, 0.75);
+}
+
+d-mark-update {
+  color: #fff;
+  background-color: rgba(0, 193, 147, 0.75);
+}
+
+d-mark-delete {
+  color: #fff;
+  background-color: rgba(255, 29, 29, 0.75);
+}
+
+d-mark-model {
+  color: #fff;
+  background-color: #ff9915;
 }
 

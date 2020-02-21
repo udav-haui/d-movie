@@ -3,6 +3,7 @@ require('jquery-ui/ui/widgets/tooltip');
 // require('jquery-ui/ui/widgets/datepicker');
 require('jquery-slimscroll');
 window.Swal = window.Swal = require('sweetalert2');
+window.moment = require('moment');
 require('select2/dist/js/select2.full');
 require('gasparesganga-jquery-loading-overlay');
 require('jszip');
@@ -11,6 +12,7 @@ var pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 require('datatables.net-dt');
 require('datatables.net-buttons-dt');
+// require('datatables.net-buttons-bs4');
 require('datatables.net-select-dt');
 require('datatables.net-buttons/js/buttons.colVis.js');
 require('datatables.net-buttons/js/buttons.html5.js');
@@ -255,6 +257,7 @@ window.singleDeleteRecord = function(
 
                     dtRow.remove().draw(false);
 
+                    topRightAlert(res.message)
                     successMessage(res.message);
                 } else {
                     errorMessage(res.message);
@@ -286,7 +289,7 @@ window.executeRequest = function(
     url = '',
     method = '',
     data = {},
-    dtbl = dtable,
+    dtbl = null,
     isClearSelected = false
 ) {
     try {
@@ -301,6 +304,9 @@ window.executeRequest = function(
             function(res) {
                 if (res.status === 200) {
 
+                    if (dtbl === null) {
+                        dtbl = dtable;
+                    }
                     reloadDataTable(dtbl).then(value => {
                         if (value) {
                             screenLoader(0);
@@ -309,6 +315,7 @@ window.executeRequest = function(
 
                     if (isClearSelected) { selectedObjects = []; }
 
+                    topRightAlert(res.message);
                     successMessage(res.message);
                 } else {
                     errorMessage(res.message);
@@ -452,6 +459,8 @@ window.serverSideDatatable = function(url = '', invisCols, tblName = tableName) 
                             if (tblName === tableName) {
                                 selectedObjects = [];
                                 appendToSeletedLabel(selectedObjects.length);
+                            } else {
+                                detailsSelectedObjects = [];
                             }
                             dt.draw(false);
                         }
@@ -474,7 +483,7 @@ window.serverSideDatatable = function(url = '', invisCols, tblName = tableName) 
             },
             {
                 extend: 'collection',
-                text: `<i class="ti-export" style="font-size: 1.7rem"></i><span class="m-l-5">${exportText}</span>`,
+                text: `<i class="mdi mdi-exit-to-app"></i><span class="m-l-5">${exportText}</span>`,
                 buttons: [{
                         extend: 'excel',
                         text: `<i class="mdi mdi-file-excel"></i><span class="m-l-5">${asExcelText}</span>`,
@@ -679,6 +688,54 @@ window.loadRoleSelect2 = function(
     });
 };
 
+window.svSideSelect2 = function(
+    url,
+    selector = $('[dmovie-select2]'),
+    callback,
+    placeHolderText = 'Select a option',
+    dmovieSelect2Class = 'dmovie-select2',
+    invalidClass = '',
+    data = {}
+) {
+    return selector.select2({
+        placeholder: placeHolderText,
+        containerCssClass: dmovieSelect2Class + ' dmovie-border ' + invalidClass,
+        pagination: {
+            more: true
+        },
+        ajax: {
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            delay: 250,
+            beforeSend: function() {
+                showLoading($('.' + dmovieSelect2Class));
+            },
+            success: function() {
+                hideLoading($('.' + dmovieSelect2Class));
+            },
+            error: function() {
+                hideLoading($('.' + dmovieSelect2Class));
+            },
+            data: function(params) {
+                return {
+                    search_key: params.term,
+                    data: data
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: $.map(data.data, function(val, i) {
+
+                        return callback(val, i);
+
+                    })
+                }
+            }
+        }
+    });
+}
+
 /**
  * Loader
  *
@@ -776,6 +833,23 @@ window.normalAlert = function(errorTitle, errorText) {
         text: errorText
     })
 };
+
+let headSuccessText = langTextSelector.attr('head-success-text');
+/**
+ * Show alert
+ */
+window.topRightAlert = function(message, type = 'success', headText = headSuccessText) {
+    $.toast({
+        heading: headText,
+        text: message,
+        position: 'top-right',
+        loaderBg: '#006ca3',
+        bgColor: '#00c193',
+        icon: type,
+        hideAfter: 5000,
+        stack: 6
+    });
+}
 
 /**
  * Remove element

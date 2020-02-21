@@ -46,6 +46,10 @@ class FilmController extends Controller
         if (request()->ajax()) {
             $dt = datatables()->of($films);
 
+            $dt->editColumn('release_date', function (Film $film) {
+                return $film->getFormattedDate();
+            });
+
             $dt->editColumn('trailer', function (Film $film) {
                 return "<div class=\"dmovie-flex-container\">".
                         "<a dm-fancybox data-fancybox=\"trailer\" class=\"dmovie-fancybox-media slide-item\"".
@@ -61,9 +65,9 @@ class FilmController extends Controller
                 return '<div class="dmovie-flex-container">' . $film->getRenderHtmlPoster() . '</div>';
             });
 
-            $authU = auth()->user();
+            $authUser = auth()->user();
 
-            $dt->editColumn('status', function (Film $film) use ($authU) {
+            $dt->editColumn('status', function (Film $film) use ($authUser) {
                 $htmlRaw = "<div class=\"dmovie-flex-container\">";
                 $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
                 $htmlRaw .= "<input type=\"checkbox\"";
@@ -71,7 +75,7 @@ class FilmController extends Controller
                 $htmlRaw .= "class=\"status-checkbox\"".
                     "value=\"{$film->getId()}\"".
                     "data-id=\"{$film->getId()}\"";
-                if ($authU->cant('update', Film::class)) {
+                if ($authUser->cant('update', Film::class)) {
                     $htmlRaw .= "disabled";
                 }
                 $htmlRaw .= "/>";
@@ -86,13 +90,88 @@ class FilmController extends Controller
             });
 
 
-            if ($authU->can('canEditDelete', Film::class)) {
+
+            $dt->editColumn('is_coming_soon', function (Film $film) use ($authUser) {
+                $htmlRaw = "<div class=\"dmovie-flex-container\">";
+                $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+                $htmlRaw .= "<input type=\"checkbox\"";
+                $htmlRaw .= (int)$film->getIsComingSoon() === Film::YES ? "checked " : "";
+                $htmlRaw .= "class=\"status--checkbox\"".
+                    "value=\"{$film->getId()}\"".
+                    "url=\"" . route('films.massUpdate') . "\"".
+                    "data-field=\"is_coming_soon\"  ".
+                    "data-id=\"{$film->getId()}\"";
+                if ($authUser->cant('update', Film::class)) {
+                    $htmlRaw .= "disabled";
+                }
+                $htmlRaw .= " dmovie-switch--dt/>";
+                $htmlRaw .= "<div class=\"state p-success\">
+                          <label class=\"status-text select-none\">
+                                {$film->getIsComingSoonLabel()}
+                          </label>
+                    </div>
+                </div></div>";
+
+                return $htmlRaw;
+            });
+
+            $dt->editColumn('is_open_sale_ticket', function (Film $film) use ($authUser) {
+                $htmlRaw = "<div class=\"dmovie-flex-container\">";
+                $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+                $htmlRaw .= "<input type=\"checkbox\"";
+                $htmlRaw .= (int)$film->getIsOpenSaleTicket() === Film::YES ? "checked " : "";
+                $htmlRaw .= "class=\"status--checkbox\"".
+                    "value=\"{$film->getId()}\"".
+                    "url=\"" . route('films.massUpdate') . "\"".
+                    "data-field=\"is_open_sale_ticket\"  ".
+                    "data-id=\"{$film->getId()}\"";
+                if ($authUser->cant('update', Film::class)) {
+                    $htmlRaw .= "disabled";
+                }
+                $htmlRaw .= " dmovie-switch--dt/>";
+                $htmlRaw .= "<div class=\"state p-success\">
+                          <label class=\"status-text select-none\">
+                                {$film->getIsOpenSaleTicketLabel()}
+                          </label>
+                    </div>
+                </div></div>";
+
+                return $htmlRaw;
+            });
+
+            $dt->editColumn('is_sneak_show', function (Film $film) use ($authUser) {
+                $htmlRaw = "<div class=\"dmovie-flex-container\">";
+                $htmlRaw .= "<div class=\"pretty p-switch p-fill dmovie-switch\">";
+                $htmlRaw .= "<input type=\"checkbox\"";
+                $htmlRaw .= (int)$film->getIsSneakShow() === Film::YES ? "checked " : "";
+                $htmlRaw .= "class=\"status--checkbox\"".
+                    "value=\"{$film->getId()}\"".
+                    "url=\"" . route('films.massUpdate') . "\"".
+                    "data-field=\"is_sneak_show\"  ".
+                    "data-id=\"{$film->getId()}\"";
+                if ($authUser->cant('update', Film::class)) {
+                    $htmlRaw .= "disabled";
+                }
+                $htmlRaw .= " dmovie-switch--dt/>";
+                $htmlRaw .= "<div class=\"state p-success\">
+                          <label class=\"status-text select-none\">
+                                {$film->getIsSneakShowLabel()}
+                          </label>
+                    </div>
+                </div></div>";
+
+                return $htmlRaw;
+            });
+
+
+
+            if ($authUser->can('canEditDelete', Film::class)) {
                 $htmlRaw = "";
-                $dt->addColumn('task', function (Film $film) use ($authU, $htmlRaw) {
-                    if ($authU->can('update', Film::class)) {
+                $dt->addColumn('task', function (Film $film) use ($authUser, $htmlRaw) {
+                    if ($authUser->can('update', Film::class)) {
                         $htmlRaw .= "<a href=\"" . route('films.edit', ['film' => $film->getId()]) . "\"
                                    type=\"button\" class=\"";
-                        if ($authU->cant('delete', Film::class)) {
+                        if ($authUser->cant('delete', Film::class)) {
                             $htmlRaw .= "col-md-12 ";
                         } else {
                             $htmlRaw .= 'col-md-6 ';
@@ -103,8 +182,8 @@ class FilmController extends Controller
                         $htmlRaw .= "<i class=\"fa fa-pencil-square-o\"></i></a>";
                     }
 
-                    if ($authU->can('delete', Film::class)) {
-                        $cssClass = $authU->can('update', Film::class) ? "col-md-6" : "col-md-12";
+                    if ($authUser->can('delete', Film::class)) {
+                        $cssClass = $authUser->can('update', Film::class) ? "col-md-6" : "col-md-12";
 
                         $htmlRaw .= "<button id=\"deleteBtn\" type=\"button\"
                                             class=\"{$cssClass} col-xs-12 btn dmovie-btn btn-danger\"
@@ -124,7 +203,9 @@ class FilmController extends Controller
 
 
 
-            return $dt->rawColumns(['poster', 'status', 'trailer', 'task'])->make();
+            return $dt->rawColumns(
+                ['poster', 'status', 'trailer', 'task', 'is_coming_soon', 'is_open_sale_ticket', 'is_sneak_show']
+            )->make();
         }
 
         return view('admin.film.index', compact('films'));
@@ -209,7 +290,7 @@ class FilmController extends Controller
             $film = $this->filmRepository->update($filmId, null, $request->all());
 
             return redirect(route('films.index'))
-                ->with('success', __('The :name have updated.', ['name' => $film->getTitle()]));
+                ->with('success', __('The film [:name] have updated.', ['name' => $film->getTitle()]));
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage())
                 ->withInput();
@@ -323,7 +404,7 @@ class FilmController extends Controller
                 array_push($updatedFilm, $film->getTitle());
             }
 
-            $message = __(':num films have updated.', ['num' => implode(', ', $updatedFilm)]);
+            $message = __('The [:films] films have updated.', ['films' => implode(', ', $updatedFilm)]);
             return !request()->ajax() ?
                 redirect(route('films.index'))
                     ->with('success', $message) :
@@ -343,5 +424,59 @@ class FilmController extends Controller
                     'message' => $message
                 ]);
         }
+    }
+
+    /**
+     * Get visible film for select2 request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function attemptSelect2()
+    {
+        $this->authorize('view', Film::class);
+
+        try {
+            if (request()->has('search_key')) {
+                $collection = $this->filmRepository->searchBy(null, ['title' => request('search_key')]);
+                $collection = $this->filmRepository->getVisible($collection);
+
+                return response()->json([
+                    'status' => 200,
+                    'data' => $collection->get()
+                ]);
+            }
+
+            $collection = $this->filmRepository->getVisible();
+
+            return response()->json([
+                'status' => 200,
+                'data' => $collection->get()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 404,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Get film by ID
+     *
+     * @param Film $film
+     * @return Film|\Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function getFilm(Film $film)
+    {
+        $this->authorize('view', Film::class);
+
+        return request()->ajax() ?
+            response()->json([
+                'status' => 200,
+                'data' => $film
+            ]) :
+            $film;
     }
 }

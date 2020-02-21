@@ -23,6 +23,16 @@ class SocialAccount extends Model
     ];
 
     /**
+     * Get socciate user
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * A user has a facebook account.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

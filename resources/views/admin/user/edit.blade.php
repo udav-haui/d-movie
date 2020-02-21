@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+<?php
+    /** @var \App\User $user */
+?>
+
 @section('app.title'){{ __('User Manage') }}
 @endsection
 
@@ -17,9 +21,12 @@
 @endsection
 
 @section('head.css')
+    <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/air-datepicker/css/datepicker.min.css') }}">
 @endsection
 
 @section('bottom.js')
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/datepicker.min.js') }}"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/air-datepicker/js/i18n/datepicker.' . Session::get('locale', config('app.locale')) . '.js') }}"></script>
     <script src="{{ asset('adminhtml/js/user/create.js') }}"></script>
 @endsection
 
@@ -31,11 +38,13 @@
             <a href="javascript:void(0);"
                onclick="event.preventDefault(); $('#create-form').submit();"
                class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                <i class="mdi mdi-content-save-all"></i>
                 {{ __('Save') }}
             </a>
         @endcan
-            <a href="{{ route('users.index') }}"
+            <a href="{{ url()->previous() === url()->current() ? route('users.index') : url()->previous() }}"
                class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
+                <i class="mdi mdi-arrow-left"></i>
                 {{ __('Back') }}
             </a>
     </div>
@@ -193,10 +202,10 @@
                                             <input name="dob" type="text"
                                                    class="form-control dmovie-textbox-border
                                                    @error('dob') invalid @enderror"
-                                                   lang="{{ \Session::get('locale', config('app.locale')) }}"
+                                                   data-language="{{ \Session::get('locale', config('app.locale')) }}"
                                                    id="dob-datepicker"
-                                                   placeholder="dd/mm/yyyy"
-                                                   value="{{ old('dob', $user->getDobFormated()) }}"
+                                                   placeholder="dd-mm-yyyy"
+                                                   value="{{ old('dob', $user->getDobFormatted()) }}"
                                                    @cannot('selfUpdate', $user) disabled @endcannot />
                                             <span class="input-group-addon"><i class="icon-calender"></i></span>
                                         </div>

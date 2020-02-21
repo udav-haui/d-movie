@@ -31,6 +31,13 @@ $dmovieColor_2: #006ca308;
 $dmovieColor_3: #f90;
 $dmovieColor_4: #313131;
 
+$cMark1: #2cabe3;
+$cMark2: rgba(4, 118, 180, 0.75);
+$cmark3: rgba(0, 193, 147, .75);
+$cmark4: #ff9915;
+$cmark5: rgba(255, 29, 29, 0.75);
+
+
 body {
     font-family: Nunito, sans-serif !important;
 }
@@ -155,6 +162,9 @@ blockquote {
         background: $secondColor;
     }
 }
+[id$="_ajax_dt_wrapper"] {
+    min-height: 500px;
+}
 div[id^="details-dt-"] {
     margin-top: 15px;
 }
@@ -216,6 +226,9 @@ div[id^="details-dt-"] {
             border-bottom: 1px solid $mainColor2;
         }
     }
+}
+.sidebar {
+    z-index: 100000;
 }
 .dmovie-error-box {
     display: block;
@@ -400,6 +413,23 @@ table.dataTable{
         opacity: 1;
     }
 }
+
+.dmovie-checkbox-override {
+    label:before {
+        width: 20px;
+        height: 20px;
+        border-color: $borderColor;
+    }
+    label:after {
+        //content: "\f00c";
+        //font-family: 'FontAwesome';
+        font-size: 1.9rem;
+        top: -20.9%;
+        left: -2.5%;
+        transition: opacity .25s ease-out;
+    }
+}
+
 .selected-rows-label-container {
     padding: 6px 12px;
     .selected-rows-label {
@@ -458,7 +488,7 @@ table.dataTable{
 }
 
 .dmovie-tags {
-    padding: 8px;
+    min-height: 38px;
 }
 .dmovie-tags .bootstrap-tagsinput {
     border-radius: 0;
@@ -466,7 +496,11 @@ table.dataTable{
     box-shadow: none;
     border: none;
     height: 100%;
-    padding: 0;
+    padding: 7px 12px;
+    input {
+        width: 100%;
+        padding: 0;
+    }
 
     .dmovie-tag {
         background: $mainColor;
@@ -531,6 +565,9 @@ table.dataTable{
     border: 1px solid $borderColor !important;
     border-radius: 0 !important;
 }
+.dt-buttons {
+    user-select: none;
+}
 .dt-button-collection {
     width: 500px !important;
     border-radius: 0 !important;
@@ -547,6 +584,25 @@ table.dataTable{
 #datatables_buttons_info {
     border: 2px solid $borderColor;
     border-radius: 0;
+}
+.dmovie-datepicker {
+    .datepicker--pointer {
+        border-top-color: $borderColor;
+        border-right-color: $borderColor;
+    }
+    .datepicker--cell.-selected-, .datepicker--cell.-selected-.-current- {
+        background: $secondColor;
+    }
+    .datepicker--cell.-selected-.-focus- {
+        background: $mainColor;
+    }
+}
+.clockpicker-popover {
+    border-color: $borderColor !important;
+    border-radius: 0 !important;
+    .arrow {
+        border-bottom-color: $borderColor !important;
+    }
 }
 .selected {
     background: $dmovieColor_1 !important;
@@ -567,6 +623,11 @@ table.dataTable{
 .invalid-border {
     border: 1px solid red !important;
     padding: 0px 10px !important;
+}
+
+.jq-toast-single {
+    font-family: Nunito, sans-serif;
+    font-size: 1.5rem;
 }
 
 .min-width-111 {
@@ -611,4 +672,55 @@ table.dataTable{
     background: $defaultBg;
     box-shadow: 0px 1px 3px 0px rgba(0,0,0,.2);
     padding: 10px 10px 9px;
+}
+.size-32 {
+    width: 32px;
+}
+.display-block {
+    display: block !important;
+}
+.text-left {
+    text-align: left !important;
+}
+.w-25 {
+    width: 25% !important;
+}
+.w-50 {
+    width: 50% !important;
+}
+.w-75 {
+    width: 75% !important;
+}
+.w-100 {
+    width: 100% !important;
+}
+d-mark-1 {
+    color: #f2f2f2;
+    background-color: $cMark1;
+    &:hover {
+        font-size: 100%;
+    }
+}
+d-mark-create, d-mark-update, d-mark-delete, d-mark-1, d-mark-model {
+    padding: 2px 4px;
+    font-size: 95%;
+    border-radius: 4px;
+    transition: all .3s ease-out;
+    font-weight: 800;
+}
+d-mark-create {
+    color: #fff;
+    background: $cMark2;
+}
+d-mark-update {
+    color: #fff;
+    background-color: $cmark3;
+}
+d-mark-delete {
+    color: #fff;
+    background-color: $cmark5;
+}
+d-mark-model {
+    color: #fff;
+    background-color: $cmark4;
 }

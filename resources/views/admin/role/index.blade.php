@@ -27,6 +27,7 @@
         <div class="row bg-title" id="dmovie-fix-top-block">
             <a href="/admin/roles/create"
                class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                <i class="mdi mdi-shape-rectangle-plus"></i>
                 {{ __('New Role') }}
             </a>
             <a href="{{ route('roles.assignForm') }}"

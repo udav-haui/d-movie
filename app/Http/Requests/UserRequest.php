@@ -40,7 +40,7 @@ class UserRequest extends FormRequest
             ],
             'dob' => [
                 'required',
-                'date_format:d/m/Y'
+                'date_format:d-m-Y'
             ]
         ];
     }
@@ -67,7 +67,7 @@ class UserRequest extends FormRequest
             'phone.regex' => __('Please input a correct Vietnam :attribute'),
             'phone.required' => __('You must input :attribute'),
             'dob.required' => __('You must input :attribute'),
-            'dob.date_format' => __('Please input a correct date format (dd/mm/yyyy)')
+            'dob.date_format' => __('Please input a correct date format (dd-mm-yyyy)')
         ];
     }
 

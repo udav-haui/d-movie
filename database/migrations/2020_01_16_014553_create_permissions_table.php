@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreatePermissionsTable extends Migration
 {
@@ -14,11 +13,16 @@ class CreatePermissionsTable extends Migration
     public function up()
     {
         Schema::create('permissions', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->string('permission_code')->index();
-            $table->smallInteger('role_id')->index();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->increments('id')->comment('Permission\'s Identifier');
+            $table->string('permission_code')->index()->comment('Permission code');
+            $table->unsignedInteger('role_id')->index()->comment('Role');
+            $table->timestamp('created_at')->useCurrent()->comment('Create time');
+            $table->timestamp('updated_at')->useCurrent()->comment('Update time');
+
+            $table->foreign('role_id')->references('id')
+                ->on('roles')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

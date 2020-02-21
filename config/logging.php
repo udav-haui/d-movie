@@ -99,6 +99,24 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'dmovie-create' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dmovie-create.log'),
+            'level' => 'info'
+        ],
+
+        'dmovie-update' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dmovie-update.log'),
+            'level' => 'info'
+        ],
+
+        'dmovie-delete' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dmovie-delete.log'),
+            'level' => 'info'
+        ],
     ],
 
 ];

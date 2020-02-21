@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'D-Movie'),
 
     /*
     |--------------------------------------------------------------------------
@@ -190,6 +190,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Tightenco\Ziggy\ZiggyServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -260,6 +261,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
 
     ],
 

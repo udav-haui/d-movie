@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Adminhtml\Auth;
 
+use App\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\CustomerRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
-use Cache;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class UserController
+ *
+ * @package App\Http\Controllers\Adminhtml\Auth
+ */
 class UserController extends Controller
 {
     /**
@@ -165,25 +171,38 @@ class UserController extends Controller
             User::GENDER => $request->gender,
             User::PHONE => $request->phone ?? null,
             User::ADDRESS => $request->address,
-            User::DOB => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
+            User::DOB => $request->dob ? Carbon::make($request->dob)->format('Y-m-d') : null,
             User::STATE => User::ACTIVE,
             User::DESCRIPTION => $request->description ?? null,
-            User::ROLE_ID => $request->role ?? null
+            User::ROLE_ID => (int)$request->role === 0 ? null : $request->role
         ];
 
-        $this->userRepository->create($fields);
+        try {
+            $this->userRepository->create($fields);
 
-        return redirect(route('users.index'))->with('success', __('User has created success.'));
+            return redirect(route('users.index'))->with('success', __('User has created success.'));
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage())->withInput();
+        }
+    }
+
+    public function getProfile()
+    {
+        $user = auth()->user();
+        return view('admin.auth.profile', compact('user'));
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $user
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function show(User $user)
     {
+        if (auth()->user()->getAuthIdentifier() !== $user->getId() && !auth()->user()->isAdmin()) {
+            return redirect(route('users.getProfile'));
+        }
         /**
          * Make instance from namespace string
          *
@@ -254,12 +273,12 @@ class UserController extends Controller
             'gender' => $request->gender,
             'phone' => $request->phone ?? null,
             'address' => $request->address,
-            'dob' => $request->dob ? $this->userRepository->formatDate($request->dob) : null,
+            'dob' => $request->dob ? Carbon::make($request->dob)->format('Y-m-d') : null,
             'description' => $request->description ?? null,
         ];
 
         // expr1 ?: expr2 , return expr1 if expr1 is true and expr2 when expr1 false
-        !auth()->user()->isAdmin() ?: $fields['role_id'] = $request->role ?? null;
+        !auth()->user()->isAdmin() ?: $fields['role_id'] = ((int)$request->role === 0 ? null : $request->role);
 
         if (auth()->user()->getAuthIdentifier() === $user->getAuthIdentifier() &&
             !auth()->user()->can('update', User::class)
@@ -304,15 +323,12 @@ class UserController extends Controller
     {
         $this->authorize('update', User::class);
 
-        $fields = request()->all();
-
-        $ids = request('ids');
-
-        $fields = $this->userRepository->removeIdsKey($fields);
+        $users = request('users');
+        $fields = request('fields');
 
         try {
-            foreach ($ids as $id) {
-                $this->userRepository->update($id, null, $fields);
+            foreach ($users as $user) {
+                $this->userRepository->update($user, null, $fields);
             }
 
             return response()->json([
@@ -580,7 +596,7 @@ class UserController extends Controller
     /**
      * Get list staff and active users by username, email or name
      *
-     * @return \App\Repositories\Collection|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function findUserByNameOrMailOrUsername()
     {
@@ -602,5 +618,213 @@ class UserController extends Controller
         return request()->ajax() ? response()->json([
             'data' => $users
         ]) : $users;
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AuthorizationException
+     */
+    public function getUsersByIds()
+    {
+        $this->authorize('view', User::class);
+
+        $users = request('users');
+
+        $searchUsers = $this->userRepository->getByIds($users);
+
+        return request()->ajax() ?
+            response()->json([
+                'status' => 200,
+                'data' => $searchUsers
+            ]) : $searchUsers;
+    }
+
+
+    /** CUSTOMER */
+
+    /**
+     * Get Customer index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws AuthorizationException
+     */
+    public function customerIndex()
+    {
+        $this->authorize('view', Customer::class);
+
+        $customers = $this->userRepository->getFilter(null, [
+            User::ACCOUNT_TYPE => User::CUSTOMER
+        ])->get();
+
+        if (request()->ajax()) {
+            $dataTable = datatables()->of($customers);
+
+            $dataTable->editColumn('avatar', function (User $customer) {
+                return '<div class="dmovie-flex-container">' . $customer->getRenderAvatarHtml() . '</div>';
+            });
+            $dataTable->editColumn('gender', function (User $customer) {
+                return $customer->getGenderName();
+            });
+            /** @var User $authUser */
+            $authUser = auth()->user();
+            if ($authUser->isAdmin()) {
+                $dataTable->editColumn('role_id', function (User $customer) {
+                    return $customer->getRoleName();
+                });
+            }
+
+            $htmlRaw = "";
+            $dataTable->addColumn('task', function (User $customer) use ($authUser, $htmlRaw) {
+                if ($authUser->can('update', Customer::class)) {
+                    $htmlRaw .= "<a href=\"".route('users.customer.edit', ['customer' => $customer->getId()]) . "\"
+                                   type=\"button\"
+                                   class=\"";
+                    if ($authUser->cant('delete', \App\User::class)) {
+                        $htmlRaw .= "col-md-12";
+                    } else {
+                        $htmlRaw .= "col-md-6";
+                    }
+                    $htmlRaw .= " col-xs-12 btn dmovie-btn dmovie-btn-success\" title=\"";
+                    $htmlRaw .= __('Detail');
+                    $htmlRaw .= "\"><i class=\"mdi mdi-account-edit\"></i></a>";
+                }
+
+                if ($authUser->can('delete', User::class)) {
+                    $htmlRaw .= "<button id=\"deleteUserBtn\" type=\"button\"
+                                            class=\"col-md-6 col-xs-12 btn dmovie-btn btn-danger\"
+                                            title=\"" . __('Delete') . "\"
+                                            data-id=\"{$customer->getId()}\"
+                                            url=\"" . route('users.destroy', ['user' => $customer->getId()]) ."\">
+                                        <i class=\"mdi mdi-account-minus\"></i>
+                                    </button>";
+                }
+
+                return $htmlRaw;
+            });
+
+            $dataTable->editColumn('state', function (User $customer) {
+                $authU = auth()->user();
+                $htmlRaw = "<span class=\"status-text\">
+                                {$customer->getStatusLabel()}
+                            </span>";
+                if ($authU->can('cannotSelfUpdate', $customer)) {
+                    $htmlRaw .= "<i class=\"ti-reload\"
+                                   data-id=\"{$customer->getStatus()}\"
+                                   user-id=\"{$customer->getId()}\"
+                                   cancel-text=\"" . __('Cancel') . "\"
+                                   onclick=\"changeStatus(this, '{$customer->getId()}', '" . __('Select state') . "', '" .
+                        __('Not active') . "', '". __('Not verify') . "', '" . __('Active') . "');\"
+                                   title=\"".__('Change status') ."\"
+                                   scope=\"change-state\"></i>";
+                }
+
+                return $htmlRaw;
+            });
+
+            return $dataTable->rawColumns(['avatar', 'state', 'href', 'task'])->make();
+        }
+
+        return view('admin.customer.index');
+    }
+
+    /**
+     * Get customer create form
+     *
+     * @throws AuthorizationException
+     */
+    public function customerCreate()
+    {
+        $this->authorize('create', Customer::class);
+
+        return view('admin.customer.create');
+    }
+
+    /**
+     * Store new customer
+     *
+     * @param CustomerRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws AuthorizationException
+     */
+    public function customerStore(CustomerRequest $request)
+    {
+        $this->authorize('create', Customer::class);
+
+        try {
+            $fields = [
+                USER::ACCOUNT_TYPE => User::CUSTOMER,
+                User::CAN_CHANGE_USERNAME => User::CAN,
+                User::LOGIN_WITH_SOCIAL_ACCOUNT => User::NORMAL_LOGIN,
+                USER::USERNAME => $request->username,
+                User::NAME => $request->name ?? null,
+                User::EMAIL => $request->email ?? null,
+                User::PASSWORD => Hash::make($request->password),
+                User::GENDER => $request->gender,
+                User::PHONE => $request->phone ?? null,
+                User::ADDRESS => $request->address,
+                User::DOB => $request->dob ? Carbon::make($request->dob)->format('Y-m-d') : null,
+                User::STATE => User::ACTIVE,
+                User::DESCRIPTION => $request->description ?? null
+            ];
+
+            /** @var User $customer */
+            $customer = $this->userRepository->create($fields);
+
+            return redirect(route('users.customer.index'))->with('success', __('Customer [<code>:username</code>] has created.', ['username' => $customer->getUserName()]));
+
+        } catch (\Exception $e) {
+            back()->with('error', $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * @param User $customer
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws AuthorizationException
+     */
+    public function customerEdit(User $customer)
+    {
+        $this->authorize('update', Customer::class);
+
+        return view('admin.customer.edit', compact('customer'));
+    }
+
+    public function customerUpdate(CustomerRequest $request, User $customer)
+    {
+        $this->authorize('update', Customer::class);
+
+        try {
+            $fields = $request->all();
+            if ($request->has('changePass')) {
+                $validator = Validator::make(
+                    $request->all(),
+                    [
+                        'password' => 'required|min:6'
+                    ],
+                    [
+                        'password.required' => __('You must input :attribute'),
+                        'password.min' => __(':attribute need at least :min character')
+                    ],
+                    [
+                        'password' => __('Password')
+                    ]
+                );
+                if ($validator->fails()) {
+                    return back()->withErrors($validator->getMessageBag())->withInput();
+                }
+                $fields['password'] = Hash::make($request->password);
+            }
+            /** @var User $customer */
+            $customer = $this->userRepository->update(null, $customer, $fields);
+
+
+            return redirect(route('users.customer.index'))->with(
+                'success',
+                __('The customer [<code>:username</code>] have updated.', ['username' => $customer->getUserName()])
+            ) ;
+
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage())->withInput();
+        }
     }
 }

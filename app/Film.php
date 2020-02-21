@@ -29,6 +29,14 @@ class Film extends Model
     const RELEASE_DATE = 'release_date';
     const MARK = 'mark';
     const TRAILER = 'trailer';
+    const IS_COMING_SOON = 'is_coming_soon';
+    const IS_OPEN_SALE_TICKET = 'is_open_sale_ticket';
+    const IS_SNEAK_SHOW = 'is_sneak_show';
+
+    /** Constant value */
+    /** YES/NO */
+    const YES = 1;
+    const NO = 0;
 
     /** Constant permission code for this model */
     const VIEW = 'film-view';
@@ -62,7 +70,7 @@ class Film extends Model
      */
     public function getFormattedDate()
     {
-        return Carbon::make($this->getReleaseDate())->format('d/m/yy');
+        return Carbon::make($this->getReleaseDate())->format('d-m-yy');
     }
 
     /**
@@ -289,6 +297,128 @@ class Film extends Model
     public function getStatusLabel()
     {
         return (int)$this->getStatus() === self::ENABLE ? __('Enable') : __('Disable');
+    }
+
+
+    /**
+     * Get Is comming soon
+     *
+     * @return string
+     */
+    public function getIsComingSoon()
+    {
+        return $this->getAttribute(self::IS_COMING_SOON);
+    }
+
+    /**
+     * Get coming soon label
+     *
+     * @return string
+     */
+    public function getIsComingSoonLabel()
+    {
+        return (int)$this->getIsComingSoon() === self::YES ? __('Yes') : __('No');
+    }
+
+    /**
+     * Is schedule is coming soon
+     * @return bool
+     */
+    public function isComingSoon()
+    {
+        return $this->getIsComingSoon() === self::YES;
+    }
+
+    /**
+     * Set this schedule is coming soon
+     * @param int $iCs
+     * @return void
+     */
+    public function setIsComingSoon(int $iCs)
+    {
+        return $this->setAttribute(self::IS_COMING_SOON, $iCs);
+    }
+
+    /**
+     * Get is open sale ticket code
+     *
+     * @return int
+     */
+    public function getIsOpenSaleTicket()
+    {
+        return $this->getAttribute(self::IS_OPEN_SALE_TICKET);
+    }
+
+    /**
+     * Get open sale ticket label
+     *
+     * @return string
+     */
+    public function getIsOpenSaleTicketLabel()
+    {
+        return (int)$this->getIsOpenSaleTicket() === self::YES ? __('Yes') : __('No');
+    }
+
+    /**
+     * Is schedule opening sale ticket
+     *
+     * @return bool
+     */
+    public function isOpenSaleTicket()
+    {
+        return $this->getIsOpenSaleTicket() === self::YES;
+    }
+
+    /**
+     * Set schedule is open sale ticket
+     *
+     * @param int $iOst
+     * @return void
+     */
+    public function setIsOpenSaleTicket(int $iOst)
+    {
+        return $this->setAttribute(self::IS_OPEN_SALE_TICKET, $iOst);
+    }
+
+    /**
+     * Get is sneak show code
+     *
+     * @return int
+     */
+    public function getIsSneakShow()
+    {
+        return $this->getAttribute(self::IS_SNEAK_SHOW);
+    }
+
+    /**
+     * Get sneak show label
+     *
+     * @return string
+     */
+    public function getIsSneakShowLabel()
+    {
+        return (int)$this->getIsSneakShow() === self::YES ? __('Yes') : __('No');
+    }
+
+    /**
+     * Is schedule sneak show
+     *
+     * @return bool
+     */
+    public function isSneakShow()
+    {
+        return $this->getIsSneakShow() === self::YES;
+    }
+
+    /**
+     * Set schedule is sneak show
+     *
+     * @param int $iSs
+     * @return void
+     */
+    public function setIsSneakShow(int $iSs)
+    {
+        return $this->setAttribute(self::IS_SNEAK_SHOW, $iSs);
     }
 
     /**

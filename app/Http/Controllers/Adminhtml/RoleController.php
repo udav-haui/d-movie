@@ -12,6 +12,11 @@ use App\Repositories\RoleRepository;
 use Config;
 use Illuminate\Http\Request;
 
+/**
+ * Class RoleController
+ *
+ * @package App\Http\Controllers\Adminhtml
+ */
 class RoleController extends Controller
 {
     /**

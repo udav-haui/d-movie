@@ -31,7 +31,8 @@
             aoColumns = [
                 {
                     data: 'id',
-                    name: 'id'
+                    name: 'id',
+                    className: 'no-visible-filter'
                 },
                 {
                     data: 'status',
@@ -82,9 +83,30 @@
                 {
                     data: 'trailer',
                     name: 'trailer'
+                },
+                {
+                    data: 'is_coming_soon',
+                    name: 'is_coming_soon'
+                },
+                {
+                    data: 'is_open_sale_ticket',
+                    name: 'is_open_sale_ticket'
+                },
+                {
+                    data: 'is_sneak_show',
+                    name: 'is_sneak_show'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+
+                {
+                    data: 'updated_at',
+                    name: 'updated_at'
                 }
             ],
-            invisibleCols = ['.data-cell-description'];
+            invisibleCols = ['.data-cell-description', '.data-cell-created_at', '.data-cell-updated_at'];
         @cannot('canEditDelete', \App\Film::class)
             columnDefs = [
             {
@@ -118,13 +140,32 @@
                 render: $.fn.dataTable.render.ellipsis( 60, true )
             },
             {
+                targets: 'data-cell-is_coming_soon',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'is_coming_soon');
+                }
+            },
+
+            {
+                targets: 'data-cell-is_open_sale_ticket',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'is_open_sale_ticket');
+                }
+            },
+            {
+                targets: 'data-cell-is_sneak_show',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).attr('data-id', rowData.id);
+                    $(td).attr('scope', 'is_sneak_show');
+                }
+            },
+            {
                 targets: 'data-cell-task',
                 createdCell: function (td, cellData, rowData, row, col) {
                     $(td).attr('not-selector', '');
                 }
-            },
-            {
-                targets: 'data-cell-trailer'
             },
             {
                 targets: '[class^="data-cell-"]',
@@ -148,6 +189,7 @@
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('films.create') }}"
                    class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    <i class="mdi mdi-shape-polygon-plus"></i>
                     {{ __('New film') }}
                 </a>
             </div>
@@ -199,6 +241,42 @@
                                     {{ __('Set state') }}
                                 </a>
                             </li>
+                                <li>
+                                    <a href="javascript:void(0);"
+                                       class="_change--status--action"
+                                       data-field="is_coming_soon"
+                                       swl-text="{{ __('Do you want change [:name] status of this selected :obj?', ['name' => __('Is Coming Soon'), 'obj' => __('Films')]) }}"
+                                       swl-option-alert-title="{{ __('Select option') }}"
+                                       swl-select-no-item="{{ __('No') }}"
+                                       swl-select-yes-item="{{ __('Yes') }}"
+                                       swl-cancel-btn-text="{{ __('Cancel') }}" >
+                                        {{ __('Set [:name] status', ['name' => __('Is Coming Soon')]) }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);"
+                                       class="_change--status--action"
+                                       data-field="is_open_sale_ticket"
+                                       swl-text="{{ __('Do you want change [:name] status of this selected :obj?', ['name' => __('Is Open Sale Ticket'), 'obj' => __('Films')]) }}"
+                                       swl-option-alert-title="{{ __('Select option') }}"
+                                       swl-select-no-item="{{ __('No') }}"
+                                       swl-select-yes-item="{{ __('Yes') }}"
+                                       swl-cancel-btn-text="{{ __('Cancel') }}" >
+                                        {{ __('Set [:name] status', ['name' => __('Is Open Sale Ticket')]) }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);"
+                                       class="_change--status--action"
+                                       data-field="is_sneak_show"
+                                       swl-text="{{ __('Do you want change [:name] status of this selected :obj?', ['name' => __('Is Sneak Show'), 'obj' => __('Films')]) }}"
+                                       swl-option-alert-title="{{ __('Select option') }}"
+                                       swl-select-no-item="{{ __('No') }}"
+                                       swl-select-yes-item="{{ __('Yes') }}"
+                                       swl-cancel-btn-text="{{ __('Cancel') }}" >
+                                        {{ __('Set [:name] status', ['name' => __('Is Sneak Show')]) }}
+                                    </a>
+                                </li>
                         @endcan
                     </ul>
                 </div>
@@ -231,6 +309,11 @@
                     <th class="data-cell-release_date">{{ __('Release date') }}</th>
                     <th class="data-cell-mark">{{ __('Mark') }}</th>
                     <th class="data-cell-trailer">{{ __('Trailer') }}</th>
+                    <th class="data-cell-is_coming_soon">{{ __('Is Coming Soon') }}</th>
+                    <th class="data-cell-is_open_sale_ticket">{{ __('Is Open Sale') }}</th>
+                    <th class="data-cell-is_sneak_show">{{ __('Is Sneak Show') }}</th>
+                    <th class="data-cell-created_at">{{ __('Create Time') }}</th>
+                    <th class="data-cell-updated_at">{{ __('Modify Time') }}</th>
                     @can('canEditDelete', \App\Film::class)
                         <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                     @endcan

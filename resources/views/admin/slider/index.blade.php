@@ -36,7 +36,8 @@
         aoColumns = [
         {
             data: 'id',
-            name: 'id'
+            name: 'id',
+            className: 'no-visible-filter'
         },
         {
             data: 'title',
@@ -73,7 +74,8 @@
         aoColumns = [
         {
             data: 'id',
-            name: 'id'
+            name: 'id',
+            className: 'no-visible-filter'
         },
         {
             data: 'title',
@@ -107,7 +109,6 @@
         columnDefs = [
             {
                 targets: 'data-cell-id',
-                className: 'no-visible-filter',
                 createdCell: function (td, cellData, rowData, row, col) {
                     $(td).attr('data-id', rowData.id);
                     $(td).attr('scope', 'id');
@@ -179,6 +180,7 @@
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('sliders.create') }}"
                    class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    <i class="mdi mdi-shape-square-plus"></i>
                     {{ __('New item') }}
                 </a>
             </div>

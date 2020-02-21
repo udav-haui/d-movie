@@ -39,7 +39,7 @@ class CreateUserRequest extends FormRequest
             ],
             'dob' => [
                 'nullable',
-                'date_format:d/m/Y'
+                'date_format:d-m-Y'
             ],
             'password' => [
                 'required',
@@ -65,13 +65,13 @@ class CreateUserRequest extends FormRequest
             'name.max' => __('You can not input more than :max character'),
             'name.min' => __('You can not input less than :min character'),
             'email.required' => __('You must input :attribute'),
-            'email.max' => __('You can not input more than :max charactViệt Namer'),
+            'email.max' => __('You can not input more than :max character'),
             'email.email' => __('You must input a correct :attribute'),
             'email.unique' => __('This :attribute has been taken'),
             'phone.regex' => __('Please input a correct Vietnam :attribute'),
             'phone.required' => __('You must input :attribute'),
             'dob.required' => __('You must input :attribute'),
-            'dob.date_format' => __('Please input a correct date format (dd/mm/yyyy)'),
+            'dob.date_format' => __('Please input a correct date format (dd-mm-yyyy)'),
             'password.required' => __('You must input :attribute'),
             'password.min' => __(':attribute need at least :min character'),
         ];

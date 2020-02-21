@@ -14,6 +14,9 @@
 @endsection
 @section('bottom.js')
 {{--    <script src="{{ asset('adminhtml/assets/plugins/bower_components/datatables/jquery.dataTables.min.js') }}"></script>--}}
+<script>
+    var oldUsers = @json(old('user_ids'));
+</script>
 <script src="{{ asset('adminhtml/js/assign.js') }}"></script>
 <script src="{{ asset('adminhtml/assets/plugins/select2/i18n/' . Session::get('locale', config('app.locale')) . '.js') }}"></script>
 @endsection
@@ -52,8 +55,6 @@
 @section('content')
 
 
-
-
 {{--    Send data text to js file --}}
     <input type="hidden" class="lang-text"
            swl-title-text="{{ __('Are you sure?') }}"
@@ -72,8 +73,8 @@
               action="{{ route('roles.doAssign') }}">
         @csrf
             <div class="form-group">
-                <label for="user_id_select2" class="col-sm-5 control-label">{{ __('User') }} <strong class="text-danger">*</strong></label>
-                <div class="col-sm-2">
+                <label for="user_id_select2" class="col-lg-5 col-md-4 col-sm-4 col-xs-12 control-label">{{ __('User') }} <strong class="text-danger">*</strong></label>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <select id="user_id_select2" multiple name="user_ids[]" class="form-control user_id_select2 @error('user_ids') invalid @enderror">
                     </select>
                     @error('user_ids')
@@ -82,8 +83,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="role_select2" class="col-sm-5 control-label">{{ __('Role') }} <strong class="text-danger">*</strong></label>
-                <div class="col-sm-2">
+                <label for="role_select2" class="col-lg-5 col-md-4 col-sm-4 col-xs-12 control-label">{{ __('Role') }} <strong class="text-danger">*</strong></label>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <select id="role_select2" oldRoleId="{{ old('role') }}" name="role" class="form-control @error('role') invalid @enderror"></select>
                     @error('role')
                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>

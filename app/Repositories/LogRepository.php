@@ -5,8 +5,14 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\LogRepositoryInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
+/**
+ * Class LogRepository
+ *
+ * @package App\Repositories
+ */
 class LogRepository implements LogRepositoryInterface
 {
+
     /**
      * Create new Log by auth user
      *

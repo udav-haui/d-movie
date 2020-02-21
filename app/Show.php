@@ -118,6 +118,16 @@ class Show extends Model
     }
 
     /**
+     * A show has many seats
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function seats()
+    {
+        return $this->hasMany(Seat::class);
+    }
+
+    /**
      * A show belong to a cinema
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

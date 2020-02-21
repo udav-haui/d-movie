@@ -16,12 +16,18 @@ class CreateShowsTable extends Migration
     public function up()
     {
         Schema::create('shows', function (Blueprint $table) {
-            $table->bigIncrements('id')->comment('Show identifier');
-            $table->unsignedSmallInteger('status')->default(0)->comment('Show status');
+            $table->increments('id')->comment('Show identifier');
+            $table->tinyInteger('status')->default(0)->comment('Show status');
             $table->string('name')->default('Unnamed')->comment('Show name');
-            $table->unsignedBigInteger('cinema_id')->index()->comment('Define the cinema which the show is belong to.');
+            $table->unsignedInteger('cinema_id')->index()->comment('Define the cinema which the show is belong to.');
             $table->timestamp('created_at')->useCurrent()->comment('Create time');
             $table->timestamp('updated_at')->useCurrent()->comment('Update time');
+
+
+            $table->foreign('cinema_id')->references('id')
+                ->on('cinemas')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

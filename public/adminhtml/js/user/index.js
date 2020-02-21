@@ -53,7 +53,7 @@ $(document).ready(function () {
                     let exeUrl = route(`users.multiDestroy`),
                         data = {ids: selectedObjects};
 
-                    executeRequest(exeUrl, "DELETE", data, true);
+                    executeRequest(exeUrl, "DELETE", data, dtable,true);
                 });
             } else {
                 /** If not select any row, then show a alert */
@@ -83,8 +83,8 @@ $(document).ready(function () {
                             route('users.massUpdate'),
                             'PUT',
                             {
-                                ids: selectedObjects,
-                                state: newState
+                                users: selectedObjects,
+                                fields: {state: newState}
                             }
                         );
                     });
@@ -233,9 +233,12 @@ function showStateAlert(title, notActive, notVerify, isActive, currentState = -1
 function doChangeState(uid, newState) {
 
     executeRequest(
-        route('users.massSingleUserUpdate', {user: uid}).url(),
+        route('users.massUpdate'),
         'PUT',
-        {state: newState}
+        {
+            users: [uid],
+            fields: {state: newState}
+        }
     );
 
 }

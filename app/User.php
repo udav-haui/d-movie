@@ -60,6 +60,7 @@ class User extends Authenticatable
 
     const FIRST_LOGIN_WITH_SOCIAL_ACCOUNT = 1,
         CAN = 1,
+        CANT = 0,
         NORMAL_LOGIN = 0;
 
     /** Other */
@@ -93,27 +94,9 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getDobFormated()
+    public function getDobFormatted()
     {
-        if (!$this->getDob()) {
-            return '';
-        }
-        $dob = explode('-', $this->getDob());
-        return $dob[2] . '/' . $dob[1] . '/' . $dob[0];
-    }
-
-    /**
-     * Format a date to insert to db (Y-m-d)
-     *
-     * @param string $date
-     * @return string
-     */
-    public function formatDate($date)
-    {
-        $dob = explode('/', $date);
-
-        $dob = Carbon::create((int)$dob[2], (int)$dob[1], (int)$dob[0]);
-        return $dob->format('Y-m-d');
+        return $this->getDob() ? Carbon::make($this->getDob())->format('d-m-Y') : '';
     }
 
     /**
@@ -133,7 +116,7 @@ class User extends Authenticatable
      */
     public function setDob($dob)
     {
-        $this->setAttribute(self::DOB, $this->formatDate($dob));
+        $this->setAttribute(self::DOB, Carbon::make($dob)->format('Y-m-d'));
     }
 
     /**
@@ -174,7 +157,7 @@ class User extends Authenticatable
     public function getRenderAvatarHtml()
     {
         return "<a href=\"{$this->getAvatarPath()}\"
-            class=\"slide-item\"
+            class=\"slide-item\" dm-fancybox
             data-fancybox=\"user-avatar\" data-caption=\"{$this->getName()}\">
             <img src=\"{$this->getAvatarPath()}\"
                  class=\"slide-item-image\" />
@@ -251,13 +234,23 @@ class User extends Authenticatable
     }
 
     /**
+     * Get can change username code
+     *
+     * @return int
+     */
+    public function getCanChangeUsername()
+    {
+        return $this->getAttribute(self::CAN_CHANGE_USERNAME);
+    }
+
+    /**
      * Check if user can change username
      *
      * @return bool
      */
     public function canChangeUsername()
     {
-        return $this->can_change_username == self::CAN;
+        return $this->getCanChangeUsername() === self::CAN;
     }
 
     /**

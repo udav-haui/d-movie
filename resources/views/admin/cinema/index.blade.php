@@ -31,7 +31,8 @@
             aoColumns = [
                 {
                     data: 'id',
-                    name: 'id'
+                    name: 'id',
+                    className: 'no-visible-filter'
                 },
                 {
                     data: 'status',
@@ -67,22 +68,6 @@
             },
         ];
         @else
-            @can('view', \App\Show::class)
-                aoColumns.unshift(
-                    {
-                        className: 'get-shows-control',
-                        orderable: false,
-                        searchable: false,
-                        width: '1%',
-                        data: null,
-                        defaultContent: '',
-                        render: function () {
-                            return '<i class="fa fa-angle-double-right"></i>';
-
-                        }
-                    },
-                );
-            @endcan
             aoColumns.push({
                 data: 'task',
                 sortable: false,
@@ -125,6 +110,22 @@
                 },
             ];
         @endcannot
+        @can('view', \App\Show::class)
+        aoColumns.unshift(
+            {
+                className: 'get-shows-control',
+                orderable: false,
+                searchable: false,
+                width: '1%',
+                data: null,
+                defaultContent: '',
+                render: function () {
+                    return '<i class="fa fa-angle-double-right"></i>';
+
+                }
+            },
+        );
+        @endcan
         columnDefs.push({
             targets: ['no-sort'],
             orderable: false
@@ -234,6 +235,7 @@
             <div class="row bg-title" id="dmovie-fix-top-block">
                 <a href="{{ route('cinemas.create') }}"
                    class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                    <i class="mdi mdi-home-variant"></i>
                     {{ __('New Cinema') }}
                 </a>
             </div>
@@ -305,7 +307,7 @@
                 <thead>
                 <tr>
                     @can('view', \App\Show::class)
-                        <th class="data-cell-details"></th>
+                        <th class="data-cell-details">{{ __('Shows') }}</th>
                     @endcan
                     <th class="data-cell-id">ID</th>
                     <th class="data-cell-status">{{ __('Status') }}</th>

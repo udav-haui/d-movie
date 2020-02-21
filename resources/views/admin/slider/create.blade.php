@@ -30,10 +30,12 @@
             <a href="javascript:void(0);"
                onclick="event.preventDefault(); $('#create-form').submit();"
                class="btn dmovie-btn dmovie-btn-success dmovie-btn-large m-r-40 pull-right">
+                <i class="mdi mdi-content-save-all"></i>
                 {{ __('Save') }}
             </a>
             <a href="{{ route('sliders.index') }}"
                class="btn dmovie-btn dmovie-btn-default dmovie-btn-large m-r-40 pull-right">
+                <i class="mdi mdi-arrow-left"></i>
                 {{ __('Back') }}
             </a>
         </div>

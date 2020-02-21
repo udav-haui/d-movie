@@ -84,7 +84,7 @@ $(document).ready(function () {
                 showYesNoModal(swlTitle, swlMultiDeleteText, swlIcon, function () {
                     let exeUrl = route(`cinemas.massDestroy`),
                         data = {cinemas: selectedObjects};
-                    executeRequest(exeUrl, 'DELETE', data, true);
+                    executeRequest(exeUrl, 'DELETE', data, null, true);
                 });
             } else {
                 /** If not select any row, then show a alert */
@@ -98,8 +98,6 @@ $(document).ready(function () {
     $(document).on('change', '[dmovie-switch-dt]', function () {
         let self = $(this);
 
-        console.log(self);
-
         self.is(':checked') ? self.val(1) : self.val(0);
 
         let cinema = self.attr('data-id'),
@@ -111,7 +109,7 @@ $(document).ready(function () {
                 }
             };
 
-        executeRequest(exeUrl, 'PUT', data);
+        executeRequest(exeUrl, 'PUT', data, null, true);
 
     });
 

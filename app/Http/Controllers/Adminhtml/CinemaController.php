@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Repositories\Interfaces\CinemaRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use App\Cinema;
 use App\Show;
 
@@ -306,7 +305,7 @@ class CinemaController extends Controller
                     'status' => 200,
                     'message' => $message
                 ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
             return !request()->ajax() ?
                 back()->with(
@@ -321,6 +320,74 @@ class CinemaController extends Controller
         }
     }
 
+    /**
+     * Fetch visible cinema to select2
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function attemptSelect2()
+    {
+        $this->authorize('view', Cinema::class);
+
+        try {
+            if (request()->has('search_key')) {
+                $collection = $this->cinemaRepository->searchBy(null, ['name' => request('search_key')]);
+
+                $collection = $this->cinemaRepository->getVisible($collection);
+
+                return request()->ajax() ?
+                    response()->json([
+                        'status' => 200,
+                        'data' => $collection->get()
+                    ]) :
+                    $collection->get();
+            }
+            $collection = $this->cinemaRepository->getVisible()->get();
+
+            return request()->ajax() ?
+                response()->json([
+                    'status' => 200,
+                    'data' => $collection
+                ]) :
+                $collection;
+
+        } catch (\Exception $e) {
+            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
+
+    public function get(int $cinema)
+    {
+        try {
+            return request()->ajax() ?
+                response()->json([
+                    'status' => 200,
+                    'data' => $this->cinemaRepository->find($cinema)
+                ]) :
+                $this->cinemaRepository->find($cinema);
+        } catch (\Exception $e) {
+            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            return !request()->ajax() ?
+                back()->with(
+                    'error',
+                    $message
+                ) :
+                response()->json([
+                    'status' => 400,
+                    'message' => $message
+                ]);
+        }
+    }
 
     /**
      * Mass destroy cinemas

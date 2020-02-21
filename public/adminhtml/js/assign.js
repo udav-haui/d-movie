@@ -47,6 +47,27 @@ $(document).ready(function () {
         }
     });
     invalidClass = selectedRole.hasClass('invalid') ? 'invalid border-none' : '';
+
+    if (oldUsers instanceof Array && oldUsers.length > 0) {
+        $.ajax({
+            url: route('users.getUsersByIds', {users: oldUsers}),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                screenLoader();
+            },
+            success: function (res) {
+                let users = res.data,
+                    htmlOption = '';
+                users.forEach(function (user) {
+                    htmlOption += `<option value="${user.id}" selected='selected'>${user.name}</option>`;
+                });
+                screenLoader(0);
+                selectedUser.append(htmlOption).trigger('select2:select');
+            }
+        });
+    }
+
     if (oldRoleId !== null) {
         $.ajax({
             url: route('roles.getRole', {role: oldRoleId}),

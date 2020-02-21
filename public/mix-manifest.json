@@ -1,9 +1,4 @@
 {
-    "/adminhtml/js/adminjs.js": "/adminhtml/js/adminjs.js",
-    "/adminhtml/assets/plugins/tree-view/tree-view.css": "/adminhtml/assets/plugins/tree-view/tree-view.css",
-    "/adminhtml/css/role/role-create.css": "/adminhtml/css/role/role-create.css",
-    "/adminhtml/css/login.page.css": "/adminhtml/css/login.page.css",
-    "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css",
-    "/adminhtml/css/profile.css": "/adminhtml/css/profile.css",
-    "/adminhtml/css/datatables.css": "/adminhtml/css/datatables.css"
+    "/frontend/js/app.js": "/frontend/js/app.js",
+    "/frontend/css/app.css": "/frontend/css/app.css"
 }

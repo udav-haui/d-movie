@@ -46,7 +46,7 @@ class FilmRequest extends FormRequest
             FilM::LANGUAGE => 'nullable|max:255',
             Film::RELEASE_DATE => [
                 'nullable',
-                'date_format:d/m/Y'
+                'date_format:d-m-Y'
             ],
             Film::MARK => [
                 'required'
@@ -83,6 +83,7 @@ class FilmRequest extends FormRequest
             'running_time.numeric' => __('The :attribute must be number.'),
             'language.max' => __('You can not input more than :max character'),
             'mark.required' => __('You must input :attribute'),
+            Film::RELEASE_DATE.'.date_format' => __('Please input a correct date format (dd-mm-yyyy)')
         ];
     }
 
