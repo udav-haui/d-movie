@@ -175,6 +175,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getAttribute(self::ADDRESS);
+    }
+
+    /**
      * Check if is admin
      *
      * @return bool
@@ -303,7 +311,7 @@ class User extends Authenticatable
      */
     public function loginWithSocialAcc()
     {
-        return $this->login_with_social_account == self::FIRST_LOGIN_WITH_SOCIAL_ACCOUNT;
+        return $this->login_with_social_account === self::FIRST_LOGIN_WITH_SOCIAL_ACCOUNT;
     }
 
     /**
@@ -313,7 +321,15 @@ class User extends Authenticatable
      */
     public function isActive()
     {
-        return $this->state === self::ACTIVE;
+        return $this->getStatus() === self::ACTIVE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotVerified()
+    {
+        return $this->getStatus() === self::NOT_VERIFY_BY_ADMIN;
     }
 
     /**
@@ -403,5 +419,29 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->getAttribute(self::EMAIL);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->getAttribute(self::PHONE);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

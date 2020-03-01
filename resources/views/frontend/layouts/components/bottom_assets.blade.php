@@ -1,5 +1,5 @@
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/JQuery/jquery.min-3.4.1.js') }}"></script>
-{{--<script type="text/javascript" src="{{ asset('frontend/js/app.js') }}"></script>--}}
+<script type="text/javascript" src="{{ asset('frontend/js/app.js') }}"></script>
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/Bootstrap/js/popper.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/Bootstrap/js/bootstrap.min-3.4.1.js') }}"></script>
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/Slimscroll/jquery.slimscroll.min.js') }}"></script>
@@ -23,9 +23,10 @@
 <!-- LayerSlider script files -->
 <script src="{{ asset('assets/frontend/pages/scripts/layerslider-init.js') }}" type="text/javascript"></script>
 <!-- END LayerSlider -->
-<script type="text/javascript" src="{{ asset('assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('frontend/assets/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ asset('adminhtml/assets/plugins/select2/i18n/' . Session::get('locale', config('app.locale')) . '.js') }}"></script>
 <script src="{{ asset('assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('assets/frontend/pages/scripts/portfolio.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/back-to-top.js') }}"></script>
 {{--<script src="assets/frontend/layout/scripts/back-to-top.js" type="text/javascript"></script>--}}
-{{--<script type="text/javascript" src="Assets/Common/scripts/layout.js"></script>--}}
+{{--<script type="text/javascript" src="{{ asset('Assets/Common/scripts/layout.js') }}"></script>--}}

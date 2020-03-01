@@ -263,13 +263,6 @@
                 </tr>
                 </thead>
             </table>
-
-
-            <button id="btn-test" data-toggle="tooltip" >Test</button>
-
-            <button class="dt-button buttons-copy buttons-html5 dmovie-border margin-0-auto" onclick="test();" tabindex="0" aria-controls="sliders_ajax_dt" type="button"><span><i class="mdi mdi-content-copy"></i><span class="m-l-5">Sao chép vào khay nhớ tạm</span></span></button>
-
-            <a href="#" dmovie-tooltip title="hihihihi">ihiiiiiii</a>
         </div>
     </div>
 

@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Seat
+ *
+ * @package App
+ */
 class Seat extends Model
 {
     protected $guarded = [];
@@ -23,15 +28,15 @@ class Seat extends Model
     const VIP = 1;
     const DOUBLE = 2;
 
-    /** Constant status of seat */
+    /** Constant status of booking */
     const ENABLE = 1;
     const DISABLE = 0;
 
     /** Constant permission */
-    const VIEW = 'seat-view';
-    const CREATE = 'seat-create';
-    const EDIT = 'seat-edit';
-    const DELETE = 'seat-delete';
+    const VIEW = 'booking-view';
+    const CREATE = 'booking-create';
+    const EDIT = 'booking-edit';
+    const DELETE = 'booking-delete';
 
     /**
      * Get ID
@@ -95,18 +100,18 @@ class Seat extends Model
     }
 
     /**
-     * Get label type of seat
+     * Get label type of booking
      *
      * @return string
      */
     public function getTypeLabel()
     {
-        return $this->getType() === self::NORMAL ? __('Normal seat') :
-            ($this->getType() === self::VIP ? __('VIP seat') : __('Double seat'));
+        return $this->getType() === self::NORMAL ? __('Normal booking') :
+            ($this->getType() === self::VIP ? __('VIP booking') : __('Double booking'));
     }
 
     /**
-     * Set type of seat
+     * Set type of booking
      *
      * @param int $type
      */
@@ -116,7 +121,7 @@ class Seat extends Model
     }
 
     /**
-     * Get row of seat
+     * Get row of booking
      *
      * @return string
      */
@@ -126,7 +131,7 @@ class Seat extends Model
     }
 
     /**
-     * Set row of seat
+     * Set row of booking
      *
      * @param string $row
      * @return void
@@ -137,7 +142,7 @@ class Seat extends Model
     }
 
     /**
-     * Get Number of seat
+     * Get Number of booking
      *
      * @return int
      */
@@ -168,12 +173,26 @@ class Seat extends Model
     }
 
     /**
-     * A seat belong to a show
+     * A booking belong to a show
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function show()
     {
         return $this->belongsTo(\App\Show::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function times()
+    {
+        return $this->belongsToMany(Time::class, 'tickets')
+            ->withPivot('id')
+            ->withPivot('booking_id')
+            ->withPivot('status')
+            ->withPivot('ticket_code')
+            ->withPivot('price')
+            ->withPivot('created_at');
     }
 }

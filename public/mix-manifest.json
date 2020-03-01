@@ -1,4 +1,6 @@
 {
     "/frontend/js/app.js": "/frontend/js/app.js",
-    "/frontend/css/app.css": "/frontend/css/app.css"
+    "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css",
+    "/frontend/css/app.css": "/frontend/css/app.css",
+    "/frontend/js/booking/index.js": "/frontend/js/booking/index.js"
 }

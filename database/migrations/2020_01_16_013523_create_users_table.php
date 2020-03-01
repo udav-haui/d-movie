@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->comment('User\'s Identifier.');
-            $table->tinyInteger('account_type')->comment('User group.');
+            $table->tinyInteger('account_type')->default(2)->comment('User group.');
             $table->tinyInteger('can_change_username')->default(0)->comment('Can user change username');
             $table->tinyInteger('login_with_social_account')->default(0)->comment('Is user login with social account');
             $table->string('username')->nullable()->unique()->index()->comment('Username of user\'s account.');

@@ -18,7 +18,7 @@ class SeatRepository extends CRUDModelAbstract
     protected $model = Seat::class;
 
     /**
-     * Create new seat
+     * Create new booking
      *
      * @param array $fields
      * @param bool $isWriteLog
@@ -95,10 +95,7 @@ class SeatRepository extends CRUDModelAbstract
     public function delete($modelId = null, $model = null, bool $isWriteLog = true)
     {
         try {
-            $seat = parent::delete($modelId, $model);
-            $this->deleteLog($seat, Seat::class);
-
-            return $seat;
+            return parent::delete($modelId, $model);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

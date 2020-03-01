@@ -13,6 +13,634 @@
 
 // .///////////////
 
+
+.dmovie-nav {
+    text-transform: uppercase;
+
+}
+.dmovie-ticket-icon-container {
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    .dmovie-ticket-icon {
+        font-size: 6.5rem;
+        transform: rotateZ(-55deg);
+        opacity: .75;
+    }
+}
+.btn-2 {
+    background-image: linear-gradient(to right, #0384ad 0%, #0396a5 51%, #01c792 100%) !important;
+    &:hover {
+        background-image: linear-gradient(to right, #0384ad 0%, #0396a5 51%, #01c792 100%) !important;
+    }
+}
+
+
+#screen_form .full-width {
+    text-align: center;
+}
+
+#screen_form .seat-cell {
+    width: 40px;
+    /*float: left;*/
+    height: 40px;
+    display: inline-block;
+    text-align: center;
+    line-height: 40px;
+    font-size: 11px;
+}
+
+.seat-type-name {
+    width: 100%;
+    float: left;
+    padding-left: 5px;
+    color: #494c62;
+    font-family: Oswald;
+    font-size: 18px;
+    text-align: left;
+}
+
+.seat-type-price {
+    font-family: SourceSansPro;
+    font-size: 14px;
+    text-align: left;
+    color: #494c62;
+    width: 100%;
+    float: left;
+    padding-left: 5px;
+}
+
+.seat-type-image {
+    width: 20%;
+    float: left;
+}
+
+.seat-for-way {
+    /*background-color: #333333 !important;*/
+    text-indent: -99999px;
+}
+
+.seat-not-used {
+    background-color: transparent !important;
+}
+
+.seat-double-hidden {
+    display: none !important;
+}
+
+.seat-broken {
+    /*background-image: url('../../../../assets/global/img/cross.png');
+    background-color: #bf5b45 !important;*/
+    text-indent: -99999px;
+}
+
+.seat-used {
+    background-color: transparent !important;
+    background-repeat: no-repeat;
+    background-size: 35px 35px;
+    background-position: center;
+    color: #FFF;
+    font-family: SFProText;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+}
+
+.seat-empty.seat-used {
+    color: #494c62 !important;
+}
+
+.note-seat-status {
+    width: 100%;
+    float: left;
+}
+/*ghe da chua chon*/
+.seat-used.seat-empty.seat-normal {
+    background-image: url('/Assets/global/img/booking/seat-unselect-normal.png');
+}
+
+.seat-used.seat-empty.seat-vip {
+    background-image: url('/Assets/global/img/booking/seat-unselect-vip.png');
+}
+
+.seat-used.seat-double {
+    width: 90px !important;
+    background-size: 60px 30px;
+}
+
+.seat-used.seat-empty.seat-double {
+    background-image: url('/Assets/global/img/booking/seat-unselect-double.png');
+}
+/*ghe da duoc chon*/
+.seat-used.seat-select.seat-normal {
+    background-image: url('/Assets/global/img/booking/seat-select-normal.png');
+}
+
+.seat-used.seat-select.seat-vip {
+    background-image: url('/Assets/global/img/booking/seat-select-vip.png');
+}
+
+.seat-used.seat-select.seat-double {
+    background-image: url('/Assets/global/img/booking/seat-select-double.png');
+}
+/*ghe da duoc giu*/
+.seat-used.seat-hold.seat-normal {
+    background-image: url('/Assets/global/img/booking/seat-process-normal.png');
+}
+
+.seat-used.seat-hold.seat-vip {
+    background-image: url('/Assets/global/img/booking/seat-process-vip.png');
+}
+
+.seat-used.seat-hold.seat-double {
+    background-image: url('/Assets/global/img/booking/seat-process-double.png');
+}
+/*ghe da duoc ban*/
+.seat-used.seat-sold.seat-normal {
+    background-image: url('/Assets/global/img/booking/seat-buy-normal.png');
+}
+
+.seat-used.seat-sold.seat-vip {
+    background-image: url('/Assets/global/img/booking/seat-buy-vip.png');
+}
+
+.seat-used.seat-sold.seat-double {
+    background-image: url('/Assets/global/img/booking/seat-buy-double.png');
+}
+
+/*ghe da duoc dat*/
+.seat-used.seat-booked.seat-normal {
+    background-image: url('/Assets/global/img/booking/seat-set-normal.png');
+}
+
+.seat-used.seat-booked.seat-vip {
+    background-image: url('/Assets/global/img/booking/seat-set-vip.png');
+}
+
+.seat-used.seat-booked.seat-double {
+    background-image: url('/Assets/global/img/booking/seat-set-double.png');
+}
+
+.time-to-left-label, .total-money-label {
+    font-family: Oswald;
+    font-size: 18px;
+    text-align: left;
+    color: #494c62;
+}
+
+.total-money-value {
+    font-family: Oswald;
+    font-size: 20px;
+    text-align: right;
+    color: #03599d;
+    margin-top: 40px;
+}
+
+.seat-empty-quantity, .seat-vip-quantity, .seat-double-quantity {
+    font-family: Oswald;
+    font-size: 16px;
+    text-align: right;
+    color: #1e1f28;
+    margin-top: 20px;
+    float: right;
+}
+
+.time-to-left-value {
+    font-family: Oswald;
+    font-size: 37.9px;
+    text-align: right;
+    color: #1e1f28;
+}
+
+.seat-type.total-money::before {
+    width: 2px;
+    height: 80px;
+    border: solid 1px #d8d8d8;
+}
+
+#screen_form {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
+}
+
+
+.item-seat-type {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #1e1f28;
+    text-transform: uppercase;
+}
+
+.item-seat-quantity {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: right;
+    color: #494c62;
+}
+
+.item-seat-quantity-combo, .item-seat-money-combo, .item-seat-type-combo {
+    text-align: right;
+    color: #494c62;
+}
+
+.item-seat-money {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: right;
+    color: #494c62;
+}
+
+.payment-page-title .page-title {
+    font-family: Oswald;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 35px;
+    height: 35px;
+    float: left;
+    margin-left: 12px;
+    color: #494c62;
+}
+
+.payment-page-title .page-title {
+    font-family: Oswald;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 35px;
+    height: 35px;
+    float: left;
+    margin-left: 12px;
+    color: #494c62;
+}
+
+.user-info-item-label {
+    font-family: SourceSansPro;
+    font-size: 16px;
+    font-weight: 600;
+    color: #494c62;
+}
+
+.combo-title {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #1e1f28;
+}
+
+.combo-price {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #494c62;
+}
+
+.combo-item-des {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #494c62;
+}
+
+a.page-title {
+    width: 196px;
+    height: 48px !important;
+    border-radius: 2.5px !important;
+    background-image: linear-gradient(257deg, rgba(253, 124, 2, 0.99), rgba(253, 40, 2, 0.98));
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    border: none;
+    font-family: Oswald !important;
+    color: #fff;
+    text-decoration: none;
+    line-height: 45px !important;
+}
+
+.tab-35 {
+    margin-top: 25px;
+    float: left;
+    width: 100%;
+}
+
+.option-title {
+    font-family: SourceSansPro;
+    font-size: 18px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+.btn-plus {
+    width: 22px;
+    height: 22px;
+    background-image: url(/Assets/global/img/booking/plus.png) !important;
+    background-size: 22px 22px;
+    float: left;
+}
+
+.btn-minus {
+    width: 22px;
+    height: 22px;
+    background-image: url(/Assets/global/img/booking/minus.png) !important;
+    background-size: 22px 22px;
+    float: left;
+}
+
+.modal-title {
+    font-family: Oswald;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #494c62;
+}
+
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    transform: translateY(-50%);
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #80818a;
+    border-radius: 100%;
+    background: #fff;
+}
+
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #03599d;
+    position: absolute;
+    top: 37%;
+    transform: translateY(-50%);
+    left: 6px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+.seat-type-panel {
+    background-color: #FFF;
+    padding: 15px 10px;
+    margin-top: 40px;
+    float: left;
+    width: 100%;
+}
+
+.check {
+    width: 11.5px;
+    height: 8px;
+    border: solid 2px #ffffff;
+}
+
+.circle {
+    width: 22px;
+    height: 22px;
+    background-color: #03599d;
+    background-color: var(--peacock-blue);
+}
+
+.note-commit {
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000000;
+}
+
+.note-refund, .note-before-next {
+    font-size: 14px;
+    font-weight: normal;
+    font-style: italic;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    padding-left: 15px;
+    color: #000000;
+}
+
+.container-checkbox {
+    padding-left: 15px;
+    line-height: 25px;
+}
+
+/* Hide the browser's default checkbox */
+.container-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px !important;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container-checkbox:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container-checkbox input:checked ~ .checkmark {
+    background-color: #03599d;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container-checkbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.testimonial-group > .row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.testimonial-group > .row > .col-xs-4 {
+    display: inline-block;
+    float: none;
+}
+
+.hiden {
+    display: none;
+}
+
+/* The container */
+.cb_container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.cb_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: -3px;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #ccc;
+}
+
+/* On mouse-over, add a grey background color */
+.cb_container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.cb_container input:checked ~ .checkmark {
+    background-color: #03599d;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.cb_container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.cb_container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+
 .w-50 {
     width: 50% !important;
 }
@@ -28,6 +656,9 @@
 .display-flex {
     display: flex !important;
 }
+.display-block {
+    display: block !important;
+}
 .gg-background {
     background-color: #ea4335 !important;
 }
@@ -36,3 +667,4 @@
         color: #fff;
     }
 }
+

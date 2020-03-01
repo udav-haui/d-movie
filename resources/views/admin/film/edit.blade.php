@@ -81,13 +81,14 @@ Session::get('locale', config('app.locale')) . '.js') }}"></script>
                                 <div class="col-md-3 col-xs-12">
                                     <select name="status" id="status"
                                             class="bs-select-hidden"
+                                            dmovie-select2
                                             data-style="form-control">
                                         <option value="1"
-                                            {{ old('status', $film->getStatus()) !== NULL && (int)old('status') === 1 ? 'selected' : '' }}>
+                                            {{ old('status', $film->getStatus()) !== NULL && (int)old('status', $film->getStatus()) === 1 ? 'selected' : '' }}>
                                             {{ __('Enable') }}
                                         </option>
                                         <option value="0"
-                                            {{ old('status', $film->getStatus()) !== NULL && (int)old('status') === 0 ? 'selected' : '' }}>
+                                            {{ old('status', $film->getStatus()) !== NULL && (int)old('status', $film->getStatus()) === 0 ? 'selected' : '' }}>
                                             {{ __('Disable') }}
                                         </option>
                                     </select>
@@ -368,7 +369,7 @@ Session::get('locale', config('app.locale')) . '.js') }}"></script>
                                               rows="3"
                                               class="form-control dmovie-border
                                         @error('trailer') invalid @enderror">{{ old('trailer', $film->getTrailer()) }}</textarea>
-                                    <label class="help-block">{{ __('Example: ') }}https://www.youtube.com/watch?v=TcMBFSGVi1c</label>
+                                    <label class="help-block">{{ __('Example: ') }}https://www.youtube.com/embed/uY1JV9nZcSI</label>
                                     @error('trailer')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror

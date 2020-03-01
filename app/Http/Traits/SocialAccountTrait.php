@@ -38,12 +38,11 @@ trait SocialAccountTrait
      */
     public function createOrGetUser(ProviderUser $providerUser, $provider)
     {
-        $user = $this->socialAccountRepository->createOrGetUser(
+        return $this->socialAccountRepository->createOrGetUser(
             $providerUser,
             $provider,
             $this->accountType,
             $this->state
         );
-        return $user;
     }
 }

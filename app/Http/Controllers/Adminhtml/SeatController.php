@@ -151,7 +151,7 @@ class SeatController extends Controller
                     'message' => $message
                 ]);
         } catch (\Exception $e) {
-            $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
+            $message = __('Ooops, something wrong appended.') . ' - ' . $e->getMessage();
             return !request()->ajax() ?
                 back()->with(
                     'error',

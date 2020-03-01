@@ -22,7 +22,7 @@
 </head>
 <body class="corporate no-js">
 @yield('facebook_sdk')
-<div id="app">
+<div>
     @include('frontend.layouts.components.pre_topbar')
 
     @include('frontend.layouts.components.header')
@@ -39,7 +39,16 @@
 </div>
 
 @include('frontend.layouts.components.bottom_assets')
-
+<script>
+    window._translations = {!! cache('translations') !!};
+</script>
 @yield('bottom.js')
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
 </body>
 </html>

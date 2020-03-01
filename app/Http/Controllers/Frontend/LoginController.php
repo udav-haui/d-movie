@@ -86,7 +86,7 @@ class LoginController extends Controller
      */
     public function getLoginForm(string $action)
     {
-        return view('frontend.login', compact('action'));
+        return view('frontend.customer.login', compact('action'));
     }
 
     /**

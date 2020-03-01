@@ -78,7 +78,9 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
             }
 
             if (array_key_exists(User::DOB, $fields)) {
-                $fields[User::DOB] = $this->formatDate($fields[User::DOB]);
+                if ($fields[User::DOB]) {
+                    $fields[User::DOB] = $this->formatDate($fields[User::DOB]);
+                }
             }
 
             return parent::update(null, $user, $fields);

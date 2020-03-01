@@ -22,7 +22,7 @@ class FilmSchedule extends Model
     const FILM = 'film_id';
     const SHOW = 'show_id';
 
-    /** Constant status of seat */
+    /** Constant status of booking */
     const ENABLE = 1;
     const DISABLE = 0;
 

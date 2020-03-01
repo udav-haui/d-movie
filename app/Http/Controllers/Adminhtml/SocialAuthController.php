@@ -62,11 +62,12 @@ class SocialAuthController extends Controller
         $providerUser = Socialite::driver($provider)
             ->redirectUrl($this->setRedirectUrl($provider))
             ->stateless()->user();
+        /** @var \App\User $user */
         $user = $this->createOrGetUser(
             $providerUser,
             $provider
         );
-        if (!$user) {
+        if ($user->isNotVerified()) {
             return redirect(\App\Helper\Data::ADMIN_LOGIN_PATH)
                 ->with('error', __('Please wait until we activate your account, thank you!'));
         } elseif ($user->isActive()) {

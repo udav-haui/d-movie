@@ -176,4 +176,35 @@ class Time extends Model
     {
         return $this->belongsTo(FilmSchedule::class, 'film_show_id');
     }
+
+    /**
+     * @return Show
+     */
+    public function show()
+    {
+        return $this->schedule->show;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function seats()
+    {
+        return $this->belongsToMany(Seat::class, 'tickets')
+            ->withPivot('id')
+            ->withPivot('booking_id')
+            ->withPivot('status')
+            ->withPivot('ticket_code')
+            ->withPivot('price')
+            ->withPivot('created_at');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function getVisibleSeats()
+    {
+        return $this->seats()->where('seats.'.Seat::STATUS, Seat::ENABLE)
+            ->wherePivot(Ticket::STATUS, '!=', Ticket::NOT_AVAILABLE);
+    }
 }

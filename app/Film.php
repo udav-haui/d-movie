@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helper\Data;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -251,6 +252,11 @@ class Film extends Model
         return $this->getAttribute(self::MARK);
     }
 
+    public function getAgeMark()
+    {
+        return $this->getMark() !== 'p' ? (int)str_replace("c", "", $this->getMark()) : "p";
+    }
+
     /**
      * @inheritDoc
      */
@@ -318,6 +324,14 @@ class Film extends Model
     public function getIsComingSoonLabel()
     {
         return (int)$this->getIsComingSoon() === self::YES ? __('Yes') : __('No');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->getStatus() === self::ENABLE;
     }
 
     /**
@@ -428,6 +442,119 @@ class Film extends Model
      */
     public function shows()
     {
-        return $this->belongsToMany(Show::class);
+        return $this->belongsToMany(Show::class)
+            ->withPivot('start_date')
+            ->withPivot('status')
+            ->withPivot('id');
+    }
+
+    public function times()
+    {
+        return $this->hasManyThrough(Time::class, FilmSchedule::class, 'film_id', 'film_show_id', 'id', 'id');
+    }
+
+    /**
+     * A film has many schedule
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function filmSchedules()
+    {
+        return $this->hasMany(FilmSchedule::class);
+    }
+
+    /**
+     * @param string $startDate
+     * @param string $startTime
+     * @return array
+     */
+    public function getSelectedSeats(string $startDate, string $startTime)
+    {
+        $shows = $this->shows()
+            ->wherePivot('status', self::ENABLE)
+            ->get();
+
+        $times = collect();
+        /** @var Show $show */
+        foreach ($shows as $show) {
+            $times = $times->merge($show->times()
+                ->where('times.start_date', $startDate)
+                ->whereStartTime($startTime)->get());
+        }
+
+        $selectedSeats = [];
+        /** @var Time $time */
+        foreach ($times as $time) {
+            $selectedSeats = array_merge($selectedSeats, $time->seats()
+                ->where('tickets.status', '!=', -1)
+                ->pluck('seat_id')->toArray());
+        }
+        return $selectedSeats;
+    }
+
+
+    public function isAvailableSale()
+    {
+        $isAvailable = $this->isOpenSaleTicket();
+
+        if ($isAvailable) {
+            $shows = $this->shows()
+                ->wherePivot(FilmSchedule::STATUS, FilmSchedule::ENABLE)
+                ->get();
+            $isAvailable = $shows->isNotEmpty();
+        }
+
+        return $isAvailable;
+    }
+
+    /**
+     * @param string $startDate
+     * @param string $startTime
+     * @return int
+     */
+    public function getEmptySeats(string $startDate, string $startTime)
+    {
+        // Get visible schedule
+        $filesSchedules = get_visible($this->filmSchedules())->get();
+
+        // Get all visible time
+        /** @var Collection $times */
+        $times = collect();
+        foreach ($filesSchedules as $schedule) {
+            $times = $times->merge($schedule->times()->where('times.'.Time::START_DATE, $startDate)
+                ->where(Time::START_TIME, $startTime)->get());
+        }
+        $seatsCount = 0;
+
+        // Get all booking
+        /** @var Time $time */
+        foreach ($times as $time) {
+            $show = $time->show();
+            $seatsCount += $show->getVisibleSeats()->count();
+            if ($time->seats->count() > 0) {
+                $seatsCount -= $time->getVisibleSeats()->count();
+            }
+        }
+        return $seatsCount;
+    }
+
+    /**
+     * @param int $showId
+     * @return Collection|Model|null
+     */
+    public function getShowById(int $showId)
+    {
+        return $this->shows()->find($showId);
+    }
+
+    /**
+     * @param array $showIds
+     * @return mixed
+     */
+    public function getFirstShowsExceptShowId(array $showIds)
+    {
+        return $this->shows()
+            ->wherePivot('status', self::ENABLE)
+            ->whereNotIn('shows.id', $showIds)->first();
     }
 }

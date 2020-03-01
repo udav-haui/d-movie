@@ -75,8 +75,9 @@ Session::get('locale', config('app.locale')) . '.js') }}"></script>
                                 </label>
                                 <div class="col-md-3 col-xs-12">
                                     <select name="status" id="status"
+                                            dmovie-select2
                                             class="bs-select-hidden"
-                                            data-style="form-control" dmovie-select2>
+                                            data-style="form-control">
                                         <option value="1"
                                             {{ old('status') !== NULL && (int)old('status') === 1 ? 'selected' : '' }}>
                                             {{ __('Enable') }}
@@ -356,7 +357,7 @@ Session::get('locale', config('app.locale')) . '.js') }}"></script>
                                         rows="3"
                                         class="form-control dmovie-border
                                         @error('trailer') invalid @enderror">{{ old('trailer') }}</textarea>
-                                    <label class="help-block">{{ __('Example: ') }}https://www.youtube.com/watch?v=TcMBFSGVi1c</label>
+                                    <label class="help-block">{{ __('Example: ') }}https://www.youtube.com/embed/uY1JV9nZcSI</label>
                                     @error('trailer')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror

@@ -6,17 +6,17 @@
                 <!-- Logo icon image, you can use font-icon also -->
                 <b class="logo-img">
                     <!--This is dark logo icon-->
-                    <img src="{{ asset('images/logo/logo-dm-trim.png') }}" alt="home"
+                    <img src="{{ asset('images/logo/logo-dm-trim-text.png') }}" alt="home"
                          class="dark-logo" />
                     <!--This is light logo icon-->
-                    <img src="{{ asset('images/logo/logo-dm-trim.png') }}" alt="home"
+                    <img src="{{ asset('images/logo/logo-dm-trim-text.png') }}" alt="home"
                          class="light-logo" />
                 </b>
-                <b>
-                    <span class="hidden-xs logo-text">
-                        d-movie
-                    </span>
-                </b>
+{{--                <b>--}}
+{{--                    <span class="hidden-xs logo-text">--}}
+{{--                        d-movie--}}
+{{--                    </span>--}}
+{{--                </b>--}}
             </a>
         </div>
         <!-- /Logo -->

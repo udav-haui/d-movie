@@ -1,5 +1,7 @@
 <?php
-
+Route::fallback(function () {
+    abort(404);
+});
 Route::group(['middleware' => ['locale', 'first.use']], function () {
     $admin = \App\Helper\Data::getAdminPath();
 
@@ -17,6 +19,57 @@ Route::group(['middleware' => ['locale', 'first.use']], function () {
             ->name('frontend.doLogin');
         Route::post('logout.html', 'LoginController@logout')
             ->name('frontend.logout');
+        Route::get('callback/{provider}', 'SocialAuthController@callback')
+            ->name('fe.LoginWith');
+        Route::get('redirect/{provider}', 'SocialAuthController@redirect')
+            ->name('fe.getLoginWith');
+        Route::post('member/register', 'RegisterController@register')
+            ->name('member.register');
+
+        /** CUSTOMER */
+
+        Route::post('send-feedback', 'StaticPageController@sendFeedback')
+            ->name('customer.sendFeedback');
+        Route::get(__('member').'/{slug}.html', 'MemberController@show')
+            ->name('member.show');
+        Route::post('member/{member}/change/password', 'MemberController@changePassword')
+            ->name('member.changePassword');
+
+        Route::post('member/{member}/change/information', 'MemberController@changeInformation')
+            ->name('member.changeInformation');
+
+        /** STATIC PAGE */
+
+        Route::get(__('informations').'/{pageSlug}.html', 'StaticPageController@show')->name('fe.showStaticPage');
+
+        /** CINEMA */
+
+        Route::get('cinemas/get-active', 'CinemaController@getList')
+            ->name('fe.cinemas.getCinemas');
+
+        /** FILM */
+
+        Route::get('films/get/{film}', 'FilmController@get')
+            ->name('films.api.getFilm');
+        Route::get(__('film-detail').'/{film}-{slug}.html', 'FilmController@show')
+            ->name('fe.filmDetail');
+
+        /** BOOKING */
+        Route::get(__('booking').'.html', 'BookingController@selectSeats')
+            ->name('bookings.selectSeats');
+        Route::post('bookings/get/payment', 'BookingController@getPayment')
+            ->name('bookings.api.getPayment');
+        Route::get(__('booking').'/{slug}', 'BookingController@showResult')
+            ->name('bookings.result');
+
+        Route::post('bookings/select-seat', 'BookingController@selectSeat')
+            ->name('bookings.api.selectSeat');
+        Route::post('bookings/send-selected-seats', 'BookingController@sendSelectedSeats')
+            ->name('bookings.api.sendSelectedSeatsToJoiner');
+
+        /** PAYMENT CALLBACK */
+        Route::get('/payment/callback', 'BookingController@callback')
+            ->name('payment.callback');
     });
 
 
@@ -25,7 +78,10 @@ Route::group(['middleware' => ['locale', 'first.use']], function () {
         'prefix' => $admin
     ], function () {
         Route::group(['middleware' => ['auth', 'is.admin']], function () {
-            Route::get('/', 'DashboardController@index');
+            Route::get('/', function () {
+                return redirect(route('dashboard'));
+            });
+            Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
             /**
              * USER SECTION
              */

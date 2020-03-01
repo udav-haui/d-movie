@@ -11,6 +11,8 @@ return [
     |
     */
     'momo' => [
+        'callback' => env('APP_URL') . '/payment/callback',
+        'notify' => env('APP_URL') . '/payment/notify',
         'endpoint' => env('MOMO_ENDPOINT', 'https://test-payment.momo.vn/gw_payment/transactionProcessor'),
         'partner_code' => env('MOMO_PARTNER_CODE', ''),
         'access_key' => env('MOMO_ACCESS_KEY', ''),
@@ -201,13 +203,15 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoriesServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
 
         RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
+
+        App\Providers\TranslationServiceProvider::class,
 
     ],
 

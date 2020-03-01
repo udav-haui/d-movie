@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Session;
 
 class Prefix
 {
@@ -19,7 +18,7 @@ class Prefix
         /**
          * After access to admin page will put a prefix to session
          */
-        Session::put('prefix', request()->route()->getPrefix());
+        \Session::put('prefix', request()->route()->getPrefix() ?? 'member');
         return $next($request);
     }
 }

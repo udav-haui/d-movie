@@ -2,15 +2,18 @@
 
 namespace App\Providers;
 
+use App\Repositories\BookingRepository;
 use App\Repositories\CinemaRepository;
 use App\Repositories\ContactRepository;
 use App\Repositories\FilmRepository;
 use App\Repositories\FilmScheduleRepository;
+use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\CinemaRepositoryInterface;
 use App\Repositories\Interfaces\ContactRepositoryInterface;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
 use App\Repositories\Interfaces\FilmScheduleRepositoryInterface;
 use App\Repositories\Interfaces\LogRepositoryInterface;
+use App\Repositories\Interfaces\MemberRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\ShowRepositoryInterface;
 use App\Repositories\Interfaces\SliderRepositoryInterface;
@@ -19,6 +22,7 @@ use App\Repositories\Interfaces\StaticPageRepositoryInterface;
 use App\Repositories\Interfaces\TimeRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\LogRepository;
+use App\Repositories\MemberRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\ShowRepository;
 use App\Repositories\SliderRepository;
@@ -62,5 +66,8 @@ class RepositoriesServiceProvider extends ServiceProvider
         $this->app->singleton(StaticPageRepositoryInterface::class, StaticPageRepository::class);
         $this->app->singleton(ContactRepositoryInterface::class, ContactRepository::class);
         $this->app->singleton(ComboRepositoryInterface::class, ComboRepository::class);
+
+        $this->app->singleton(BookingRepositoryInterface::class, BookingRepository::class);
+        $this->app->singleton(MemberRepositoryInterface::class, MemberRepository::class);
     }
 }

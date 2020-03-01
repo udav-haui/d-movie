@@ -32,6 +32,14 @@
                     </form>
                 </ul>
             </li>
+            @can('view', \App\Dashboard::class)
+                <li>
+                    <a href="{{ route('dashboard') }}" class="waves-effect">
+                        <i class="mdi mdi-av-timer fa-fw" data-icon="v"></i>
+                        <span class="hide-menu"> {{ __('Dashboard') }} </span>
+                    </a>
+                </li>
+            @endcan
             @can('viewAny', \App\Role::class)
                 <li> <a href="{{ route('roles.index') }}" class="waves-effect">
                         <i  class="mdi mdi-settings fa-fw"></i>

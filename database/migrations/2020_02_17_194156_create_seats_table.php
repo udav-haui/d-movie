@@ -18,7 +18,7 @@ class CreateSeatsTable extends Migration
             $table->tinyInteger('type')->default(0)->comment('Seat\'s type');
             $table->char('row', 2)->comment('Seat\'s row');
             $table->unsignedTinyInteger('number')->comment('Seat\'s number');
-            $table->unsignedInteger('show_id')->index()->comment('The show which seat belong to.');
+            $table->unsignedInteger('show_id')->index()->comment('The show which booking belong to.');
 
             $table->foreign('show_id')->references('id')
                 ->on('shows')

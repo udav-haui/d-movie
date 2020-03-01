@@ -15,10 +15,11 @@
 <!-- Custom CSS -->
 <link href="{{ asset('adminhtml/assets/css/style.css') }}" rel="stylesheet">
 <!-- color CSS -->
-<link href="{{ asset('adminhtml/assets/css/colors/blue-dark.css') }}" id="theme"  rel="stylesheet">
+<link href="{{ asset('adminhtml/assets/css/colors/megna.css') }}" id="theme"  rel="stylesheet">
 {{--Upload file--}}
 <link rel="stylesheet" href="{{ asset('adminhtml/assets/plugins/bower_components/dropify/dist/css/dropify.min.css') }}">
 <link rel="stylesheet" href="{{ asset('adminhtml/css/admincss.css') }}">
+<link rel="stylesheet" href="{{ asset('adminhtml/css/plugins.css') }}">
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>

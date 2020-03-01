@@ -59,13 +59,6 @@
                     <th class="no-sort">{{ __('Task') }}</th>
                 </tr>
                 </thead>
-                <tfoot>
-                <tr>
-                    <th>#</th>
-                    <th>{{ __('Role name') }}</th>
-                    <th>{{ __('Task') }}</th>
-                </tr>
-                </tfoot>
                 <tbody>
                 @foreach($roles as $role)
                     <tr>

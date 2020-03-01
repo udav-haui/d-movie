@@ -14,7 +14,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 
 /**
  * Class UserController
@@ -246,7 +246,7 @@ class UserController extends Controller
         $this->authorize('selfUpdate', $user);
 
         try {
-            $this->userRepository->update(null, $user, $request->all());
+            $this->userRepository->update(null, $user, $request->all(), false);
             return back()->with('success', __('User info have updated.'));
         } catch (\Exception $exception) {
             return back()->with('change_info', 'active')

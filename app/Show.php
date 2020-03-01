@@ -128,6 +128,14 @@ class Show extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getVisibleSeats()
+    {
+        return $this->seats()->where('seats.'.Seat::STATUS, Seat::ENABLE);
+    }
+
+    /**
      * A show belong to a cinema
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -135,5 +143,21 @@ class Show extends Model
     public function cinema()
     {
         return $this->belongsTo(Cinema::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function films()
+    {
+        return $this->belongsToMany(Film::class)
+            ->withPivot('start_date')
+            ->withPivot('status')
+            ->withPivot('id');
+    }
+
+    public function times()
+    {
+        return $this->hasManyThrough(Time::class, FilmSchedule::class, 'show_id', 'film_show_id', 'id', 'id');
     }
 }

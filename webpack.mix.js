@@ -18,9 +18,10 @@ const mix = require('laravel-mix');
 //
 // mix.sass('resources/sass/login.page.scss', 'public/adminhtml/css')
 //     .js('resources/js/adminjs.js', 'public/adminhtml/js')
-//     .sass('resources/sass/admincss.scss', 'public/adminhtml/css')
 //     .sass('resources/sass/profile.scss', 'public/adminhtml/css')
 //     .sass('resources/sass/datatables.scss', 'public/adminhtml/css');
 
 mix.js('resources/js/app.js', 'public/frontend/js')
-    .sass('resources/sass/app.scss', 'public/frontend/css');
+    .sass('resources/sass/admincss.scss', 'public/adminhtml/css')
+    .sass('resources/sass/app.scss', 'public/frontend/css')
+    .js('resources/js/booking/index.js', 'public/frontend/js/booking');

@@ -117,7 +117,7 @@ class SocialAccountRepository implements SocialAccountRepositoryInterface
 
             $account->user()->associate($user);
             $account->save();
-            return false;
+            return $user;
         }
     }
 

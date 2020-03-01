@@ -32,8 +32,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-default">
                                 <li>
-                                    <a href="#">
-                                    <i class="icon-user"></i> {{ __('My profile') }}</a>
+                                    <a href="{{ route('member.show', ['slug' => __('membership')]) }}"><i class="icon-user"></i> {{ __('My profile') }}</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>

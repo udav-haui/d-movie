@@ -14,3 +14,13 @@
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+
+BroadCast::channel('new-join.{id}', function ($user, $id) {
+    return $user;
+});
+
+
+BroadCast::channel('time.{id}', function ($user, $id) {
+    return true;
+});

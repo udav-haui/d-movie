@@ -20,7 +20,7 @@ class IsAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (\Auth::user()->isAdmin()) {
+        if (\Auth::user()->isAdmin() || \Auth::user()->isStaffAccount()) {
             return $next($request);
         }
         return redirect(route('frontend.home'));

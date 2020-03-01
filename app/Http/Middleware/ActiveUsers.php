@@ -19,9 +19,11 @@ class ActiveUsers
     public function handle($request, Closure $next)
     {
         if (auth()->check()) {
-            if (!auth()->user()->isActive()) {
+            /** @var \App\User $user */
+            $user = auth()->user();
+            if (!$user->isActive()) {
                 auth()->guard()->logout();
-                return redirect(route('login'))->with('error', __('Your session has timed out.'));
+                return redirect()->back()->with('error', __('Your session has timed out.'));
             }
             $expireTime = Carbon::now()->addMinutes(5);
             Cache::put('active-user-' . auth()->user()->id, true, $expireTime);

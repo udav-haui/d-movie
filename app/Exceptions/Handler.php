@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\View;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -60,5 +62,26 @@ class Handler extends ExceptionHandler
             }
         }
         return parent::render($request, $exception);
+    }
+
+    protected function registerErrorViewPaths()
+    {
+        $paths = collect(config('view.paths'));
+        if (\Request::segment(1) === config()->get('app.admin_path')) {
+            foreach ($paths as $path) {
+                $paths = $paths->diff($path);
+                $paths = $paths->add($path . '\admin');
+            }
+
+        } else {
+            foreach ($paths as $path) {
+                $paths = $paths->diff($path);
+                $paths = $paths->add($path . '\frontend');
+            }
+        }
+
+        \View::replaceNamespace('errors', $paths->map(function ($path) {
+            return "{$path}/errors";
+        })->push(__DIR__.'/views')->all());
     }
 }

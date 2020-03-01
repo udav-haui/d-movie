@@ -143,6 +143,33 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     }
 
     /**
+     * Get order by
+     *
+     * @param null $query
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Builder|null
+     * @throws Exception
+     */
+    public function orderBy($query = null, array $columns = [])
+    {
+        try {
+            if ($query === null) {
+                $query = $this->model::query();
+            }
+
+            if (!empty($columns)) {
+                foreach ($columns as $key => $value) {
+                    $query = $query->orderBy($key, $value);
+                }
+            }
+
+            return $query;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
      * Retrieve model
      *
      * @param int|string $id
@@ -166,6 +193,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $fields = $this->removeTokenField($fields);
 
         try {
+            $fields = $this->encodeSpecialChar($fields);
             $model = $this->model::create($fields);
 
             if ($isWriteLog) {
@@ -197,12 +225,16 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         }
 
         try {
+            $fields = $this->encodeSpecialChar($fields);
             $model->update($fields);
             if ($isWriteLog) {
                 $this->updateLog($model, $this->model);
             }
             return $model;
-        } catch (Exception $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] == 1451) {
+                throw new Exception(__('Can not delete or update because the record has relation to other.'));
+            }
             throw new Exception($e->getMessage());
         }
     }
@@ -225,7 +257,10 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                 $this->deleteLog($model, $this->model);
             }
             return $model;
-        } catch (Exception $exception) {
+        } catch (\Illuminate\Database\QueryException $exception) {
+            if ($exception->errorInfo[1] == 1451) {
+                throw new Exception(__('Can not delete or update because the record has relation to other.'));
+            }
             throw new Exception($exception->getMessage());
         }
     }
@@ -311,5 +346,20 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     public function formatDate(string $date)
     {
         return Carbon::make($date)->format('Y-m-d');
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function encodeSpecialChar(array $fields)
+    {
+        foreach ($fields as $key => $value) {
+            if ($value) {
+                $fields[$key] = htmlspecialchars($value);
+            }
+        }
+
+        return $fields;
     }
 }

@@ -3,6 +3,7 @@
     view = '{{ __('View') }}',
     create = '{{ __('Create') }}',
     edit = '{{ __('Edit') }}',
+        dashboardText = '{{ __('Dashboard') }}'
     deleteText = '{{ __('Delete') }}',
     roleText = '{{ __('Roles manage') }}',
     userText = '{{ __('User manage') }}',
@@ -21,6 +22,7 @@
         '{{ old('permissions', $permissionsString ?? null) }}'.split(',');
     window.permissionData = [{
         id: 0, text: '{{ __('Dmovie System') }}', expanded: true, spriteCssClass: "dmovie", items: [
+            { id: 'dashboard', text: dashboardText, expanded: true, spriteCssClass: "dashboard-item" },
             {
                 id: 'user', text: userText, expanded: true, spriteCssClass: "user-item", items: [
                     { id: 'user-view', text: view, spriteCssClass: 'view' },
@@ -82,11 +84,11 @@
                             { id: 'show-edit', text: edit, spriteCssClass: "edit" },
                             { id: 'show-delete', text: deleteText, spriteCssClass: "delete" },
                             {
-                                id: 'seat', text: seatText, expanded: true, spriteCssClass: "seat-item", items: [
-                                    { id: 'seat-view', text: view,  spriteCssClass: "view" },
-                                    { id: 'seat-create', text: create, spriteCssClass: "create" },
-                                    { id: 'seat-edit', text: edit, spriteCssClass: "edit" },
-                                    { id: 'seat-delete', text: deleteText, spriteCssClass: "delete" }
+                                id: 'booking', text: seatText, expanded: true, spriteCssClass: "booking-item", items: [
+                                    { id: 'booking-view', text: view,  spriteCssClass: "view" },
+                                    { id: 'booking-create', text: create, spriteCssClass: "create" },
+                                    { id: 'booking-edit', text: edit, spriteCssClass: "edit" },
+                                    { id: 'booking-delete', text: deleteText, spriteCssClass: "delete" }
                                 ]
                             },
                             {

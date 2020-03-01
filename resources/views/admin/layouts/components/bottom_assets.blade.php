@@ -23,4 +23,6 @@
 {{--<script src="{{ asset('adminhtml/assets/plugins/bower_components/calendar/dist/cal-init.js') }}"></script>--}}
 <!-- Custom Theme JavaScript -->
 <script src="{{ asset('adminhtml/assets/js/custom.js') }}"></script>
+<!--Style Switcher -->
+<script src="{{ asset('adminhtml/assets/plugins/bower_components/styleswitcher/jQuery.style.switcher.js') }}"></script>
 {{--<script src="{{ asset('adminhtml/assets/js/dashboard1.js') }}"></script>--}}
