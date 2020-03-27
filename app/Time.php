@@ -207,4 +207,19 @@ class Time extends Model
         return $this->seats()->where('seats.'.Seat::STATUS, Seat::ENABLE)
             ->wherePivot(Ticket::STATUS, '!=', Ticket::NOT_AVAILABLE);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough
+     */
+    public function film()
+    {
+        return $this->hasOneThrough(
+            Film::class,
+            FilmSchedule::class,
+            Time::ID,
+            Film::ID,
+            Time::SCHEDULE,
+            FilmSchedule::FILM
+        );
+    }
 }

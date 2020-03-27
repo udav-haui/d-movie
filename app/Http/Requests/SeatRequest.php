@@ -34,10 +34,15 @@ class SeatRequest extends FormRequest
         ];
 
         if (!$this->quick_make) {
+            $unique = Rule::unique('seats')->where(function ($query) {
+                $query->where(Seat::SHOW, $this->show_id)
+                    ->where(Seat::ROW, $this->row);
+            });
+            if ($this->seat) {
+                $unique->ignore($this->seat->getId());
+            }
             $rules[Seat::NUMBER] = [
-                Rule::unique('seats')->where(function ($query) {
-                    $query->where(Seat::SHOW, $this->show_id)->where(Seat::ROW, $this->row);
-                })
+                $unique
             ];
         }
 

@@ -70,13 +70,13 @@ class Handler extends ExceptionHandler
         if (\Request::segment(1) === config()->get('app.admin_path')) {
             foreach ($paths as $path) {
                 $paths = $paths->diff($path);
-                $paths = $paths->add($path . '\admin');
+                $paths = $paths->add($path . '/admin');
             }
 
         } else {
             foreach ($paths as $path) {
                 $paths = $paths->diff($path);
-                $paths = $paths->add($path . '\frontend');
+                $paths = $paths->add($path . '/frontend');
             }
         }
 

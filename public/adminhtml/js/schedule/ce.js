@@ -19,29 +19,31 @@ $(document).ready(function () {
         }
     });
 
-    $('[dmovie-clockpicker]').clockpicker({
-        /* Init stop time */
-        afterDone: function () {
-            let startTimeVal = $('#start_time').val(),
-                stopTime = $('.stop_time'),
-                totalTime = $('#total_time'),
-                moreTime = $('#prepare_time').val(),
-                filmDuration = $('.film_duration').val(),
-                stopTimeVal = moment(startTimeVal, 'HH:mm'),
-                minCount = 0;
-            if (!isNaN(parseInt(filmDuration))) {
-                stopTimeVal = stopTimeVal.add(filmDuration, 'minutes');
-                minCount += parseInt(filmDuration);
-            }
+    if ($('[dmovie-clockpicker]').length > 0) {
+        $('[dmovie-clockpicker]').clockpicker({
+            /* Init stop time */
+            afterDone: function () {
+                let startTimeVal = $('#start_time').val(),
+                    stopTime = $('.stop_time'),
+                    totalTime = $('#total_time'),
+                    moreTime = $('#prepare_time').val(),
+                    filmDuration = $('.film_duration').val(),
+                    stopTimeVal = moment(startTimeVal, 'HH:mm'),
+                    minCount = 0;
+                if (!isNaN(parseInt(filmDuration))) {
+                    stopTimeVal = stopTimeVal.add(filmDuration, 'minutes');
+                    minCount += parseInt(filmDuration);
+                }
 
-            if (!isNaN(parseInt(moreTime))) {
-                stopTimeVal = stopTimeVal.add(moreTime, 'minutes');
-                minCount += parseInt(moreTime);
+                if (!isNaN(parseInt(moreTime))) {
+                    stopTimeVal = stopTimeVal.add(moreTime, 'minutes');
+                    minCount += parseInt(moreTime);
+                }
+                stopTime.val(stopTimeVal.format('HH:mm'));
+                totalTime.val(minCount);
             }
-            stopTime.val(stopTimeVal.format('HH:mm'));
-            totalTime.val(minCount);
-        }
-    });
+        });
+    }
 
     $('.film_duration').on('change', function () {
         let startTimeVal = $('#start_time').val();

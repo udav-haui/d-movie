@@ -86,7 +86,6 @@
 @endsection
 
 @section('content')
-
     <input type="hidden" id="lang-select"
            success-bookings-count="{{ __('# Success Bookings') }}"
            failed-bookings-count="{{ __('# Failed Bookings') }}"

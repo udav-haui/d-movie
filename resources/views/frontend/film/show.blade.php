@@ -95,22 +95,29 @@
 
 
                     <?php
-                        /** @var \App\Show $show */
+                        /** @var \App\FilmSchedule $date */
                     $dates = [];
+                    $active = true;
                     ?>
                     @foreach ($releaseDate as $key => $date)
-                        <?php
-                            array_push($dates, $date->start_date);
+                        <?php /** @var \Carbon\Carbon $startDate */
+                            $startDate = \Carbon\Carbon::make($date->getStartDate());
                         ?>
-                            <li class="@if ($key === 0) in active @endif">
-                                <a href="#movie{{ $date->start_date }}"
-                                   data-toggle="tab" class="dayofweek" id="{{ $date->start_date }}">
-                                    <span class="font-38 font-s-35">{{ \Carbon\Carbon::make($date->start_date)->format('d') }}</span>
-                                    {{ \Carbon\Carbon::make($date->start_date)->format('m') }} -
-                                    <?php $dayOfWeek = \Carbon\Carbon::make($date->start_date)->dayOfWeek ?>
-                                    {{ convert_locale_day_of_week($dayOfWeek) }}
-                                </a>
-                            </li>
+                        @if ($startDate->greaterThanOrEqualTo(\Carbon\Carbon::today()))
+                            <?php
+                                array_push($dates, $date->start_date);
+                            ?>
+                                <li class="@if ($active) in active @endif">
+                                    <a href="#movie{{ $date->start_date }}"
+                                       data-toggle="tab" class="dayofweek" id="{{ $date->start_date }}">
+                                        <span class="font-38 font-s-35">{{ \Carbon\Carbon::make($date->start_date)->format('d') }}</span>
+                                        {{ \Carbon\Carbon::make($date->start_date)->format('m') }} -
+                                        <?php $dayOfWeek = \Carbon\Carbon::make($date->start_date)->dayOfWeek ?>
+                                        {{ convert_locale_day_of_week($dayOfWeek) }}
+                                    </a>
+                                </li>
+                                <?php $active = false; ?>
+                            @endif
                     @endforeach
 
                 </ul>
@@ -132,12 +139,17 @@
                                     <?php /** @var \App\Time $time */  ?>
                                     @foreach($times as $key => $time)
                                         @if (!in_array($time->getStartTime(), $existTimes))
-                                            <?php array_push($existTimes, $time->getStartTime()) ?>
+                                            <?php array_push($existTimes, $time->getStartTime()); ?>
                                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5 text-center">
 
                                                 <a href="#booking-pop-up" style="width: 100%"
-                                                   data-fancybox data-src="#booking-pop-up"
-                                                   onclick="bookingSeat(this, '{{ $date }}', '{{ json_encode($time) }}', '{{ json_encode($film) }}', '{{ $film->getTitle() }}');"
+                                                   <?php /** available to click when show time is greater than now time */ ?>
+                                                   @if (\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::make($time->getStartDate() . $time->getStartTime())))
+                                                       data-fancybox data-src="#booking-pop-up"
+                                                       onclick="bookingSeat(this, '{{ $date }}', '{{ json_encode($time) }}', '{{ json_encode($film) }}', '{{ $film->getTitle() }}');"
+                                                   @else
+                                                    disabled
+                                                   @endif
                                                    class="btn default">{{ $time->getFormatStartTime() }}</a>
 
                                                 <div class="font-smaller padding-top-5">{{ $film->getEmptySeats($date, $time->getStartTime()) }}  {{ __('empty seats') }}</div>

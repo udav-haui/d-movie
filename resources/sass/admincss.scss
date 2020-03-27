@@ -230,6 +230,9 @@ div[id^="details-dt-"] {
 .sidebar {
     z-index: 100000;
 }
+.preloader {
+    z-index: 100001;
+}
 .dmovie-error-box {
     display: block;
     width: 100%;
@@ -365,7 +368,6 @@ table.dataTable{
         .select2-results {
             .select2-results__options {
                 &::-webkit-scrollbar-track {
-                    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
                     background-color: #F5F5F5;
                 }
                 &::-webkit-scrollbar {
@@ -568,17 +570,24 @@ table.dataTable{
 .dt-buttons {
     user-select: none;
 }
-.dt-button-collection {
+div.dt-button-collection {
     width: 500px !important;
     border-radius: 0 !important;
 
-    .dt-button {
+    button.dt-button {
         border-color: $borderColor;
+        width: auto;
+        display: inline;
     }
-    .dt-button.active:not(.disabled) {
-        background-color: $mainColor !important;
-        background-image: none !important;
+    button.dt-button.active:not(.disabled) {
+        background-color: $mainColor;
+        background-image: none;
         color: #fff0f0;
+        box-shadow: none;
+        &:hover:not(.disabled) {
+            background-image: none;
+            background-color: $mainColor;
+        }
     }
 }
 #datatables_buttons_info {

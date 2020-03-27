@@ -428,6 +428,10 @@
     "Select a show": "Chọn một phòng chiếu",
     "Please select a cinema": "Hãy chọn một rạp",
     "Select start date": "Chọn ngày chiếu",
+    "Edit Seat": "Sửa Ghế",
+
+    "Edit :filmName's schedule": "Sửa lịch chiếu của phim :filmName",
+    "Edit <code>:filmName</code>'s schedule": "Sửa lịch chiếu của phim <code>:filmName</code>",
 
 
     "Can not delete or update because the record has relation to other.": "Không thể xoá hay cập nhật vì bản ghi đang được liên kết với bản ghi khác.",
@@ -441,6 +445,7 @@
     "The [<code>:itemName</code>] has been saved.": "Mục [<code>:itemName</code>] đã được lưu trữ.",
     "The <code>:itemName</code> has been saved.": "Mục <code>:itemName</code> đã được lưu trữ.",
     "The [:itemName] has been saved.": "Mục [:itemName] đã được lưu trữ.",
+    "The record has been saved.": "Bản ghi đã được lưu trữ.",
     "The [<code>:itemName</code>] have been saved.": "Các mục [<code>:itemName</code>] đã được lưu trữ.",
     "The <code>:itemName</code> have been saved.": "Các mục <code>:itemName</code> đã được lưu trữ.",
     "The [:itemName] have been saved.": "Các mục [:itemName] đã được lưu trữ.",
@@ -460,6 +465,10 @@
 
     "You saved this :item": "Bạn đã lưu mục :item",
     "You saved this <code>:item</code>.": "Bạn đã lưu mục <code>:item</code>.",
+
+    "Nothing be change.": "Không có gì thay đổi.",
+
+    "The other :attribute has been exist. Please choose other value.": "Đã có :attribute tồn tại. Vui lòng chọn một giá trị khác",
 
 
     "We cant update :name have id :id": "Chúng tôi không thể cập nhật thay đổi cho :name có id: :id",
@@ -656,5 +665,10 @@
     "Please try after some time": "Vui lòng thử lại trong thời gian tới",
     "Back to home": "Trở lại trang chủ",
     "Total :name": "Tổng số :name",
-    "users": "người dùng"
+    "users": "người dùng",
+
+    "You are trying to reach not available show time.": "Bạn đang cố gắng truy cập vào giờ chiếu đã không còn hợp lệ.",
+
+    "Movie Schedule": "Lịch Chiếu",
+    ":time minutes": ":time phút"
 }

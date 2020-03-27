@@ -1,3 +1,4 @@
+{{--<script type="text/javascript" src="{{ asset('Assets/Common/Plugins/JQuery/jquery-1.11.2.min.js') }}"></script>--}}
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/JQuery/jquery.min-3.4.1.js') }}"></script>
 <script type="text/javascript" src="{{ asset('frontend/js/app.js') }}"></script>
 <script type="text/javascript" src="{{ asset('Assets/Common/Plugins/Bootstrap/js/popper.min.js') }}"></script>

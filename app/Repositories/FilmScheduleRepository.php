@@ -149,4 +149,72 @@ class FilmScheduleRepository extends CRUDModelAbstract implements FilmScheduleRe
             throw new \Exception($e->getMessage());
         }
     }
+
+    /**
+     * @param int $modelId
+     * @param Schedule $schedule
+     * @param array $fields
+     * @param bool $isWriteLog
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Exception
+     */
+    public function update($modelId = null, $schedule = null, $fields = [], bool $isWriteLog = true)
+    {
+        try {
+            if (array_key_exists('cinema_id', $fields)) {
+                unset($fields['cinema_id']);
+            }
+            if (array_key_exists(Schedule::START_DATE, $fields)) {
+                /**
+                 * If start date is no change
+                 */
+                if (Carbon::make($schedule->getStartDate())->equalTo(Carbon::make($fields[Schedule::START_DATE]))) {
+                    unset($fields[Schedule::START_DATE]);
+                } else {
+                    $fields[Schedule::START_DATE] = $this->formatDate($fields[Schedule::START_DATE]);
+                }
+            }
+            if (array_key_exists(Schedule::START_DATE, $fields)) {
+                $schedule->times()->update([
+                    Time::START_DATE => $fields[Schedule::START_DATE]
+                ]);
+            }
+
+            if ($schedule !== null) {
+                $fields = array_diff($fields, $schedule->toArray());
+            }
+
+            return parent::update($modelId, $schedule, $fields, $isWriteLog);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Get visible schedule date
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     * @throws \Exception
+     */
+    public function getVisibleDates()
+    {
+        /** @var \Illuminate\Database\Eloquent\Builder $visibleDates */
+        $visibleDates = $this->getVisible()
+            ->where(Schedule::START_DATE, '>=', Carbon::today()->format('Y-m-d'))->orderBy(Schedule::START_DATE, 'ASC');
+
+        return ($visibleDates);
+    }
+
+    /**
+     * Get list schedule by date
+     *
+     * @param string $date
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|null[]
+     * @throws \Exception
+     */
+    public function getListByDate(string $date)
+    {
+        $collection = $this->getVisible();
+        return $this->getFilter($collection, [\App\FilmSchedule::START_DATE => $date])->get();
+    }
 }

@@ -187,8 +187,6 @@ class CinemaController extends Controller
             }
 
 
-
-
             return $dt->rawColumns(['status', 'task'])->make();
         }
 

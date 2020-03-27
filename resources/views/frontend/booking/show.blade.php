@@ -19,6 +19,10 @@
 
 @section('content')
 
+    <div class="container">
+        @include('admin.layouts.components.normal_notifications')
+    </div>
+
     <input type="hidden"
            class="lang-text"
            confirm-to-payment-title="{{ __('Confirm to payment?') }}"

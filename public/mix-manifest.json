@@ -1,4 +1,5 @@
 {
+    "/adminhtml/js/adminjs.js": "/adminhtml/js/adminjs.js",
     "/frontend/js/app.js": "/frontend/js/app.js",
     "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css",
     "/frontend/css/app.css": "/frontend/css/app.css",

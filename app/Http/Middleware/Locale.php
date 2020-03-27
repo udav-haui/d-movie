@@ -19,6 +19,7 @@ class Locale
     {
         $locale = Session::get('locale', config('app.locale'));
         App::setLocale($locale);
+        // dump('middleware locale = '.App::getLocale());
         return $next($request);
     }
 }

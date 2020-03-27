@@ -63,20 +63,22 @@ class BookingController extends Controller
      */
     public function selectSeats()
     {
-//        dd(1)
-
+        /** @var \App\Time $time */
+        $time = $this->timeRepository->find(request('time'));
 
         /** @var \App\Film $film */
         $film = $this->filmRepository->find(request('film'));
+
+        $check = $this->isAvailableShowTime($time, $film);
+        if ($check !== null) {
+            return $check;
+        }
 
         if (!$film->isOpenSaleTicket() || !$film->isVisible()) {
             return redirect(route('frontend.home'));
         }
 
         $combos = $this->comboRepository->getVisible()->get();
-
-        /** @var \App\Time $time */
-        $time = $this->timeRepository->find(request('time'));
 
         broadcast(new \App\Events\JoinedCustomer($time))->toOthers();
 
@@ -120,10 +122,32 @@ class BookingController extends Controller
                 }
             } else {
                 return redirect(
-                    route('fe.filmDetail', ['slug' => convert_vi_to_en($film->getTitle()), 'film'=>$film])
+                    route('fe.filmDetail', ['slug' => convert_vi_to_en($film->getTitle()), 'film'=> $film])
                 );
             }
         }
+    }
+
+    /**
+     * The show time is available to reach
+     *
+     * @param \App\Time $time
+     * @param \App\Film $film
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|null
+     */
+    private function isAvailableShowTime(\App\Time $time, \App\Film $film)
+    {
+        $redirect = null;
+        if (\Carbon\Carbon::now()
+            ->greaterThanOrEqualTo(\Carbon\Carbon::make($time->getStartDate() . $time->getStartTime())) ||
+            !$time->getSchedule()->isVisible()
+        ) {
+            $redirect = redirect(
+                route('fe.filmDetail', ['slug' => convert_vi_to_en($film->getTitle()), 'film' => $film])
+            )->with('error', __('You are trying to reach not available show time.'));
+            return $redirect;
+        }
+        return $redirect;
     }
 
     /**
@@ -156,6 +180,10 @@ class BookingController extends Controller
 
             /** @var \App\Time $time */
             $time = $this->timeRepository->find($data['time']['id']);
+            if (\Carbon\Carbon::now()
+                ->greaterThanOrEqualTo(\Carbon\Carbon::make($time->getStartDate() . $time->getStartTime()))) {
+                throw new \Exception(__('You are trying to reach not available show time.'));
+            }
             /** @var \App\User $user */
             $user = auth()->user();
             if ($time) {
@@ -231,7 +259,6 @@ class BookingController extends Controller
             }
             throw new \Exception(__('Something went wrong! Please try again.'));
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
             return request()->ajax() ?
                 response()->json([
                     'status' => 404,

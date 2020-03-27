@@ -41,10 +41,29 @@ class FilmController extends Controller
     public function show(Film $film, string $slug)
     {
         if ($film->isVisible()) {
-            $releaseDateQuery = $film->filmSchedules()->select(\App\FilmSchedule::START_DATE)->distinct();
+//            $times = $film->times()->get();
+//            $releaseDateQuery = $times->filter(function (\App\Time $time) {
+//                $startDate = \Carbon\Carbon::make($time->getStartDate() . $time->getStartTime());
+//                $estimatedTime = \Carbon\Carbon::now();
+//                return $startDate->greaterThanOrEqualTo($estimatedTime);
+//            });
+////            ->select(\App\FilmSchedule::START_DATE)->distinct()
+//            /** @var \App\Time $time */
+//            foreach ($releaseDateQuery as $time) {
+//                dump($time->film()->get());
+//            }
+//
+//            $releaseDate = $this->filmRepository->getVisible($releaseDateQuery)->get();
+//
+
+
+            $releaseDateQuery = $film->filmSchedules()->select(\App\FilmSchedule::START_DATE)
+                ->orderBy(\App\FilmSchedule::START_DATE)
+                ->distinct();
 
             $releaseDate = $this->filmRepository->getVisible($releaseDateQuery)->get();
 
+//            dd($releaseDate);
             return view('frontend.film.show', compact('film', 'releaseDate'));
         }
         return redirect(route('frontend.home'));

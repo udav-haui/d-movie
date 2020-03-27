@@ -212,7 +212,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @param Model|null $model
      * @param array $fields
      * @param bool $isWriteLog
-     * @return Model
+     * @return bool|Model
      * @throws Exception
      */
     public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true)
@@ -225,12 +225,15 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         }
 
         try {
-            $fields = $this->encodeSpecialChar($fields);
-            $model->update($fields);
-            if ($isWriteLog) {
-                $this->updateLog($model, $this->model);
+            if (count($fields) > 0) {
+                $fields = $this->encodeSpecialChar($fields);
+                $model->update($fields);
+                if ($isWriteLog) {
+                    $this->updateLog($model, $this->model);
+                }
+                return $model;
             }
-            return $model;
+            return false;
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1451) {
                 throw new Exception(__('Can not delete or update because the record has relation to other.'));
@@ -314,7 +317,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * Store image to storage
      *
      * @param object $image
-     * @return string
+     * @return string - image path
      * @throws Exception
      */
     public function storeImage($image)

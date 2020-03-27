@@ -75,6 +75,13 @@ class DashboardController extends Controller
      */
     public function getDailyBookingCountData(array $dateArray, string $status = 'success')
     {
+        if (empty($dateArray)) {
+            return [
+                'days' => [],
+                'booking_count' => [],
+                'max' => 0
+            ];
+        }
         $dailyBookingCountArray = array();
         $dayNameArray = array();
 
@@ -110,6 +117,24 @@ class DashboardController extends Controller
     }
 
     /**
+     * Get n days ago
+     *
+     * @param int $days
+     * @param string $from
+     * @return array
+     */
+    private function getNDaysAgo(int $days, string $from = 'now')
+    {
+        $dayArray = [];
+
+        while ($days > 0) {
+            array_push($dayArray, Carbon::$from()->subDays($days--));
+        }
+
+        return $dayArray;
+    }
+
+    /**
      * Show dashboard view
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
@@ -124,14 +149,15 @@ class DashboardController extends Controller
             /** @var Collection $bookings */
             $bookings = $this->bookingRepository->all(['user']);
 
-            $latest7DaysDump = $bookings->where('created_at', '>=', Carbon::today()->subDays(7))->pluck('created_at');
+            /** $latest7DaysDump = $bookings->where('created_at', '>=', Carbon::today()->subDays(7))
+             *  ->pluck('created_at');
+             **/
 
+            $latest7DaysDump = $this->getNDaysAgo(7, 'tomorrow');
             $latest7Days = array();
             foreach ($latest7DaysDump as $day) {
                 array_push($latest7Days, $day->format('Y-m-d'));
             }
-//            $latest7Days = json_decode($latest7Days);
-
             $dateArray = $this->getAllDayOfWeek($latest7Days);
 
 

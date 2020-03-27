@@ -75,7 +75,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                @if ($film->isAvailableSale())
+                                                @if ($film->isAvailableSale() && $film->isAvailableSchedule())
                                                     <div class="text-center padding-bottom-30" style='min-height: 85px;'>
                                                         <a style='display: block;' href="{{ route('fe.filmDetail', ['slug' => convert_vi_to_en($film->getTitle()), 'film' => $film]) }}"
                                                            class="btn btn-2 btn-mua-ve2 fancybox-fast-view">

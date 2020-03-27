@@ -107,24 +107,45 @@ class SeatController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Seat  $seat
-     * @return \Illuminate\Http\Response
+     * @param \App\Seat $seat
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Seat $seat)
     {
-        //
+        $this->authorize('update', Seat::class);
+
+        return view('admin.seat.edit', compact('seat'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Seat  $seat
-     * @return \Illuminate\Http\Response
+     * @param SeatRequest $request
+     * @param \App\Seat $seat
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Seat $seat)
+    public function update(SeatRequest $request, Seat $seat)
     {
-        //
+        $this->authorize('update', Seat::class);
+
+        try {
+            /** @var Seat $seat */
+            $seat = $this->seatRepository->update(null, $seat, $request->all());
+
+            return redirect(route('shows.getSeats', ['show' => $seat->getShow()->getId()]))
+                ->with(
+                    'success',
+                    __(
+                        'The [<code>:itemName</code>] has been saved.',
+                        ['itemName' => $seat->getRow().$seat->getNumber()]
+                    )
+                );
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

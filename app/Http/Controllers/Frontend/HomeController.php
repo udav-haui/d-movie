@@ -39,17 +39,31 @@ class HomeController extends Controller
         $visibleFilms = $this->filmRepository->getVisible(null, ['shows', 'shows.times'])->get();
 
         $hasScheduleFilms = $visibleFilms->filter(function (\App\Film $film) {
-            /** @var Collection $shows */
-            return $film->shows->filter(function (\App\Show $show) {
-                /** @var Collection $times */
-                return $show->times->filter(function (\App\Time $time) {
-                    $startDate = \Carbon\Carbon::make($time->getStartDate() . $time->getStartTime());
-                    $estimatedTime = \Carbon\Carbon::now();
-                    return $startDate->greaterThanOrEqualTo($estimatedTime);
-                })->isNotEmpty();
-            })->isNotEmpty();
-        });
 
+            $times = $film->times()->get();
+            $availableTimes = $times->filter(function (\App\Time $time) {
+                $startDate = \Carbon\Carbon::make($time->getStartDate() . $time->getStartTime());
+                $estimatedTime = \Carbon\Carbon::now();
+                return $startDate->greaterThanOrEqualTo($estimatedTime);
+            });
+
+//            /** @var Collection $shows */
+//            $shows = $film->shows->filter(function (\App\Show $show) {
+//                /** @var Collection $times */
+//                $times = $show->times->filter(function (\App\Time $time) {
+//                    $startDate = \Carbon\Carbon::make($time->getStartDate() . $time->getStartTime());
+//                    $estimatedTime = \Carbon\Carbon::now();
+//                    if ($startDate->greaterThanOrEqualTo($estimatedTime)) {
+//                        dump('start='. $startDate);
+//                        dump('now='.$estimatedTime);
+//                        dump($time->getId());
+//                    }
+//                    return $startDate->greaterThanOrEqualTo($estimatedTime);
+//                });
+//                return $times->isNotEmpty();
+//            });
+            return $availableTimes->isNotEmpty();
+        });
         $films = $hasScheduleFilms;
 
         return view('frontend.home', compact('films'));

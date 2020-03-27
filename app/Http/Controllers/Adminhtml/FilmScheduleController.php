@@ -201,24 +201,47 @@ class FilmScheduleController extends \App\Http\Controllers\Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\FilmSchedule  $filmSchedule
-     * @return \Illuminate\Http\Response
+     * @param \App\FilmSchedule $f
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(FilmSchedule $filmSchedule)
+    public function edit(FilmSchedule $f)
     {
-        //
+        $this->authorize('update', FilmSchedule::class);
+
+        $schedule = $f;
+        return view('admin.schedule.edit', compact('schedule'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\FilmSchedule  $filmSchedule
-     * @return \Illuminate\Http\Response
+     * @param ScheduleRequest $request
+     * @param \App\FilmSchedule $f
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, FilmSchedule $filmSchedule)
+    public function update(ScheduleRequest $request, FilmSchedule $f)
     {
-        //
+        $this->authorize('update', FilmSchedule::class);
+
+        try {
+            /** @var FilmSchedule $schedule */
+            $schedule = $this->scheduleRepository->update(null, $f, $request->all());
+
+            if ($schedule) {
+                $msg = __('The <code>:itemName</code> has been saved.', ['itemName' => $schedule->getId()]);
+            } else {
+                $msg = __('Nothing be change.');
+            }
+            return redirect(route('fs.index'))->with('success', $msg);
+        } catch (\Exception $e) {
+            return redirect(
+                route('fs.edit', ['f' => $f])
+            )
+                ->with('error', $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

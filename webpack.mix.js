@@ -22,6 +22,7 @@ const mix = require('laravel-mix');
 //     .sass('resources/sass/datatables.scss', 'public/adminhtml/css');
 
 mix.js('resources/js/app.js', 'public/frontend/js')
+    .js('resources/js/adminjs.js', 'public/adminhtml/js')
     .sass('resources/sass/admincss.scss', 'public/adminhtml/css')
     .sass('resources/sass/app.scss', 'public/frontend/css')
     .js('resources/js/booking/index.js', 'public/frontend/js/booking');

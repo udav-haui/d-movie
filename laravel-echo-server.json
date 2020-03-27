@@ -20,8 +20,8 @@
 	"protocol": "https",
 	"socketio": {},
 	"secureOptions": 67108864,
-	"sslCertPath": "F:/vadu/html/d-movie/cert/d-movie.pem",
-	"sslKeyPath": "F:/vadu/html/d-movie/cert/d-movie.key",
+	"sslCertPath": "cert/d-movie.pem",
+	"sslKeyPath": "cert/d-movie.key",
 	"sslCertChainPath": "",
 	"sslPassphrase": "",
 	"subscribers": {

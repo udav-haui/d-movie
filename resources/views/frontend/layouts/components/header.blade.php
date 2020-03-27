@@ -9,7 +9,7 @@
             <div class="header-navigation pull-right font-transform-inherit">
                 <ul class="dmovie-nav">
                     <li>
-                        <a href="{{ route('frontend.home') }}">{{ __('Movies Schedule') }}</a>
+                        <a href="{{ route('schedule.index') }}">{{ __('Movies Schedule') }}</a>
                     </li>
 
 

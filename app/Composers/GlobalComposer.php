@@ -7,20 +7,28 @@ use App\Repositories\Interfaces\SliderRepositoryInterface;
 use App\Repositories\Interfaces\StaticPageRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 
+/**
+ * Class GlobalComposer
+ *
+ * @package App\Composers
+ */
 class GlobalComposer
 {
     /**
      * @var UserRepositoryInterface
      */
     private $userRepository;
+
     /**
      * @var CinemaRepositoryInterface
      */
     private $cinemaRepository;
+
     /**
      * @var StaticPageRepositoryInterface
      */
     private $pageRepository;
+
     /**
      * @var SliderRepositoryInterface
      */
@@ -66,8 +74,7 @@ class GlobalComposer
         $activePagesGlobal = $this->pageRepository->getVisible($activePagesGlobal)->get();
 
         $sliderquery = $this->sliderRepository->getVisible();
-//
-//        dd($sliderquery->orderBy('order', 'DESC')->get());
+
         $sliders = $this->sliderRepository->orderBy($sliderquery, ['order' => 'ASC'])->get();
 
         $view->with('activeUsers', $users);

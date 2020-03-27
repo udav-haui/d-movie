@@ -85,6 +85,16 @@ class FilmSchedule extends Model
     }
 
     /**
+     * Is schedule is enable
+     *
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return (int)$this->getStatus() === self::ENABLE;
+    }
+
+    /**
      * Get start date
      *
      * @return string
@@ -119,7 +129,7 @@ class FilmSchedule extends Model
     /**
      * Get associate film
      *
-     * @return Model
+     * @return Film
      */
     public function getFilm()
     {
@@ -140,7 +150,7 @@ class FilmSchedule extends Model
     /**
      * Get associate show
      *
-     * @return Model
+     * @return Show
      */
     public function getShow()
     {

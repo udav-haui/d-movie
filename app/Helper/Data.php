@@ -2,6 +2,14 @@
 
 namespace App\Helper;
 
+use App\Repositories\FilmScheduleRepository;
+use App\Repositories\Interfaces\FilmScheduleRepositoryInterface;
+
+/**
+ * Class Data
+ *
+ * @package App\Helper
+ */
 class Data
 {
     /** Constant language value */

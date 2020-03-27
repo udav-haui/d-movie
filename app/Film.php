@@ -448,6 +448,11 @@ class Film extends Model
             ->withPivot('id');
     }
 
+    /**
+     * A film has many show times
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function times()
     {
         return $this->hasManyThrough(Time::class, FilmSchedule::class, 'film_id', 'film_show_id', 'id', 'id');
@@ -461,6 +466,18 @@ class Film extends Model
     public function filmSchedules()
     {
         return $this->hasMany(FilmSchedule::class);
+    }
+
+    /**
+     * True if this film has any schedule is enable
+     *
+     * @return bool
+     */
+    public function isAvailableSchedule()
+    {
+        return $this->filmSchedules()
+                ->where(FilmSchedule::START_DATE, '>=', \Carbon\Carbon::today()->format('Y-m-d'))
+                ->where(FilmSchedule::STATUS, FilmSchedule::ENABLE)->count() > 0;
     }
 
     /**
@@ -492,7 +509,11 @@ class Film extends Model
         return $selectedSeats;
     }
 
-
+    /**
+     * Available for sale ticket
+     *
+     * @return bool
+     */
     public function isAvailableSale()
     {
         $isAvailable = $this->isOpenSaleTicket();
