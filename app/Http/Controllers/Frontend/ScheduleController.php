@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\FilmSchedule;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\FilmRepositoryInterface;
 use App\Repositories\Interfaces\FilmScheduleRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,22 +22,46 @@ class ScheduleController extends Controller
     private $scheduleRepository;
 
     /**
+     * @var FilmRepositoryInterface
+     */
+    private $filmRepository;
+
+    /**
      * ScheduleController constructor.
      *
      * @param FilmScheduleRepositoryInterface $scheduleRepository
+     * @param FilmRepositoryInterface $filmRepository
      */
-    public function __construct(FilmScheduleRepositoryInterface $scheduleRepository)
-    {
+    public function __construct(
+        FilmScheduleRepositoryInterface $scheduleRepository,
+        FilmRepositoryInterface $filmRepository
+    ) {
         $this->scheduleRepository = $scheduleRepository;
+        $this->filmRepository = $filmRepository;
     }
 
     /**
      * Get schedule view
+     *
+     * @throws \Exception
      */
     public function index()
     {
         $visibleDates = $this->prepareVisibleDateFilmData();
-        return view('frontend.schedule.index', compact('visibleDates'));
+        $isComingSoonFilms = $this->prepareComingSoonFilmData();
+        return view('frontend.schedule.index', compact('visibleDates', 'isComingSoonFilms'));
+    }
+
+    /**
+     * Prepare data for is cuming soon film
+     *
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|null[]
+     */
+    private function prepareComingSoonFilmData()
+    {
+        $data = $this->filmRepository->getVisible();
+        $data = $this->filmRepository->getFilter($data, [\App\Film::IS_COMING_SOON =>\App\Film::ENABLE]);
+        return $data->get();
     }
 
     /**

@@ -88,7 +88,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      *
      * @param null $collection
      * @param array $withTbl
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Builder
      * @throws Exception
      */
     public function getVisible($collection = null, $withTbl = [])
@@ -355,7 +355,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
      * @param array $fields
      * @return array
      */
-    public function encodeSpecialChar(array $fields)
+    protected function encodeSpecialChar(array $fields)
     {
         foreach ($fields as $key => $value) {
             if ($value) {

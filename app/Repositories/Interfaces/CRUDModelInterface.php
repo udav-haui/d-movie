@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface CRUDModelInterface
 {
+
+    /**
+     * @param array $ids
+     * @return \Illuminate\Support\Collection
+     */
+    public function getByIds(array $ids = []);
+
     /**
      * Get all records
      *
@@ -34,9 +41,30 @@ interface CRUDModelInterface
      *
      * @param null $collection
      * @param array $withTbl
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getVisible($collection = null, $withTbl = []);
+
+    /**
+     * Filter data
+     *
+     * @param null $query
+     * @param array $filterArr
+     * @param array $with
+     * @return \Illuminate\Database\Eloquent\Builder|null
+     * @throws Exception
+     */
+    public function getFilter($query = null, $filterArr = [], $with = []);
+
+    /**
+     * Get order by
+     *
+     * @param null $query
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Builder|null
+     * @throws \Exception
+     */
+    public function orderBy($query = null, array $columns = []);
 
     /**
      * Retrieve model

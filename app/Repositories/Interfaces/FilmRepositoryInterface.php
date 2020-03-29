@@ -7,7 +7,7 @@ namespace App\Repositories\Interfaces;
  *
  * @package App\Repositories\Interfaces
  */
-interface FilmRepositoryInterface
+interface FilmRepositoryInterface extends CRUDModelInterface
 {
 
 }
