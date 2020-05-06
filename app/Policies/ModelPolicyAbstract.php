@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\AbstractModel;
 use App\User;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ModelPolicyAbstract
@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class ModelPolicyAbstract
 {
-    /** @var Model */
-    protected $model;
+    /** @var AbstractModel */
+    protected $model = AbstractModel::class;
 
     /**
      * User be can edit or update this model

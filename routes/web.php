@@ -115,6 +115,11 @@ Route::group([
         Route::put('customers/{customer}/edit', 'Auth\UserController@customerUpdate')
             ->name('users.customer.update');
 
+        /** BOOKING SECTION */
+        Route::get('bookings/'. __('print-ticket') . '-{ticket}.html', 'BookingController@printTicket')
+            ->name('bookings.printTicket');
+        Route::resource('bookings', 'BookingController');
+
         /**
          * ROLE SECTION
          */

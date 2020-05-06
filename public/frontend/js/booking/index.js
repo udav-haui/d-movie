@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -4968,7 +4968,7 @@ window.openConfirmDiag = function () {};
 
 /***/ }),
 
-/***/ 5:
+/***/ 3:
 /*!*********************************************!*\
   !*** multi ./resources/js/booking/index.js ***!
   \*********************************************/

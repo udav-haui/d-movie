@@ -17,6 +17,8 @@
         customerText = '{{ __('Customers manage') }}',
         staticPageText = '{{ __('Static pages manage') }}',
         logText = '{{ __('System logs') }}',
+        bookingText = '{{ __('Sales Bookings') }}',
+        printTicketText = '{{ __('Print Ticket') }}',
         comboText = '{{ __('Combos manage') }}';
     window.checkedNodes = '{{ old('permissions', $permissionsString ?? null) }}'.length === 0 ? [] :
         '{{ old('permissions', $permissionsString ?? null) }}'.split(',');
@@ -29,6 +31,15 @@
                     { id: 'user-create', text: create, spriteCssClass: "create" },
                     { id: 'user-edit', text: edit, spriteCssClass: "edit" },
                     { id: 'user-delete', text: deleteText, spriteCssClass: "delete" }
+                ]
+            },
+            {
+                id: 'booking', text: bookingText, expanded: true, spriteCssClass: "booking-item", items: [
+                    { id: 'booking-view', text: view, spriteCssClass: 'view' },
+                    { id: 'booking-create', text: create, spriteCssClass: "create" },
+                    { id: 'booking-edit', text: edit, spriteCssClass: "edit" },
+                    { id: 'booking-delete', text: deleteText, spriteCssClass: "delete" },
+                    { id: 'print-ticket', text: printTicketText, spriteCssClass: "print-ticket"}
                 ]
             },
             {

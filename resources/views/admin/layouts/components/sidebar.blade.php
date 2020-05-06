@@ -40,6 +40,14 @@
                     </a>
                 </li>
             @endcan
+            @can('view', \App\Booking::class)
+                <li>
+                    <a href="{{ route('bookings.index') }}" class="waves-effect">
+                        <i class="mdi mdi-cart-plus fa-fw" data-icon="v"></i>
+                        <span class="hide-menu"> {{ __('Sales Bookings') }} </span>
+                    </a>
+                </li>
+            @endcan
             @can('viewAny', \App\Role::class)
                 <li> <a href="{{ route('roles.index') }}" class="waves-effect">
                         <i  class="mdi mdi-settings fa-fw"></i>

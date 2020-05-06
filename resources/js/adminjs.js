@@ -505,16 +505,18 @@ window.serverSideDatatable = function(url = '', invisCols, tblName = tableName) 
         ajax: {
             url: url,
             error: function(xhr, error, thrown) {
-                if (xhr.responseJSON.status === 403) {
-                    let noPermissionText = langTextSelector.attr('swl-error-403-text');
-                    screenLoader(0);
-                    normalAlert(errorTitle, noPermissionText);
-                } else {
-                    errorText = langTextSelector.attr('swl-fail-to-load-data-text');
-                    swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
-                    showYesNoModal(errorTitle, errorText, swlIcon, function() {
-                        window.location.replace(route(`${tblName}`.index));
-                    }, false);
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.status === 403) {
+                        let noPermissionText = langTextSelector.attr('swl-error-403-text');
+                        screenLoader(0);
+                        normalAlert(errorTitle, noPermissionText);
+                    } else {
+                        errorText = langTextSelector.attr('swl-fail-to-load-data-text');
+                        swlConfirmBtnText = langTextSelector.attr('swl-refresh-btn-text');
+                        showYesNoModal(errorTitle, errorText, swlIcon, function() {
+                            window.location.replace(route(`${tblName}`.index));
+                        }, false);
+                    }
                 }
             },
         },

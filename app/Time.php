@@ -222,4 +222,14 @@ class Time extends Model
             FilmSchedule::FILM
         );
     }
+
+    /**
+     * Get related film
+     *
+     * @return Film
+     */
+    public function getFilm()
+    {
+        return $this->film;
+    }
 }

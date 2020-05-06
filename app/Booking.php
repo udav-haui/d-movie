@@ -2,9 +2,15 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
-class Booking extends Model
+/**
+ * Class Booking
+ *
+ * @package App
+ */
+class Booking extends AbstractModel
 {
     protected $guarded = [];
 
@@ -21,6 +27,37 @@ class Booking extends Model
     /** Constant status of ticket */
     const SUCCESS = 0;
     const WAITING_FOR_PAYMENT = -1;
+    const CANCEL_BY_CUSTOMER = 49;
+
+    /** Constant permission of model */
+    const VIEW = 'booking-view';
+    const CREATE = 'booking-create';
+    const EDIT = 'booking-edit';
+    const DELETE = 'booking-delete';
+    const PRINT_TICKET = 'print-ticket';
+
+    /**
+     * Get formatted date
+     *
+     * @param string $date
+     * @param string $format
+     * @return string
+     */
+    public function getFormattedDate($date = '', $format = 'd-m-yy')
+    {
+        $date = $this->getCreatedTime();
+        return parent::getFormattedDate($date, $format);
+    }
+
+    /**
+     * Get created time
+     *
+     * @return Carbon
+     */
+    public function getCreatedTime()
+    {
+        return $this->created_at;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -28,6 +65,66 @@ class Booking extends Model
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    /**
+     * Get Ticket collection
+     *
+     * @return Collection
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilmName()
+    {
+        /** @var Ticket $ticket */
+        foreach ($this->tickets as $ticket) {
+            return $ticket->getTime()->getFilm()->getTitle();
+        }
+        return 'N/A';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCinemaName()
+    {
+        /** @var Ticket $ticket */
+        foreach ($this->tickets as $ticket) {
+            return $ticket->getTime()->show()->getCinema()->getName();
+        }
+        return 'N/A';
+    }
+
+    /**
+     * @return string
+     */
+    public function getShowName()
+    {
+        /** @var Ticket $ticket */
+        foreach ($this->tickets as $ticket) {
+            return $ticket->getTime()->show()->getName();
+        }
+        return 'N/A';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeatsName()
+    {
+        $seats = [];
+        /** @var Ticket $ticket */
+        foreach ($this->tickets as $ticket) {
+            $seatName = $ticket->getSeat()->getRow() . $ticket->getSeat()->getNumber();
+            $seats[] = $seatName;
+        }
+        return implode(',', $seats);
     }
 
     /**

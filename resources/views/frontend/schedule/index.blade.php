@@ -81,8 +81,7 @@
                                                 <div class="product-item padding-xs margin-xs padding-sm margin-sm">
                                                     <div class="pi-img-wrapper">
                                                     <span style="position:absolute;top:10px;left:10px;">
-                                                        <img
-                                                            src="{{ asset('Assets/Common/icons/films/'.$film->getAgeMark().'.png') }}"
+                                                        <img src="{{ asset('Assets/Common/icons/films/'.$film->getMark().'.png') }}"
                                                             class="img-responsive">
                                                     </span>
                                                         <img class="img-responsive border-radius-20"

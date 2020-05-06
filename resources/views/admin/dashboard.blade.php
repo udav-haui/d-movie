@@ -304,7 +304,7 @@
                         @endforeach
                         </tbody>
                     </table>
-                    <a href="#">Check all the sales</a> </div>
+                    <a href="{{ route('bookings.index') }}">{{ __('Check all the sales booking.') }}</a> </div>
             </div>
         </div>
 

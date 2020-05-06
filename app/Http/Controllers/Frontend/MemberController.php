@@ -46,7 +46,8 @@ class MemberController extends Controller
     public function show()
     {
         $member = auth()->user();
-        return view('frontend.customer.profile', compact('member'));
+        $userBookings = $member->bookings()->with('tickets')->get();
+        return view('frontend.customer.profile', compact('member', 'userBookings'));
     }
 
     /**

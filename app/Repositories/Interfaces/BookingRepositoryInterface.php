@@ -2,12 +2,11 @@
 
 namespace App\Repositories\Interfaces;
 
-
 /**
  * Class BookingRepository
  *
  * @package App\Repositories
  */
-interface BookingRepositoryInterface
+interface BookingRepositoryInterface extends CRUDModelInterface
 {
 }

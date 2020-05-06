@@ -2652,6 +2652,10 @@ table.dataTable thead .sorting_asc:after {
   background: #01a5a0 !important;
 }
 
+.fancybox-container {
+  z-index: 999929;
+}
+
 #checkbox-all {
   width: 20px;
   height: 20px;

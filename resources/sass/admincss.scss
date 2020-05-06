@@ -537,6 +537,10 @@ table.dataTable{
     background: $mainColor !important;
 }
 
+.fancybox-container {
+    z-index: 999929;
+}
+
 #checkbox-all {
     width: 20px;
     height: 20px;

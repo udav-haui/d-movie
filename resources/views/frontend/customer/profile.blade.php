@@ -1,6 +1,8 @@
 @extends('frontend.layouts.app')
 
-<?php /** @var \App\User $member */ ?>
+<?php /** @var \App\User $member */
+    /** @var \Illuminate\Database\Eloquent\Collection $userBookings */
+?>
 
 @section('app.title')
     {{ __('Account Information') }}
@@ -34,8 +36,11 @@
                     <li class="text-center active">
                         <a class="font-16 font-sm-15 font-xs-12" href="#accountinfor" data-toggle="tab" aria-expanded="true">
                             {{ __('Account Information') }}</a></li>
-                    <li class="text-center"><a class="font-16 font-sm-15 font-xs-12" href="#orders" data-toggle="tab" aria-expanded="false">
-                            {{ __('My Orders') }}</a></li>
+                    <li class="text-center">
+                        <a class="font-16 font-sm-15 font-xs-12" href="#orders" data-toggle="tab" aria-expanded="false">
+                            {{ __('My Orders') }}
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content font-family-san font-16" style="background-color: #fff;">
                     <div class="tab-pane fade active in" id="accountinfor">
@@ -216,24 +221,32 @@
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th class="text-uppercase" style="width: 10%">Code bill
-                                        </th>
-                                        <th class="text-uppercase" style="width: 20%">Film
-                                        </th>
-                                        <th class="text-uppercase" style="width: 10%">Cinenma
-                                        </th>
-                                        <th class="text-uppercase" style="width: 10%">Show
-                                        </th>
-                                        <th class="text-uppercase" style="width: 15%">Seats
-                                        </th>
-                                        <th class="text-uppercase" style="width: 15%">Combo/Package
-                                        </th>
-                                        <th class="text-uppercase" style="width: 20%">Booked on date
-                                        </th>
+                                        <th class="text-uppercase" style="width: 10%">{{ __('Code bill') }}</th>
+                                        <th class="text-uppercase" style="width: 10%">{{ __('Status') }}</th>
+                                        <th class="text-uppercase" style="width: 20%">{{ __('Message') }}</th>
+                                        <th class="text-uppercase" style="width: 20%">{{ __('Film') }}</th>
+                                        <th class="text-uppercase" style="width: 10%">{{ __('Cinema') }}</th>
+                                        <th class="text-uppercase" style="width: 10%">{{ __('Show') }}</th>
+                                        <th class="text-uppercase" style="width: 15%">{{ __('Seats') }}</th>
+                                        <th class="text-uppercase" style="width: 15%">{{ __('Combo/Package') }}</th>
+                                        <th class="text-uppercase" style="width: 20%">{{ __('Booked on date') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    <?php /** @var \App\Booking $booking */ ?>
+                                        @foreach($userBookings as $booking)
+                                            <tr>
+                                                <td>{{ $booking->getBookingCode() }}</td>
+                                                <td>{{ $booking->getStatusLabel() }}</td>
+                                                <td>{{ __($booking->getMessage()) }}</td>
+                                                <td>{{ $booking->getFilmName() }}</td>
+                                                <td>{{ $booking->getCinemaName() }}</td>
+                                                <td>{{ $booking->getShowName() }}</td>
+                                                <td>{{ $booking->getSeatsName() }}</td>
+                                                <td>{{ $booking->getCombo() ? $booking->getCombo()->getName() : 'N/A' }}</td>
+                                                <td>{{ $booking->created_at }}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

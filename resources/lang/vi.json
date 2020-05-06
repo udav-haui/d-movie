@@ -670,5 +670,20 @@
     "You are trying to reach not available show time.": "Bạn đang cố gắng truy cập vào giờ chiếu đã không còn hợp lệ.",
 
     "Movie Schedule": "Lịch Chiếu",
-    ":time minutes": ":time phút"
+    ":time minutes": ":time phút",
+    "Code Bill": "Code Bill",
+    "Code bill": "Code bill",
+    "Film": "Phim",
+    "Combo/Package": "Combo/Package",
+    "Booked on date": "Ngày đặt",
+    "Status Message": "Tin Nhắn Trạng Thái",
+    "Amount": "Tổng Tiền",
+    "Print Ticket": "In Vé",
+
+    "Sales Bookings": "Quản Lý Đơn Đặt Vé",
+    "Check all the sales booking.": "Xem tất cả các đơn đặt vé.",
+    "New Booking": "Đơn Đặt Mới",
+    "#:booking Bookings's Tickets": "Các vé của đơn #:booking",
+    "Ticket Code": "Ticket Code",
+    "Print this ticket": "In vé này"
 }

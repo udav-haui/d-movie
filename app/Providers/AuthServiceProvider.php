@@ -45,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Log::class => \App\Policies\LogPolicy::class,
         \App\Combo::class => \App\Policies\ComboPolicy::class,
         \App\Dashboard::class => \App\Policies\DashboardPolicy::class,
+        \App\Booking::class => \App\Policies\BookingPolicy::class
     ];
 
     /**

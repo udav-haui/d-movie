@@ -92,20 +92,22 @@ class ScheduleRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        try {
-            $formattedDate = \Carbon\Carbon::make($this->start_date)->format('Y-m-d');
-        } catch (\Exception $e) {
-            $msgBag = new MessageBag();
-            $msgBag->add(
-                Schedule::START_DATE,
-                __('Please input a correct date format (dd-mm-yyyy)')
-            );
+//        try {
+//            $formattedDate = \Carbon\Carbon::make($this->start_date)->format('Y-m-d');
+//        } catch (\Exception $e) {
+//            $msgBag = new MessageBag();
+//            $msgBag->add(
+//                Schedule::START_DATE,
+//                __('Please input a correct date format (dd-mm-yyyy)')
+//            );
+//
+//            return $msgBag;
+//        }
 
-            return $msgBag;
+        if ($this->start_date) {
+            $this->merge([
+                Schedule::START_DATE => \Carbon\Carbon::make($this->start_date)->format('Y-m-d')
+            ]);
         }
-
-        $this->merge([
-            Schedule::START_DATE => \Carbon\Carbon::make($this->start_date)->format('Y-m-d')
-        ]);
     }
 }

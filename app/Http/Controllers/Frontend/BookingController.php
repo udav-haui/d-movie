@@ -309,6 +309,9 @@ class BookingController extends Controller
                             'Your booking :name has created.',
                             ['name' => $booking->getBookingCode()]
                         ));
+                    $booking->tickets()->update([
+                        Ticket::STATUS => 1
+                    ]);
                 } else {
                     $booking->tickets()->update([
                         Ticket::STATUS => -1

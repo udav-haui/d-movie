@@ -2,14 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class Cinema
  *
  * @package App
  */
-class Cinema extends Model
+class Cinema extends AbstractModel
 {
     protected $guarded = [];
 
