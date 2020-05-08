@@ -213,7 +213,7 @@
 {{--        </div>--}}
         <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
             <div class="white-box">
-                <h3 class="box-title">{{ __('Total :name', ['name' => __('users')]) }}</h3>
+                <h3 class="box-title">{{ __('Total :name', ['name' => __('customers')]) }}</h3>
                 <ul class="list-inline two-part">
                     <li><i class="icon-people text-info"></i></li>
                     <li class="text-right"><span class="counter">{{ $usersCount }}</span></li>

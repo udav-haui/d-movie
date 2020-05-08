@@ -149,7 +149,7 @@
                                                                                 <span
                                                                                     style="position:absolute;top:10px;left:10px;">
                                                                                     <img
-                                                                                        src="{{ asset('Assets/Common/icons/films/'.$film->getAgeMark().'.png') }}"
+                                                                                        src="{{ asset('Assets/Common/icons/films/'.$film->getMark().'.png') }}"
                                                                                         class="img-responsive">
                                                                                 </span>
                                                                         <img class="img-responsive border-radius-20"
@@ -275,52 +275,53 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="fullwidthbanner-container" style="background-color: #000;">
-                <div class="amy-section container">
-                    <div class="text-center margin-top-20">
-                        <ul class="nav tab-films no-margin">
-                            <li class="active">
-                                <a data-toggle="tab" class="no-padding">
-                                    <h1 style="color: #fff;" class="bold">
-                                        {{ __('COMING SOON') }}
-                                    </h1>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="top-movie">
-                        <div>
-                            <div class="amy-shortcode amy-mv-carousel">
-                                <div class="slicker">
-                                    <?php
-                                        /**
-                                         * @var \Illuminate\Database\Eloquent\Collection $isComingSoonFilms
-                                         */
-                                        /** @var \App\Film $film  */
-                                    ?>
-                                    @foreach ($isComingSoonFilms as $film)
-                                            <div class="carousel-item">
-                                                <div class="carousel-thumb">
-                                                    <a href="{{ route('fe.filmDetail', ['film' => $film->getId(), 'slug' => convert_vi_to_en($film->getTitle())]) }}">
-                                                        <img src="{{ $film->getPosterPath() }}"
-                                                             class="img-responsive" alt="{{ $film->getTitle() }}"/>
-                                                    </a>
-                                                </div>
-                                                <div class="carousel-content">
-                                                    <h3 class="carousel-title">
-                                                        <a href="{{ route('fe.filmDetail', ['film' => $film->getId(), 'slug' => convert_vi_to_en($film->getTitle())]) }}">
-                                                            {{ $film->getTitle() }}
-                                                        </a>
-                                                    </h3>
-                                                    <h4 class="font-family-san no-margin font-12">{{ $film->getGenre() }}</h4>
-                                                    <span class="font-family-oswa color1" style="font-size: 20px;">{{ $film->getFormattedDate() }}</span>
-                                                </div>
-                                            </div>
-                                    @endforeach
 
+    </div>
+    <div class="fullwidthbanner-container" style="background-color: #000;">
+        <div class="amy-section container">
+            <div class="text-center margin-top-20">
+                <ul class="nav tab-films no-margin">
+                    <li class="active">
+                        <a data-toggle="tab" class="no-padding">
+                            <h1 style="color: #fff;" class="bold">
+                                {{ __('COMING SOON') }}
+                            </h1>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="top-movie">
+                <div>
+                    <div class="amy-shortcode amy-mv-carousel">
+                        <div class="slicker">
+                            <?php
+                            /**
+                             * @var \Illuminate\Database\Eloquent\Collection $isComingSoonFilms
+                             */
+                            /** @var \App\Film $film  */
+                            ?>
+                            @foreach ($isComingSoonFilms as $film)
+                                <div class="carousel-item">
+                                    <div class="carousel-thumb">
+                                        <a href="{{ route('fe.filmDetail', ['film' => $film->getId(), 'slug' => convert_vi_to_en($film->getTitle())]) }}">
+                                            <img src="{{ $film->getPosterPath() }}"
+                                                 class="img-responsive" alt="{{ $film->getTitle() }}"/>
+                                        </a>
+                                    </div>
+                                    <div class="carousel-content">
+                                        <h3 class="carousel-title">
+                                            <a href="{{ route('fe.filmDetail', ['film' => $film->getId(), 'slug' => convert_vi_to_en($film->getTitle())]) }}">
+                                                {{ $film->getTitle() }}
+                                            </a>
+                                        </h3>
+                                        <h4 class="font-family-san no-margin font-12">{{ $film->getGenre() }}</h4>
+                                        <span class="font-family-oswa color1" style="font-size: 20px;">{{ $film->getFormattedDate() }}</span>
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
+
                         </div>
                     </div>
                 </div>

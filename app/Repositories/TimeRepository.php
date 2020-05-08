@@ -67,13 +67,13 @@ class TimeRepository extends CRUDModelAbstract implements TimeRepositoryInterfac
         $stopTime = $fields[Time::STOP_TIME] ?? '00:00';
         $totalTime = $fields[Time::TOTAL_TIME] ?? 0;
         /** @var \Illuminate\Database\Eloquent\Collection $times */
-        $times = Time::where('film_show_id', function ($query) use ($schedule) {
+        $times = Time::whereIn('film_show_id', function ($query) use ($schedule) {
             /** @var Builder $query */
-            $query->select('film_show.id')
+            return $query->select('film_show.id')
                 ->from('film_show')
                 ->whereColumn('film_show.id', 'id')
                 ->where('show_id', $schedule->getShow()->getId())
-                ->where('start_date', $schedule->getStartDate());
+                ->where('start_date', $schedule->getStartDate())->get()->pluck('film_show.id');
         })->where('id', '!=', $id)->get();
 
         /** @var Time $time */
@@ -153,6 +153,6 @@ class TimeRepository extends CRUDModelAbstract implements TimeRepositoryInterfac
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
-
+        return false;
     }
 }

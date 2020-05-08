@@ -45,7 +45,7 @@
             show="{{ json_encode($show) }}"
             seats="{{ json_encode($seats) }}"
             combos="{{ json_encode($combos) }}"
-            booked-seats="{{ json_encode($bookedSeats) }}"
+            :booked-seats="{{ json_encode($bookedSeats) }}"
             mark-alert="{{ json_encode(['ageMark' => $film->getAgeMark(), 'alert' => __('According to the regulations of the Cinema Department, certain films are not for audience under the age of :age.', ['age' => $film->getAgeMark()])]) }}"
         ></select-seats>
 

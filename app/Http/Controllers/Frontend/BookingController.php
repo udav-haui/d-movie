@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Booking;
+use App\Events\NewBookingEvent;
+use App\Events\NewJoinerEvent;
 use App\Events\SeatSelectedStatus;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\ComboRepositoryInterface;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
 use App\Repositories\Interfaces\TimeRepositoryInterface;
+use App\Repositories\Interfaces\SeatRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Ticket;
+use App\Time;
 
 /**
  * Class BookingController
@@ -39,15 +44,30 @@ class BookingController extends Controller
     private $bookingRepository;
 
     /**
+     * @var SeatRepositoryInterface
+     */
+    private $seatRepository;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
      * BookingController constructor.
+     *
      * @param FilmRepositoryInterface $filmRepository
+     * @param SeatRepositoryInterface $seatRepository
      * @param TimeRepositoryInterface $timeRepository
+     * @param UserRepositoryInterface $userRepository
      * @param ComboRepositoryInterface $comboRepository
      * @param BookingRepositoryInterface $bookingRepository
      */
     public function __construct(
         FilmRepositoryInterface $filmRepository,
+        SeatRepositoryInterface $seatRepository,
         TimeRepositoryInterface $timeRepository,
+        UserRepositoryInterface $userRepository,
         ComboRepositoryInterface $comboRepository,
         BookingRepositoryInterface $bookingRepository
     ) {
@@ -56,6 +76,8 @@ class BookingController extends Controller
         $this->timeRepository = $timeRepository;
         $this->comboRepository = $comboRepository;
         $this->bookingRepository = $bookingRepository;
+        $this->seatRepository = $seatRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -68,6 +90,23 @@ class BookingController extends Controller
 
         /** @var \App\Film $film */
         $film = $this->filmRepository->find(request('film'));
+
+        if ($time->getFilm()->getId() != $film->getId()) {
+            return redirect(
+                route(
+                    'fe.filmDetail',
+                    ['slug' => convert_vi_to_en($time->getFilm()->getTitle()), 'film' => $time->getFilm()]
+                )
+            )->with('error', __('You are trying to reach not available show time.'));
+        }
+        if (!$time->show()->isEnabled()) {
+            return redirect(
+                route(
+                    'fe.filmDetail',
+                    ['slug' => convert_vi_to_en($time->getFilm()->getTitle()), 'film' => $time->getFilm()]
+                )
+            )->with('error', __('The show is not available for now. Please try again later.'));
+        }
 
         $check = $this->isAvailableShowTime($time, $film);
         if ($check !== null) {
@@ -303,18 +342,24 @@ class BookingController extends Controller
                 ->getFilter(null, [Booking::BOOKING_CODE => request('orderId')])->first();
 
             if ($booking) {
-                if ((int)request('errorCode') === 0) {
+                if ((int)request('errorCode') === Booking::SUCCESS) {
                     $redirect = redirect(route('bookings.result', ['slug' => __('success.html')]))
                         ->with('success', __(
                             'Your booking :name has created.',
                             ['name' => $booking->getBookingCode()]
                         ));
                     $booking->tickets()->update([
-                        Ticket::STATUS => 1
+                        Ticket::STATUS => Ticket::ENABLE
                     ]);
+                    /** @var Ticket $ticket */
+                    foreach ($booking->getTickets() as $ticket) {
+                        $time = $ticket->getTime();
+                        $seats[] = $ticket->getSeat()->getId();
+                    }
+                    broadcast(new NewBookingEvent($time, $seats))->toOthers();
                 } else {
                     $booking->tickets()->update([
-                        Ticket::STATUS => -1
+                        Ticket::STATUS => Ticket::NOT_AVAILABLE
                     ]);
                     $redirect = redirect(route('bookings.result', ['slug' => __('failed.html')]))
                         ->with('error', __('Transaction failed'));
@@ -346,18 +391,28 @@ class BookingController extends Controller
     public function selectSeat()
     {
         $time = $this->timeRepository->find(request('time'));
-        $seat = json_encode(request('seat'));
-        broadcast(new SeatSelectedStatus($time, $seat))->toOthers();
+        $seat = (request('seat'));
+        $seatData['seat'] = $this->seatRepository->find($seat['seat']);
+        $seatData['user'] = $this->userRepository->find($seat['user']);
+        // broadcast(new NewBookingEvent($time, $seat))->toOthers();
+        broadcast(new SeatSelectedStatus($time, $seatData))->toOthers();
 
         return collect(['status' => 200]);
     }
 
     public function sendSelectedSeats()
     {
-        if (request()->has('seats')) {
+        if (request()->has('data')) {
             $time = $this->timeRepository->find(request('time'));
-            $seat = json_encode(request('seats'));
-            broadcast(new SeatSelectedStatus($time, $seat))->toOthers();
+            $dataArr = request('data');
+            $data = [];
+            foreach ($dataArr as $item) {
+                $seatData['seat'] = $this->seatRepository->find($item['seat']);
+                $seatData['user'] = $this->userRepository->find($item['user']);
+                array_push($data, $seatData);
+            }
+            $joiner = request('joiner');
+            broadcast(new NewJoinerEvent($time, $data, $joiner));
         }
 
         return collect(['status' => 200]);

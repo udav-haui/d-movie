@@ -202,6 +202,9 @@
                     </li>
                     <li role="separator" class="divider"></li>
                     <li>
+                        <a class="dropdown-item" target="_blank" href="{{ asset('') }}"><i class="ti-layout-tab-window mr-1 ml-1"></i> {{ __('Customer View') }}</a>
+                    </li>
+                    <li>
                         <a href="javascript:void(0);"
                            onclick="event.preventDefault();$('.logout-form').submit();">
                             <i class="fa fa-power-off"></i>

@@ -68,6 +68,14 @@ class Show extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->getStatus() == self::ENABLE;
+    }
+
+    /**
      * Set status
      *
      * @param string|int $status

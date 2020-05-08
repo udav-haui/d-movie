@@ -29,7 +29,7 @@
 @section('bottom.js')
     <script>
         let columnDefs = [],
-            colOrder = [[0, 'asc']],
+            colOrder = [[0, 'desc']],
             aoColumns = [
                 {
                     data: 'id',

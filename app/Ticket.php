@@ -45,11 +45,41 @@ class Ticket extends Model
     }
 
     /**
+     * Get film
+     *
+     * @return Film
+     */
+    public function getFilm()
+    {
+        return $this->getTime()->getFilm();
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function seat()
     {
         return $this->belongsTo(Seat::class);
+    }
+
+    /**
+     * Get Seat
+     *
+     * @return Seat
+     */
+    public function getSeat()
+    {
+        return $this->seat;
+    }
+
+    /**
+     * Get related cinema
+     *
+     * @return Cinema
+     */
+    public function getCinema()
+    {
+        return $this->getSeat()->getCinema();
     }
 
     /**
@@ -85,11 +115,11 @@ class Ticket extends Model
     }
 
     /**
-     * @return Seat
+     * @return string
      */
-    public function getSeat()
+    public function getFormatPrice()
     {
-        return $this->seat;
+        return number_format($this->getPrice(), 0);
     }
 
     /**

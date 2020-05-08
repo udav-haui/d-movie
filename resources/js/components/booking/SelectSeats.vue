@@ -48,7 +48,7 @@
                                             <div class="seat-cell seat-used"
                                                  :class="getSelectClass(decodeSeat)"
                                                  v-for="decodeSeat in row"
-                                                 @click="selectSeat(!decodeBookedSeats.includes(decodeSeat.id) || holdSeats.more(seat => seat.seat.id === decodeSeat.id) ? decodeSeat : null)">
+                                                 @click="selectSeat(decodeSeat)">
                                                 {{ decodeSeat.type == 0 || decodeSeat.type == 1 ? decodeSeat.row + decodeSeat.number : decodeSeat.row + decodeSeat.number + '.2 - ' + decodeSeat.row + decodeSeat.number + '.1' }}
                                             </div>
                                         </div>
@@ -539,25 +539,47 @@
                 .here((users) => {
                 })
                 .joining((user) => {
-                    axios.post(route('bookings.api.sendSelectedSeatsToJoiner', {seats: this.$store.getters.selectedSeats, time: this.decodeTime.id}))
-                        .then(res => res)
-                        .catch(err => {
-                            console.log(err);
-                        });
+                    let seats = this.selectedSeats,
+                        data = [];
+                    seats.forEach(seat => {
+                        let item = {};
+                        item.seat = seat.seat.id;
+                        item.user = seat.user.id;
+                        data.push(item);
+                    });
+                    if (seats.length > 0) {
+                        axios.post(route('bookings.api.sendSelectedSeatsToJoiner', {joiner: user.id, data: data, time: this.decodeTime.id}))
+                            .then(res => res)
+                            .catch(err => {
+                                console.log(err);
+                            });
+                    }
                 })
                 .leaving((user) => {
-                    this.$store.dispatch('destroyHoldSeats', user);
+                    this.$store.dispatch('removeLeavingUserHoldSeats', user);
                 });
             Echo.private(`time.${this.decodeTime.id}`)
                 .listen(".time", e => {
-                    let seat = JSON.parse(e.seat);
+                    let seat = [e.seat];
                     this.$store.dispatch('setHoldSeat', seat);
 
+                });
+            Echo.private(`customer.join.${this.authUser.id}`)
+                .listen('.customer.join', e => {
+                    if (e.seats.length > 0) {
+                        this.$store.dispatch('setHoldSeat', e.seats);
+                    }
+                });
+            Echo.private(`time.newbooking.${this.decodeTime.id}`)
+                .listen('.time_newBooking', e => {
+                    let seats = (e.seats);
+                    this.$store.dispatch('setSoldSeat', seats);
                 });
         },
         created() {
             countdown('.time-et', 10);
             this.$store.dispatch('setFilm', this.filmId);
+            this.$store.dispatch('initSoldSeats', this.bookedSeats);
         },
         computed: {
             ...mapGetters([
@@ -573,7 +595,8 @@
                 'selectedDouble',
                 'selectedCombo',
                 'paymentMethod',
-                'holdSeats'
+                'holdSeats',
+                'getSoldSeats'
             ]),
             totalAmountLabel () {
                 let amount = parseFloat(this.$store.getters.totalAmount);
@@ -603,9 +626,6 @@
             decodeSeats () {
                 return JSON.parse(this.seats);
             },
-            decodeBookedSeats () {
-                return JSON.parse(this.bookedSeats);
-            },
             decodeCombos () {
                 return JSON.parse(this.combos);
             },
@@ -624,7 +644,7 @@
                 }
 
                 if (!this.getSelectedSeatsId.includes(seat.id) &&
-                    !this.decodeBookedSeats.includes(seat.id) &&
+                    !this.getSoldSeats.includes(seat.id) &&
                     !this.getHoldSeatsId.includes(seat.id)
                 ) {
                     classes.push('seat-empty');
@@ -642,7 +662,7 @@
                     default:
                 }
 
-                if (this.decodeBookedSeats.includes(seat.id)) {
+                if (this.getSoldSeats.includes(seat.id)) {
                     classes.push('seat-sold');
                 }
 
@@ -662,17 +682,17 @@
                 this.isClicking = true;
 
                 setTimeout(function () {
-                    if (!this.getHoldSeatsId.includes(seat.id)) {
-                        seat = {
-                            seat: seat,
-                            user: this.authUser
+                    if (!this.getHoldSeatsId.includes(seat.id) && !this.getSoldSeats.includes(seat.id)) {
+                        let seatData = {
+                            seat: seat.id,
+                            user: this.authUser.id
                         };
-                        axios.post(route('bookings.api.selectSeat', {seat: [seat], time: this.decodeTime.id}))
+                        axios.post(route('bookings.api.selectSeat', {seat: seatData, time: this.decodeTime.id}))
                             .then(res => res)
                             .catch(err => {
                                 alert('Please dont click super fast');
                             });
-                        this.$store.dispatch('setSeats', seat);
+                        this.$store.dispatch('setSeats', {seat: seat, user: this.authUser});
                     }
                     this.isClicking = false;
                 }.bind(this), 250);

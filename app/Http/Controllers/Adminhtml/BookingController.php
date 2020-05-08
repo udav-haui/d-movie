@@ -64,6 +64,12 @@ class BookingController extends \App\Http\Controllers\Controller
                     }
                     return '';
                 });
+                $dt->editColumn('message', function (Booking $booking) {
+                    return __($booking->getMessage());
+                });
+                $dt->editColumn('amount', function (Booking $booking) {
+                    return number_format($booking->getAmount(), 0) . 'đ';
+                });
 
                 $authUser = auth()->user();
 
@@ -91,7 +97,7 @@ class BookingController extends \App\Http\Controllers\Controller
                 }
 
                 return $dt->rawColumns(
-                    ['created_at', 'status', 'task', 'combo_name']
+                    ['created_at', 'message', 'status', 'task', 'combo_name']
                 )->make();
             }
 
@@ -157,8 +163,11 @@ class BookingController extends \App\Http\Controllers\Controller
 
             if ($authUser->can('printTicket', Booking::class)) {
                 $htmlRaw = "";
-                $dt->addColumn('task', function (Ticket $ticket) use ($authUser, $htmlRaw) {
-                    $htmlRaw .= "<a href=\"" . route('bookings.printTicket', ['ticket' => $ticket]) . "\"
+                $dt->addColumn('task', function (Ticket $ticket) use ($authUser, $htmlRaw, $booking) {
+                    $htmlRaw .= "<a target=\"_blank\" href=\"" . route(
+                        'bookings.printTicket',
+                        ['booking' => $booking, 'ticket' => $ticket]
+                    ) . "\"
                                    type=\"button\" class=\"";
                     $htmlRaw .= "col-md-12 ";
 
@@ -179,11 +188,16 @@ class BookingController extends \App\Http\Controllers\Controller
         return view('admin.booking.ticket.index', compact('booking'));
     }
 
-    public function printTicket()
+    public function printTicket(Booking $booking)
     {
         $this->authorize('printTicket', \App\Booking::class);
         try {
-            return view();
+            if (request()->has('all')) {
+                $tickets = $booking->getTickets();
+            } else {
+                $tickets = $booking->tickets()->where('id', request('ticket'))->get();
+            }
+            return view('admin.booking.ticket.print_ticket', compact('tickets', 'booking'));
         } catch (\Exception $e) {
             $message = __('Ooops, something wrong appended.') . '-' . $e->getMessage();
             return !request()->ajax() ?

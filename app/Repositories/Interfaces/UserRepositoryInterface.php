@@ -12,7 +12,7 @@ use Illuminate\Auth\Access\AuthorizationException;
  *
  * @package App\Services
  */
-interface UserRepositoryInterface
+interface UserRepositoryInterface extends CRUDModelInterface
 {
     /**
      * Get a user

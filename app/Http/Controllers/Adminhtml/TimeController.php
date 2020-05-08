@@ -132,7 +132,7 @@ class TimeController extends Controller
                 ]));
 
         } catch (\Exception $e) {
-            back()->with('error', $e->getMessage())->withInput();
+            return back()->with('error', $e->getMessage())->withInput();
         }
     }
 

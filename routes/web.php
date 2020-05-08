@@ -116,7 +116,7 @@ Route::group([
             ->name('users.customer.update');
 
         /** BOOKING SECTION */
-        Route::get('bookings/'. __('print-ticket') . '-{ticket}.html', 'BookingController@printTicket')
+        Route::get('bookings/'. __('print-ticket') . '-{booking}.html', 'BookingController@printTicket')
             ->name('bookings.printTicket');
         Route::resource('bookings', 'BookingController');
 

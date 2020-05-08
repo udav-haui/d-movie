@@ -111,6 +111,17 @@ class Seat extends Model
     }
 
     /**
+     * Get label type of booking
+     *
+     * @return string
+     */
+    public function getSeatTypeLabel()
+    {
+        return $this->getType() === self::NORMAL ? __('Normal') :
+            ($this->getType() === self::VIP ? __('VIP') : __('Double'));
+    }
+
+    /**
      * Set type of booking
      *
      * @param int $type
@@ -162,6 +173,16 @@ class Seat extends Model
     }
 
     /**
+     * Get cinema
+     *
+     * @return Cinema
+     */
+    public function getCinema()
+    {
+        return $this->getShow()->getCinema();
+    }
+
+    /**
      * Set show
      *
      * @param Show $show
@@ -194,5 +215,13 @@ class Seat extends Model
             ->withPivot('ticket_code')
             ->withPivot('price')
             ->withPivot('created_at');
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeatName()
+    {
+        return $this->getRow() . $this->getNumber();
     }
 }

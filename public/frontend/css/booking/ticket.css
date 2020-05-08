@@ -1,0 +1,164 @@
+.ticket-container {
+    display: flex;
+    width: 800px;
+    min-height: 300px;
+    margin: 0 auto;
+    border: 1px dashed black;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.ticket-container .left {
+    width: 75%;
+    border-right: 1px dashed black;
+    padding-bottom: 10px;
+}
+
+.right {
+    width: 25%;
+}
+
+.top .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.top .logo img {
+    max-width: 64px;
+}
+
+.logo .company-text {
+    font-size: .65rem;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    font-variant: small-caps;
+}
+
+.ticket-container .left .top .location {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.three-dots {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.ticket-container .left .body {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.ticket-container .left .body .film-name {
+    font-size: 2rem;
+    font-weight: 900;
+    font-variant: small-caps;
+}
+
+.body>.time {
+    font-weight: 600;
+}
+
+.body .seat-type {
+    font-variant: small-caps;
+    font-size: 1.25rem;
+}
+
+.ticket-container .left .body .price {
+    margin-top: 5px;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.ticket-container .left .body .info {
+    margin-top: 10px;
+}
+
+.left .staff-info {
+    width: 50%;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.ticket-container .left .body .show-info {
+    width: 45%;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}
+
+.ticket-container .left .body .show-info {
+    top: 35%;
+    left: 40%;
+}
+
+.show-info .seat,
+.show {
+    flex-direction: column;
+    align-items: center;
+}
+
+.show-info .seat {
+    width: 50%;
+}
+
+.show {
+    width: 50%;
+}
+
+.seat-name,
+.show-name {
+    font-size: 3.75rem;
+    font-weight: 900;
+}
+
+.bottom {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    font-weight: 600;
+}
+
+.right .top .cinema-name {
+    margin-top: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.right {
+    padding-left: 10px;
+}
+
+.right .body .film-name {
+    margin-top: 35px;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.right .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.right .show-info {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.right .staff-info {
+    margin-top: 10px;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}

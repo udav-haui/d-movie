@@ -2533,28 +2533,51 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var _this = this;
 
     Echo.join("new-join.".concat(this.decodeTime.id)).here(function (users) {}).joining(function (user) {
-      axios.post(route('bookings.api.sendSelectedSeatsToJoiner', {
-        seats: _this.$store.getters.selectedSeats,
-        time: _this.decodeTime.id
-      })).then(function (res) {
-        return res;
-      })["catch"](function (err) {
-        console.log(err);
+      var seats = _this.selectedSeats,
+          data = [];
+      seats.forEach(function (seat) {
+        var item = {};
+        item.seat = seat.seat.id;
+        item.user = seat.user.id;
+        data.push(item);
       });
+
+      if (seats.length > 0) {
+        axios.post(route('bookings.api.sendSelectedSeatsToJoiner', {
+          joiner: user.id,
+          data: data,
+          time: _this.decodeTime.id
+        })).then(function (res) {
+          return res;
+        })["catch"](function (err) {
+          console.log(err);
+        });
+      }
     }).leaving(function (user) {
-      _this.$store.dispatch('destroyHoldSeats', user);
+      _this.$store.dispatch('removeLeavingUserHoldSeats', user);
     });
     Echo["private"]("time.".concat(this.decodeTime.id)).listen(".time", function (e) {
-      var seat = JSON.parse(e.seat);
+      var seat = [e.seat];
 
       _this.$store.dispatch('setHoldSeat', seat);
+    });
+    Echo["private"]("customer.join.".concat(this.authUser.id)).listen('.customer.join', function (e) {
+      if (e.seats.length > 0) {
+        _this.$store.dispatch('setHoldSeat', e.seats);
+      }
+    });
+    Echo["private"]("time.newbooking.".concat(this.decodeTime.id)).listen('.time_newBooking', function (e) {
+      var seats = e.seats;
+
+      _this.$store.dispatch('setSoldSeat', seats);
     });
   },
   created: function created() {
     countdown('.time-et', 10);
     this.$store.dispatch('setFilm', this.filmId);
+    this.$store.dispatch('initSoldSeats', this.bookedSeats);
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(['film', "getHoldSeatsId", "getHoldSeats", 'selectedSeats', 'getSelectedSeats', 'getSelectedSeatsId', 'selectedNormal', 'totalAmount', 'selectedVIP', 'selectedDouble', 'selectedCombo', 'paymentMethod', 'holdSeats']), {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(['film', "getHoldSeatsId", "getHoldSeats", 'selectedSeats', 'getSelectedSeats', 'getSelectedSeatsId', 'selectedNormal', 'totalAmount', 'selectedVIP', 'selectedDouble', 'selectedCombo', 'paymentMethod', 'holdSeats', 'getSoldSeats']), {
     totalAmountLabel: function totalAmountLabel() {
       var amount = parseFloat(this.$store.getters.totalAmount);
 
@@ -2585,9 +2608,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     decodeSeats: function decodeSeats() {
       return JSON.parse(this.seats);
     },
-    decodeBookedSeats: function decodeBookedSeats() {
-      return JSON.parse(this.bookedSeats);
-    },
     decodeCombos: function decodeCombos() {
       return JSON.parse(this.combos);
     },
@@ -2607,7 +2627,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         classes.push('seat-hold');
       }
 
-      if (!this.getSelectedSeatsId.includes(seat.id) && !this.decodeBookedSeats.includes(seat.id) && !this.getHoldSeatsId.includes(seat.id)) {
+      if (!this.getSelectedSeatsId.includes(seat.id) && !this.getSoldSeats.includes(seat.id) && !this.getHoldSeatsId.includes(seat.id)) {
         classes.push('seat-empty');
       }
 
@@ -2627,7 +2647,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         default:
       }
 
-      if (this.decodeBookedSeats.includes(seat.id)) {
+      if (this.getSoldSeats.includes(seat.id)) {
         classes.push('seat-sold');
       }
 
@@ -2647,20 +2667,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.isClicking = true;
       setTimeout(function () {
-        if (!this.getHoldSeatsId.includes(seat.id)) {
-          seat = {
-            seat: seat,
-            user: this.authUser
+        if (!this.getHoldSeatsId.includes(seat.id) && !this.getSoldSeats.includes(seat.id)) {
+          var seatData = {
+            seat: seat.id,
+            user: this.authUser.id
           };
           axios.post(route('bookings.api.selectSeat', {
-            seat: [seat],
+            seat: seatData,
             time: this.decodeTime.id
           })).then(function (res) {
             return res;
           })["catch"](function (err) {
             alert('Please dont click super fast');
           });
-          this.$store.dispatch('setSeats', seat);
+          this.$store.dispatch('setSeats', {
+            seat: seat,
+            user: this.authUser
+          });
         }
 
         this.isClicking = false;
@@ -53077,20 +53100,8 @@ var render = function() {
                                             ),
                                             on: {
                                               click: function($event) {
-                                                _vm.selectSeat(
-                                                  !_vm.decodeBookedSeats.includes(
-                                                    decodeSeat.id
-                                                  ) ||
-                                                    _vm.holdSeats.more(function(
-                                                      seat
-                                                    ) {
-                                                      return (
-                                                        seat.seat.id ===
-                                                        decodeSeat.id
-                                                      )
-                                                    })
-                                                    ? decodeSeat
-                                                    : null
+                                                return _vm.selectSeat(
+                                                  decodeSeat
                                                 )
                                               }
                                             }
@@ -68740,6 +68751,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     seats: {},
     selectedSeats: [],
     holdSeats: [],
+    soldSeats: [],
     selectedCombo: {},
     allPackages: {},
     paymentMethod: 'momo'
@@ -68759,6 +68771,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     selectedCombo: function selectedCombo(state) {
       return state.selectedCombo;
+    },
+    getSoldSeats: function getSoldSeats(state) {
+      return state.soldSeats;
     },
     getSelectedSeats: function getSelectedSeats(state) {
       return state.selectedSeats.map(function (seat) {
@@ -68810,6 +68825,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   mutations: {
+    initSoldSeats: function initSoldSeats(state, seats) {
+      state.soldSeats = seats;
+    },
+    setSoldSeat: function setSoldSeat(state, seats) {
+      state.soldSeats = state.soldSeats.concat(seats);
+    },
     setHoldSeat: function setHoldSeat(state, seat) {
       state.holdSeats.push(seat);
     },
@@ -68821,7 +68842,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     deleteHoldSeat: function deleteHoldSeat(state, seat) {
       state.holdSeats = state.holdSeats.filter(function (item) {
-        return item.seat.id !== seat.seat.id && item.user.id === seat.user.id;
+        return item.seat.id !== seat.seat.id;
+      });
+    },
+    removeLeavingUserHoldSeats: function removeLeavingUserHoldSeats(state, user) {
+      state.holdSeats = state.holdSeats.filter(function (item) {
+        return item.user.id !== user.id;
       });
     },
     deleteSeat: function deleteSeat(state, seat) {
@@ -68897,8 +68923,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return setFilm;
     }(),
-    setHoldSeat: function setHoldSeat(_ref2, seats) {
+    initSoldSeats: function initSoldSeats(_ref2, seats) {
       var commit = _ref2.commit;
+      return commit('initSoldSeats', seats);
+    },
+    setSoldSeat: function setSoldSeat(_ref3, seats) {
+      var commit = _ref3.commit;
+      return commit('setSoldSeat', seats);
+    },
+    setHoldSeat: function setHoldSeat(_ref4, seats) {
+      var commit = _ref4.commit;
       var self = this;
       seats.forEach(function (seat) {
         if (!self.state.holdSeats.some(function (holdSeat) {
@@ -68910,16 +68944,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return commit('deleteHoldSeat', seat);
       });
     },
-    destroyHoldSeats: function destroyHoldSeats(_ref3, user) {
-      var commit = _ref3.commit;
+    destroyHoldSeats: function destroyHoldSeats(_ref5, user) {
+      var commit = _ref5.commit;
       this.state.holdSeats.forEach(function (seat) {
-        if (parseInt(seat.user.id) === user.id) {
+        if (seat.user.id === user.id) {
           commit('deleteHoldSeat', seat);
         }
       });
     },
-    setSeats: function setSeats(_ref4, seat) {
-      var commit = _ref4.commit;
+    removeLeavingUserHoldSeats: function removeLeavingUserHoldSeats(_ref6, user) {
+      var commit = _ref6.commit;
+      return commit('removeLeavingUserHoldSeats', user);
+    },
+    setSeats: function setSeats(_ref7, seat) {
+      var commit = _ref7.commit;
 
       if (!this.state.selectedSeats.some(function (selectedSeat) {
         return selectedSeat.seat.id === seat.seat.id && selectedSeat.user.id === seat.user.id;
@@ -68929,20 +68967,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return commit('deleteSeat', seat);
     },
-    setCombo: function setCombo(_ref5, combo) {
-      var commit = _ref5.commit;
+    setCombo: function setCombo(_ref8, combo) {
+      var commit = _ref8.commit;
       return commit('setCombo', combo);
     },
-    deleteCombo: function deleteCombo(_ref6, combo) {
-      var commit = _ref6.commit;
+    deleteCombo: function deleteCombo(_ref9, combo) {
+      var commit = _ref9.commit;
       return commit('deleteCombo', combo);
     },
-    setPaymentMethod: function setPaymentMethod(_ref7, method) {
-      var commit = _ref7.commit;
+    setPaymentMethod: function setPaymentMethod(_ref10, method) {
+      var commit = _ref10.commit;
       return commit('setPaymentMethod', method);
     },
-    setPackages: function setPackages(_ref8, time) {
-      var commit = _ref8.commit;
+    setPackages: function setPackages(_ref11, time) {
+      var commit = _ref11.commit;
       return commit('setPackages', time);
     }
   }

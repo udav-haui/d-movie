@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Abstracts\CRUDModelAbstract;
+use App\Repositories\Interfaces\SeatRepositoryInterface;
 use App\Seat;
 use Illuminate\Validation\Rule;
 
@@ -11,7 +12,7 @@ use Illuminate\Validation\Rule;
  *
  * @package App\Repositories
  */
-class SeatRepository extends CRUDModelAbstract
+class SeatRepository extends CRUDModelAbstract implements SeatRepositoryInterface
 {
     use LoggerTrait;
 

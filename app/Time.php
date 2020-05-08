@@ -64,6 +64,17 @@ class Time extends Model
     }
 
     /**
+     * Get format start date
+     *
+     * @param string $format
+     * @return string
+     */
+    public function getFormatStartDate($format = 'd/m/Y')
+    {
+        return Carbon::make($this->getStartDate())->format($format);
+    }
+
+    /**
      * Get id
      *
      * @return int

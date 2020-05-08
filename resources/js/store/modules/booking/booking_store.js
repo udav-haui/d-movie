@@ -5,6 +5,7 @@ export default {
         seats: {},
         selectedSeats: [],
         holdSeats: [],
+        soldSeats: [],
         selectedCombo: {},
         allPackages: {},
         paymentMethod: 'momo'
@@ -19,6 +20,7 @@ export default {
         },
         paymentMethod: state => state.paymentMethod,
         selectedCombo: state => state.selectedCombo,
+        getSoldSeats: state => state.soldSeats,
         getSelectedSeats: state => state.selectedSeats.map(seat => seat.seat.row + seat.seat.number),
         getHoldSeats: state => state.holdSeats.map(seat => seat.seat.row + seat.seat.number),
         getSelectedSeatsId: state => state.selectedSeats.map(seat => parseInt(seat.seat.id)),
@@ -42,6 +44,12 @@ export default {
         allPackages: state => state.allPackages,
     },
     mutations: {
+        initSoldSeats (state, seats) {
+            state.soldSeats = seats;
+        },
+        setSoldSeat (state, seats) {
+            state.soldSeats = state.soldSeats.concat(seats);
+        },
         setHoldSeat (state, seat) {
             state.holdSeats.push(seat);
         },
@@ -53,7 +61,12 @@ export default {
         },
         deleteHoldSeat (state, seat) {
             state.holdSeats = state.holdSeats.filter(function (item) {
-                return item.seat.id !== seat.seat.id && item.user.id === seat.user.id;
+                return item.seat.id !== seat.seat.id;
+            });
+        },
+        removeLeavingUserHoldSeats (state, user) {
+            state.holdSeats = state.holdSeats.filter(function (item) {
+                return item.user.id !== user.id;
             });
         },
         deleteSeat(state, seat) {
@@ -96,6 +109,12 @@ export default {
             let res = await getFilm(filmId);
             return commit('setFilm', res.data);
         },
+        initSoldSeats({commit}, seats) {
+            return commit('initSoldSeats', seats);
+        },
+        setSoldSeat ({commit}, seats) {
+            return commit('setSoldSeat', seats);
+        },
         setHoldSeat ({commit}, seats) {
             let self = this;
             seats.forEach(function (seat) {
@@ -107,10 +126,13 @@ export default {
         },
         destroyHoldSeats ({commit}, user) {
             this.state.holdSeats.forEach(function (seat) {
-                if (parseInt(seat.user.id) === user.id) {
+                if (seat.user.id === user.id) {
                     commit('deleteHoldSeat', seat);
                 }
             });
+        },
+        removeLeavingUserHoldSeats ({commit}, user) {
+            return commit('removeLeavingUserHoldSeats', user);
         },
         setSeats ({commit}, seat) {
             if (!this.state.selectedSeats.some(selectedSeat => selectedSeat.seat.id === seat.seat.id && selectedSeat.user.id === seat.user.id)) {

@@ -24,3 +24,11 @@ BroadCast::channel('new-join.{id}', function ($user, $id) {
 BroadCast::channel('time.{id}', function ($user, $id) {
     return true;
 });
+
+BroadCast::channel('time.newbooking.{id}', function ($user, $id) {
+    return true;
+});
+
+BroadCast::channel('customer.join.{id}', function ($user, $id) {
+    return true;
+});

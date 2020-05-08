@@ -685,5 +685,17 @@
     "New Booking": "Đơn Đặt Mới",
     "#:booking Bookings's Tickets": "Các vé của đơn #:booking",
     "Ticket Code": "Ticket Code",
-    "Print this ticket": "In vé này"
+    "Print this ticket": "In vé này",
+    "print-ticket": "in-ve",
+    "Normal": "Thường",
+    "Double": "Đôi",
+    "adult": "người lớn",
+    "One/Seat": "Một/Ghế",
+    "Room": "Phòng",
+    "S": "G",
+    "R": "P",
+    "Customer View": "Xem Trang Chủ",
+    "Failed": "Thất Bại",
+    "View Tickets": "Xem Các Vé",
+    "The show is not available for now. Please try again later.": "Phòng chiếu đã offline, vui lòng thử lại sau."
 }
