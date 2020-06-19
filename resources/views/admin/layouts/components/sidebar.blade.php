@@ -134,13 +134,19 @@
                 </li>
             @endcan
 
+            <li> <a href="{{ route('store.configs') }}" class="waves-effect">
+                    <i class="mdi mdi-format-page-break"></i>
+                    <span class="hide-menu">{{ __('Configuration') }}</span>
+                </a>
+            </li>
+
             @can('view', \App\Log::class)
                 <li> <a href="{{ route('logs.index') }}" class="waves-effect">
                         <i class="mdi mdi-tooltip-edit"></i>
                         <span class="hide-menu">{{ __('View System Logs') }}</span>
                     </a>
                 </li>
-@endcan
+            @endcan
         </ul>
     </div>
 </div>

@@ -69076,9 +69076,9 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\vadu\html\d-movie\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\admincss.scss */"./resources/sass/admincss.scss");
-module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /var/www/html/d-movie/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /var/www/html/d-movie/resources/sass/admincss.scss */"./resources/sass/admincss.scss");
+module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ }),

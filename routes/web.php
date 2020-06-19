@@ -82,6 +82,9 @@ Route::group([
             return redirect(route('dashboard'));
         });
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
+        Route::get('store/configs', 'StoreConfigsController@index')->name('store.configs');
+
         /**
          * USER SECTION
          */
