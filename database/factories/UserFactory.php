@@ -20,9 +20,9 @@ use Illuminate\Support\Str;
 $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'account_type' => 1,
+        'account_type' => rand(1,2),
         'can_change_username' => 1,
-        'login_with_social_account' => 1,
+        'login_with_social_account' => 0,
         'username' => $faker->unique()->userName,
         'email' => $faker->unique()->safeEmail,
         'password' => \Illuminate\Support\Facades\Hash::make('vadu@123'),

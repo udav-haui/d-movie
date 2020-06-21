@@ -156,10 +156,10 @@ class LoginController extends Controller
 
             $request->session()->regenerateToken();
 
-            return $user->getStatus() === \App\User::NOT_VERIFY_BY_ADMIN ? $this->loggedOut($request) ?: back()
-                ->with('error', __('Your account has not been activated.'))->withInput() :
-                $this->loggedOut($request) ?: back()
-                    ->with('error', __('Your account has been deactivate.'))->withInput();
+            return $user->getStatus() === \App\User::NOT_VERIFY_BY_ADMIN ? ($this->loggedOut($request) ?: back()
+                ->with('error', __('Your account has not been activated.'))->withInput()) :
+                ($this->loggedOut($request) ?: back()
+                    ->with('error', __('Your account has been deactivate.'))->withInput());
         }
     }
 

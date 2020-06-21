@@ -16,8 +16,6 @@
 @endsection
 
 @section('bottom.js')
-
-
     @include('admin.role.role_init')
     <script src="{{ asset('adminhtml/assets/plugins/tree-view/tree-view.js') }}"></script>
     <script src="{{ asset('adminhtml/js/role/role-create.js') }}"></script>

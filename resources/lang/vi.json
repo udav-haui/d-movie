@@ -683,6 +683,10 @@
     "Sales Bookings": "Quản Lý Đơn Đặt Vé",
     "Check all the sales booking.": "Xem tất cả các đơn đặt vé.",
     "New Booking": "Đơn Đặt Mới",
+    "Success Bookings": "Các Đơn Thành Công",
+    "Today Success Bookings": "Các Đơn Thành Công Hôm Nay",
+    "# Daily Bookings": "# Đơn Đặt Hàng Ngày",
+    "# Total Bookings": "# Các Đơn Đặt Vé",
     "#:booking Bookings's Tickets": "Các vé của đơn #:booking",
     "Ticket Code": "Ticket Code",
     "Print this ticket": "In vé này",
@@ -697,5 +701,12 @@
     "Customer View": "Xem Trang Chủ",
     "Failed": "Thất Bại",
     "View Tickets": "Xem Các Vé",
-    "The show is not available for now. Please try again later.": "Phòng chiếu đã offline, vui lòng thử lại sau."
+    "The show is not available for now. Please try again later.": "Phòng chiếu đã offline, vui lòng thử lại sau.",
+    "Store Configuration": "Cấu Hình Hệ Thống",
+    "Momo Payment Method": "Phương Thức Thanh Toán MoMo",
+    "Place your partner code here": "Nhập Partner Code của bạn vào đây",
+    "Place your access key here": "Nhập Access Key của bạn vào đây",
+    "Place your secret key here": "Nhập Secret Key của bạn vào đây",
+    "Place the end point of payment method": "Nhập điểm cuối của phương thức thanh toán",
+    "Unauthenticated": "Chưa xác thực"
 }

@@ -26,6 +26,7 @@
     "dependencies": {
         "@fancyapps/fancybox": "^3.5.7",
         "@progress/kendo-ui": "^2019.3.1219-internal",
+        "countup.js": "^2.0.5",
         "datatables.net-buttons-bs4": "^1.6.1",
         "datatables.net-buttons-dt": "^1.6.1",
         "datatables.net-dt": "^1.10.20",

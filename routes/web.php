@@ -83,7 +83,12 @@ Route::group([
         });
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
+        /**
+         * STORE CONFIGURATION
+         */
         Route::get('store/configs', 'StoreConfigsController@index')->name('store.configs');
+        Route::get('store/configs/sales/payment-methods', "StoreConfigsController@paymentMethods")
+            ->name('store.configs.payment_methods');
 
         /**
          * USER SECTION

@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('description')->nullable()->comment('User\'s Description');
             $table->unsignedInteger('role_id')->index()->nullable()->comment('User\'s Role');
             $table->rememberToken()->comment('Remember login token');
+            $table->string('api_token', 80)->unique()->nullable();
             $table->timestamp('created_at')->useCurrent()->comment('Create time');
             $table->timestamp('updated_at')->useCurrent()->comment('Update time');
 

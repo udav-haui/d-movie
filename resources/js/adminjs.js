@@ -829,6 +829,25 @@ window.topRightAlert = function(message, type = 'success', headText = headSucces
     });
 }
 
+window.swalTopRightAlert = function (message) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: true,
+        timer: 3000,
+        timerProgressBar: true,
+        onOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'success',
+        title: message
+    })
+}
+
 /**
  * Remove element
  *

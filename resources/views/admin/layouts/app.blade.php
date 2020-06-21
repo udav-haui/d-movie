@@ -6,6 +6,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="access-token" content="{{ auth()->user() ? auth()->user()->getApiToken() : null }}">
 
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo/logo-dm-512.png') }}">
     <title>@yield('app.title')</title>

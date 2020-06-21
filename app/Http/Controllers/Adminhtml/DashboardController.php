@@ -8,16 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Session;
 
+/**
+ * Class DashboardController
+ *
+ * @package App\Http\Controllers\Adminhtml
+ */
 class DashboardController extends Controller
 {
     /**
      * @var BookingRepositoryInterface
      */
     private $bookingRepository;
+
     /**
      * @var UserRepositoryInterface
      */

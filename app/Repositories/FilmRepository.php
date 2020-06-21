@@ -33,7 +33,7 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
                 $fields[Film::POSTER] = $this->storeImage($filePath);
             }
 
-            if (array_key_exists(Film::RELEASE_DATE, $fields)) {
+            if (array_key_exists(Film::RELEASE_DATE, $fields) && $fields[Film::RELEASE_DATE]) {
                 $fields[Film::RELEASE_DATE] = $this->formatDate($fields[Film::RELEASE_DATE]);
             }
 

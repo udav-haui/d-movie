@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -4968,14 +4968,14 @@ window.openConfirmDiag = function () {};
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /*!*********************************************!*\
   !*** multi ./resources/js/booking/index.js ***!
   \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/booking/index.js */"./resources/js/booking/index.js");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\booking\index.js */"./resources/js/booking/index.js");
 
 
 /***/ })

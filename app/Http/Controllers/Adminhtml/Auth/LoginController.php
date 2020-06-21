@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -23,7 +22,9 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers {
+        login as protected parent_login;
+    }
 
     /**
      * Where to redirect users after login.
@@ -47,6 +48,32 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->username = $this->findUsername();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function login(Request $request)
+    {
+        if ($request->isJson() &&
+            $request->is('api/*')
+        ) {
+            $validator = $this->validateLogin($request);
+            if ($validator instanceof \Illuminate\Http\JsonResponse) {
+                return $validator;
+            }
+
+            if ($this->attemptLogin($request)) {
+                $user = $this->guard()->user();
+                $user->generateToken();
+                return response()->json([
+                    'data' => $user->toArray(),
+                ]);
+            }
+
+            return $this->sendFailedLoginResponse($request);
+        }
+        return $this->parent_login($request);
     }
 
     /**
@@ -86,9 +113,33 @@ class LoginController extends Controller
      * Custom validate login
      *
      * @param Request $request
+     * @return bool|\Illuminate\Http\JsonResponse|void
      */
     protected function validateLogin(Request $request)
     {
+        if ($request->isJson()) {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    $this->username() => 'required',
+                    'password' => 'required',
+                ],
+                [
+                    $this->username() . '.required' => __('You must input :attribute'),
+                    'password.required' => __('You must input :attribute')
+                ],
+                [
+                    $this->username() => __($this->username() == 'email' ? 'Email' : 'Username'),
+                    'password' => __('Password')
+                ]
+            );
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+            return true;
+        }
         $request->validate(
             [
                 $this->username() => 'required',
@@ -133,22 +184,28 @@ class LoginController extends Controller
      * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
+     * @param  \App\User  $user
+     * @return mixed|void
      */
     protected function authenticated(Request $request, $user)
     {
+        $user->generateToken();
         if (!$user->isActive()) {
             $this->guard()->logout();
+            $user->clearApiToken();
 
             $request->session()->invalidate();
 
             $request->session()->regenerateToken();
 
-            return $user->getStatus() === \App\User::NOT_VERIFY_BY_ADMIN ? $this->loggedOut($request) ?: back()
-                ->with('error', __('Your account has not been activated.'))->withInput() :
-                $this->loggedOut($request) ?: back()
-                    ->with('error', __('Your account has been deactivate.'))->withInput();
+            /**
+             * Nếu trạng thái của user là chưa được xác thực thì chạy vào hàm
+             */
+            return $user->getStatus() === \App\User::NOT_VERIFY_BY_ADMIN ?
+                ($this->loggedOut($request) ?: back()->with('error', __('Your account has not been activated.'))
+                    ->withInput()) :
+                ($this->loggedOut($request) ?: back()->with('error', __('Your account has been deactivate.'))
+                    ->withInput());
         }
     }
 

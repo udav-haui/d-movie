@@ -4,11 +4,11 @@ namespace App;
 
 use App\Helper\Data;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -33,6 +33,7 @@ class User extends Authenticatable
     const STATE = 'state';
     const DESCRIPTION = 'description';
     const ROLE_ID = 'role_id';
+    const API_TOKEN = 'api_token';
 
     /**
      * Define role permission
@@ -67,6 +68,51 @@ class User extends Authenticatable
     const MALE = 0,
         FEMALE = 1,
         OTHER = 2;
+
+    /**
+     * Generate api token
+     *
+     * @return string
+     */
+    public function generateToken()
+    {
+        $this->setApiToken(Str::random(80));
+        $this->save();
+
+        return $this->getApiToken();
+    }
+
+    /**
+     * Clear api token
+     *
+     * @return void
+     */
+    public function clearApiToken()
+    {
+        $this->setApiToken(null);
+        $this->save();
+    }
+
+    /**
+     * Get api token
+     *
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->getAttribute(self::API_TOKEN);
+    }
+
+    /**
+     * Set api token
+     *
+     * @param string $token
+     * @return User
+     */
+    public function setApiToken($token)
+    {
+        return $this->setAttribute(self::API_TOKEN, $token);
+    }
 
     /**
      * Get user id

@@ -1,5 +1,6 @@
 {
     "/adminhtml/js/adminjs.js": "/adminhtml/js/adminjs.js",
+    "/adminhtml/js/store_config/admin_store_config.js": "/adminhtml/js/store_config/admin_store_config.js",
     "/frontend/js/app.js": "/frontend/js/app.js",
     "/adminhtml/css/admincss.css": "/adminhtml/css/admincss.css",
     "/frontend/css/app.css": "/frontend/css/app.css",
