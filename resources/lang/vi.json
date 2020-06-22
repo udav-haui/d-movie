@@ -708,5 +708,9 @@
     "Place your access key here": "Nhập Access Key của bạn vào đây",
     "Place your secret key here": "Nhập Secret Key của bạn vào đây",
     "Place the end point of payment method": "Nhập điểm cuối của phương thức thanh toán",
-    "Unauthenticated": "Chưa xác thực"
+    "Unauthenticated": "Chưa xác thực",
+    "Sales": "Kinh Doanh",
+    "Payment Methods": "Phương Thức Thanh Toán",
+    "Unauthorized": "Chưa được xác thực",
+    "We can't let you see this content": "Chúng tôi không thể cho phép bạn xem nội dung này"
 }

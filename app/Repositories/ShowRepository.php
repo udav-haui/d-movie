@@ -68,7 +68,7 @@ class ShowRepository extends CRUDModelAbstract implements ShowRepositoryInterfac
      * @return Show
      * @throws \Exception
      */
-    public function update($showId = null, $show = null, $fields = [], bool $isWriteLog = true)
+    public function update($showId = null, $show = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if ($showId !== null) {

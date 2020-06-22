@@ -58,7 +58,7 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
      * @return Slider|Model
      * @throws Exception
      */
-    public function update($sliderId = null, $slider = null, $fields = [], bool $isWriteLog = true)
+    public function update($sliderId = null, $slider = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if (array_key_exists('image', $fields)) {

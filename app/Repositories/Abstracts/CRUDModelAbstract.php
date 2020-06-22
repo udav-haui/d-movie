@@ -206,17 +206,15 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     }
 
     /**
-     * Update model data
-     *
-     * @param string|int|null $modelId
-     * @param Model|null $model
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return bool|Model
-     * @throws Exception
+     * @inheritDoc
      */
-    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true)
-    {
+    public function update(
+        $modelId = null,
+        $model = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true
+    ) {
         $fields = $this->removeTokenField($fields);
         $fields = $this->removeMethodField($fields);
 
@@ -226,7 +224,9 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
 
         try {
             if (count($fields) > 0) {
-                $fields = $this->encodeSpecialChar($fields);
+                if ($encodeSpecChar) {
+                    $fields = $this->encodeSpecialChar($fields);
+                }
                 $model->update($fields);
                 if ($isWriteLog) {
                     $this->updateLog($model, $this->model);

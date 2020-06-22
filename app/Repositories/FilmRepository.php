@@ -58,7 +58,7 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
      * @return Film
      * @throws \Exception
      */
-    public function update($filmId = null, $film = null, $fields = [], bool $isWriteLog = true)
+    public function update($filmId = null, $film = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if ($filmId !== null) {

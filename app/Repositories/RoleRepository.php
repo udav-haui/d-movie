@@ -62,7 +62,7 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Exception
      */
-    public function update($roleId = null, $role = null, $fields = [], bool $isWriteLog = true)
+    public function update($roleId = null, $role = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if ($roleId !== null) {

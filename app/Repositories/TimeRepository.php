@@ -136,7 +136,7 @@ class TimeRepository extends CRUDModelAbstract implements TimeRepositoryInterfac
         return false;
     }
 
-    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true)
+    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true, bool $isEndcodeSpecChar = true)
     {
         try {
             if (array_key_exists('prepare_time', $fields)) {

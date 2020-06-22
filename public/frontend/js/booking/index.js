@@ -4975,7 +4975,7 @@ window.openConfirmDiag = function () {};
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/booking/index.js */"./resources/js/booking/index.js");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\booking\index.js */"./resources/js/booking/index.js");
 
 
 /***/ })

@@ -90,9 +90,16 @@ interface CRUDModelInterface
      * @param Model|null $model
      * @param array $fields
      * @param bool $isWriteLog
+     * @param bool $encodeSpecChar
      * @return void
      */
-    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true);
+    public function update(
+        $modelId = null,
+        $model = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true
+    );
 
     /**
      * @param null|string|int $modelId

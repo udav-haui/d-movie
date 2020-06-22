@@ -44,7 +44,7 @@ class CinemaRepository extends CRUDModelAbstract implements CinemaRepositoryInte
      * @return Cinema|\Illuminate\Database\Eloquent\Model
      * @throws \Exception
      */
-    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true)
+    public function update($modelId = null, $model = null, $fields = [], bool $isWriteLog = true, bool $isEndcodeSpecChar = true)
     {
         try {
             /** @var Cinema $cinema */

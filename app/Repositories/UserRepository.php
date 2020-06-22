@@ -50,7 +50,7 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
      * @return User
      * @throws Exception
      */
-    public function update($userId = null, $user = null, $fields = [], bool $isWriteLog = true)
+    public function update($userId = null, $user = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if ($userId !== null) {

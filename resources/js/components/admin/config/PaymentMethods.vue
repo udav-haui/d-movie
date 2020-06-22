@@ -23,25 +23,25 @@
                                         <div class="form-group">
                                             <label for="momo_partner_code" class="col-sm-3 control-label">Partner Code</label>
                                             <div class="col-sm-9">
-                                                <input type="text" v-model="momoConfig.MOMO_PARTNER_CODE" class="form-control" id="momo_partner_code" :placeholder="partnerCodePlaceHolderTextHint">
+                                                <input type="text" v-model="momoConfig.partnerCode" class="form-control" id="momo_partner_code" :placeholder="partnerCodePlaceHolderTextHint">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="momo_access_key" class="col-sm-3 control-label">Access Key</label>
                                             <div class="col-sm-9">
-                                                <input type="text" v-model="momoConfig.MOMO_ACCESS_KEY" class="form-control" id="momo_access_key" :placeholder="accessKeyPlaceHolderTextHint">
+                                                <input type="text" v-model="momoConfig.accessKey" class="form-control" id="momo_access_key" :placeholder="accessKeyPlaceHolderTextHint">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="momo_secret_key" class="col-sm-3 control-label">Secret Key</label>
                                             <div class="col-sm-9">
-                                                <input type="password" v-model="momoConfig.MOMO_SECRET_KEY" class="form-control" id="momo_secret_key" :placeholder="secretKeyPlaceHolderTextHint">
+                                                <input type="password" v-model="momoConfig.secretKey" class="form-control" id="momo_secret_key" :placeholder="secretKeyPlaceHolderTextHint">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="momo_end_point" class="col-sm-3 control-label">End Point</label>
                                             <div class="col-sm-9">
-                                                <input type="text" v-model="momoConfig.MOMO_ENDPOINT" class="form-control" id="momo_end_point" :placeholder="endPointPlaceHolderTextHint">
+                                                <input type="text" v-model="momoConfig.endPoint" class="form-control" id="momo_end_point" :placeholder="endPointPlaceHolderTextHint">
                                             </div>
                                         </div>
                                     </div>
@@ -63,9 +63,19 @@
             let response = getPaymentMethodsConfig(), that = this;
             response.then(function (res) {
                 if (res.status === 200) {
-                    that.momoConfig = res.data.data.momo;
+                    // Map key from snake case to camel case
+                    let mappedData = _.mapKeys(res.data.data.momo, (v, k) => _.camelCase(k));
+                    that.momoConfig = mappedData;
                 }
-            })
+                if (res.status === 403) {
+                    errorMessage(res.data ? res.data.message : __('Unauthorized'));
+                }
+                if (res.status === 400) {
+                    errorMessage(res.data ? res.data.message : __('Something went wrong! Please try again.'));
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         props: [
             'partnerCodePlaceHolderTextHint',
@@ -75,20 +85,27 @@
         ],
         data: function() {
             return {
-                momoConfig: {}
+                momoConfig: {
+                    partnerCode: null,
+                    accessKey: null,
+                    secretKey: null,
+                    endPoint: null
+                }
             }
         },
         methods: {
             save: function () {
-                let data = {
-                    'momo': this.momoConfig
-                };
-                let response = savePaymentMethodsConfig(data);
+                // map data to snake case key-value
+                let mappedData = _.mapKeys(this.momoConfig, (v, k) => _.snakeCase(k)),
+                    data = {
+                        'momo': mappedData
+                    },
+                    response = savePaymentMethodsConfig(data);
                 response.then(function (res) {
                     if (res.status === 200) {
-                        swalTopRightAlert(res.data.messages);
+                        swalTopRightAlert(res.data.message);
                     }else {
-                        normalAlert(res.data ? res.data.messages: res.message);
+                        normalAlert(res.data ? res.data.message: res.message);
                     }
                 }).catch(function (error) {
                     console.log(error);

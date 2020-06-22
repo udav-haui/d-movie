@@ -161,28 +161,52 @@ __webpack_require__.r(__webpack_exports__);
         that = this;
     response.then(function (res) {
       if (res.status === 200) {
-        that.momoConfig = res.data.data.momo;
+        // Map key from snake case to camel case
+        var mappedData = _.mapKeys(res.data.data.momo, function (v, k) {
+          return _.camelCase(k);
+        });
+
+        that.momoConfig = mappedData;
       }
+
+      if (res.status === 403) {
+        errorMessage(res.data ? res.data.message : __('Unauthorized'));
+      }
+
+      if (res.status === 400) {
+        errorMessage(res.data ? res.data.message : __('Something went wrong! Please try again.'));
+      }
+    })["catch"](function (error) {
+      console.log(error);
     });
   },
   props: ['partnerCodePlaceHolderTextHint', 'accessKeyPlaceHolderTextHint', 'secretKeyPlaceHolderTextHint', 'endPointPlaceHolderTextHint'],
   data: function data() {
     return {
-      momoConfig: {}
+      momoConfig: {
+        partnerCode: null,
+        accessKey: null,
+        secretKey: null,
+        endPoint: null
+      }
     };
   },
   methods: {
     save: function save() {
-      var data = {
-        'momo': this.momoConfig
-      };
-      var response = Object(_store_apis_store_config_store_config_api__WEBPACK_IMPORTED_MODULE_0__["savePaymentMethodsConfig"])(data);
+      // map data to snake case key-value
+      var mappedData = _.mapKeys(this.momoConfig, function (v, k) {
+        return _.snakeCase(k);
+      }),
+          data = {
+        'momo': mappedData
+      },
+          response = Object(_store_apis_store_config_store_config_api__WEBPACK_IMPORTED_MODULE_0__["savePaymentMethodsConfig"])(data);
+
       response.then(function (res) {
         if (res.status === 200) {
-          swalTopRightAlert(res.data.messages);
+          swalTopRightAlert(res.data.message);
         } else {
-          console.log(res);
-          normalAlert(res.data ? res.data.messages : res.message);
+          normalAlert(res.data ? res.data.message : res.message);
         }
       })["catch"](function (error) {
         console.log(error);
@@ -728,8 +752,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.momoConfig.MOMO_PARTNER_CODE,
-                              expression: "momoConfig.MOMO_PARTNER_CODE"
+                              value: _vm.momoConfig.partnerCode,
+                              expression: "momoConfig.partnerCode"
                             }
                           ],
                           staticClass: "form-control",
@@ -738,7 +762,7 @@ var render = function() {
                             id: "momo_partner_code",
                             placeholder: _vm.partnerCodePlaceHolderTextHint
                           },
-                          domProps: { value: _vm.momoConfig.MOMO_PARTNER_CODE },
+                          domProps: { value: _vm.momoConfig.partnerCode },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -746,7 +770,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.momoConfig,
-                                "MOMO_PARTNER_CODE",
+                                "partnerCode",
                                 $event.target.value
                               )
                             }
@@ -771,8 +795,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.momoConfig.MOMO_ACCESS_KEY,
-                              expression: "momoConfig.MOMO_ACCESS_KEY"
+                              value: _vm.momoConfig.accessKey,
+                              expression: "momoConfig.accessKey"
                             }
                           ],
                           staticClass: "form-control",
@@ -781,7 +805,7 @@ var render = function() {
                             id: "momo_access_key",
                             placeholder: _vm.accessKeyPlaceHolderTextHint
                           },
-                          domProps: { value: _vm.momoConfig.MOMO_ACCESS_KEY },
+                          domProps: { value: _vm.momoConfig.accessKey },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -789,7 +813,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.momoConfig,
-                                "MOMO_ACCESS_KEY",
+                                "accessKey",
                                 $event.target.value
                               )
                             }
@@ -814,8 +838,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.momoConfig.MOMO_SECRET_KEY,
-                              expression: "momoConfig.MOMO_SECRET_KEY"
+                              value: _vm.momoConfig.secretKey,
+                              expression: "momoConfig.secretKey"
                             }
                           ],
                           staticClass: "form-control",
@@ -824,7 +848,7 @@ var render = function() {
                             id: "momo_secret_key",
                             placeholder: _vm.secretKeyPlaceHolderTextHint
                           },
-                          domProps: { value: _vm.momoConfig.MOMO_SECRET_KEY },
+                          domProps: { value: _vm.momoConfig.secretKey },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -832,7 +856,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.momoConfig,
-                                "MOMO_SECRET_KEY",
+                                "secretKey",
                                 $event.target.value
                               )
                             }
@@ -857,8 +881,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.momoConfig.MOMO_ENDPOINT,
-                              expression: "momoConfig.MOMO_ENDPOINT"
+                              value: _vm.momoConfig.endPoint,
+                              expression: "momoConfig.endPoint"
                             }
                           ],
                           staticClass: "form-control",
@@ -867,7 +891,7 @@ var render = function() {
                             id: "momo_end_point",
                             placeholder: _vm.endPointPlaceHolderTextHint
                           },
-                          domProps: { value: _vm.momoConfig.MOMO_ENDPOINT },
+                          domProps: { value: _vm.momoConfig.endPoint },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -875,7 +899,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.momoConfig,
-                                "MOMO_ENDPOINT",
+                                "endPoint",
                                 $event.target.value
                               )
                             }
@@ -14238,10 +14262,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPaymentMethodsConfig", function() { return getPaymentMethodsConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "savePaymentMethodsConfig", function() { return savePaymentMethodsConfig; });
 function getPaymentMethodsConfig() {
-  return axios.get(route('api.config.sales.paymentMethods', {}), {}).then(function (res) {
+  return axios.get(route('api.config.sales.paymentMethods'), {}).then(function (res) {
     return res;
   })["catch"](function (err) {
-    console.error(err);
+    return err.response;
   });
 }
 function savePaymentMethodsConfig(data) {
@@ -14250,7 +14274,7 @@ function savePaymentMethodsConfig(data) {
   }).then(function (res) {
     return res;
   })["catch"](function (err) {
-    return err;
+    return err.response;
   });
 }
 
@@ -14306,7 +14330,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/admin_store_config.js */"./resources/js/admin_store_config.js");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\admin_store_config.js */"./resources/js/admin_store_config.js");
 
 
 /***/ })

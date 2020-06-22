@@ -158,7 +158,7 @@ class FilmScheduleRepository extends CRUDModelAbstract implements FilmScheduleRe
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Exception
      */
-    public function update($modelId = null, $schedule = null, $fields = [], bool $isWriteLog = true)
+    public function update($modelId = null, $schedule = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
     {
         try {
             if (array_key_exists('cinema_id', $fields)) {
