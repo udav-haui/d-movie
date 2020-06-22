@@ -87,10 +87,11 @@
                 response.then(function (res) {
                     if (res.status === 200) {
                         swalTopRightAlert(res.data.messages);
+                    }else {
+                        normalAlert(res.data ? res.data.messages: res.message);
                     }
-                    if (res.status === 400) {
-                        normalAlert(res.data.messages);
-                    }
+                }).catch(function (error) {
+                    console.log(error);
                 })
             }
         }

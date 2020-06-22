@@ -20,6 +20,7 @@ use App\Repositories\Interfaces\ShowRepositoryInterface;
 use App\Repositories\Interfaces\SliderRepositoryInterface;
 use App\Repositories\Interfaces\SocialAccountRepositoryInterface;
 use App\Repositories\Interfaces\StaticPageRepositoryInterface;
+use App\Repositories\Interfaces\StoreConfigRepositoryInterface;
 use App\Repositories\Interfaces\TimeRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\LogRepository;
@@ -30,24 +31,20 @@ use App\Repositories\ShowRepository;
 use App\Repositories\SliderRepository;
 use App\Repositories\SocialAccountRepository;
 use App\Repositories\StaticPageRepository;
+use App\Repositories\StoreConfigRepository;
 use App\Repositories\TimeRepository;
 use App\Repositories\ComboRepository;
 use App\Repositories\Interfaces\ComboRepositoryInterface;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class RepositoriesServiceProvider
+ *
+ * @package App\Providers
+ */
 class RepositoriesServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
     /**
      * Bootstrap services.
      *
@@ -71,5 +68,6 @@ class RepositoriesServiceProvider extends ServiceProvider
         $this->app->singleton(SeatRepositoryInterface::class, SeatRepository::class);
         $this->app->singleton(BookingRepositoryInterface::class, BookingRepository::class);
         $this->app->singleton(MemberRepositoryInterface::class, MemberRepository::class);
+        $this->app->singleton(StoreConfigRepositoryInterface::class, StoreConfigRepository::class);
     }
 }

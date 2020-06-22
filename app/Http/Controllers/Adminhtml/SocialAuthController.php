@@ -71,6 +71,7 @@ class SocialAuthController extends Controller
             return redirect(\App\Helper\Data::ADMIN_LOGIN_PATH)
                 ->with('error', __('Please wait until we activate your account, thank you!'));
         } elseif ($user->isActive()) {
+            $user->generateToken();
             auth()->login($user, true);
             return redirect(\App\Helper\Data::ADMIN_PATH);
         }

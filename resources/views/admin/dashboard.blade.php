@@ -224,10 +224,10 @@
             <div class="white-box">
                 <h3 class="box-title">{{ __('# Daily Bookings') }}</h3>
                 <ul class="list-inline two-part">
-                    <li>
+                    <li style="width: 9%">
                         <i class="ti-ticket text-success"></i>
                     </li>
-                    <li class="text-right">
+                    <li class="text-right" style="width: calc(100% - 11.4%)">
                         <span class="text-muted" style="font-size: 14px">{{ __('Today Success Bookings') }}</span>
                         <h1>
                             <span id="daily_success_bookings" class="counter">0</span>

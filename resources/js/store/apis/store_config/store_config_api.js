@@ -9,7 +9,5 @@ export function getPaymentMethodsConfig() {
 export function savePaymentMethodsConfig(data) {
     return axios.put(route('api.config.sales.savePaymentMethods'), {input: data})
         .then(res => res)
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(err => err);
 }

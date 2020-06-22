@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Adminhtml;
 
 use App\Config;
+use App\Repositories\Interfaces\StoreConfigRepositoryInterface;
 
 /**
  * Class StoreConfigsController
@@ -10,6 +11,22 @@ use App\Config;
  */
 class StoreConfigsController extends \App\Http\Controllers\Controller
 {
+    /**
+     * @var StoreConfigRepositoryInterface
+     */
+    private $configRepository;
+
+    /**
+     * StoreConfigsController constructor.
+     *
+     * @param StoreConfigRepositoryInterface $configRepository
+     */
+    public function __construct(
+        StoreConfigRepositoryInterface $configRepository
+    ) {
+        $this->configRepository = $configRepository;
+    }
+
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -54,6 +71,24 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
 
     public function savePaymentMethods()
     {
+        $paymentConfigs = request('input');
+
+        if ($paymentConfigs) {
+            if ($paymentConfigs['momo']) {
+                if (is_bool($paymentConfigs['momo']['MOMO_SECRET_KEY'])) {
+                    unset($paymentConfigs['momo']['MOMO_SECRET_KEY']);
+                }
+            }
+        }
+
+        $configQuery = $this->configRepository->getFilter(
+            null,
+            [Config::SECTION_ID => Config::SALES_PAYMENT_METHOD_SECTION_ID]
+        );
+        /** @var Config $config */
+        $config = $configQuery->first();
+        dd($config->getConfigValues());
+
         $momoData = request('input')['momo'] ?? null;
         if ($momoData) {
             if (is_bool($momoData['MOMO_SECRET_KEY'])) {

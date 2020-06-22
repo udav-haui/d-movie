@@ -180,11 +180,12 @@ __webpack_require__.r(__webpack_exports__);
       response.then(function (res) {
         if (res.status === 200) {
           swalTopRightAlert(res.data.messages);
+        } else {
+          console.log(res);
+          normalAlert(res.data ? res.data.messages : res.message);
         }
-
-        if (res.status === 400) {
-          normalAlert(res.data.messages);
-        }
+      })["catch"](function (error) {
+        console.log(error);
       });
     }
   }
@@ -14249,7 +14250,7 @@ function savePaymentMethodsConfig(data) {
   }).then(function (res) {
     return res;
   })["catch"](function (err) {
-    console.error(err);
+    return err;
   });
 }
 
@@ -14305,7 +14306,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\admin_store_config.js */"./resources/js/admin_store_config.js");
+module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/admin_store_config.js */"./resources/js/admin_store_config.js");
 
 
 /***/ })
