@@ -554,7 +554,7 @@
     "The user has :mark the model <d-mark-model>:model</d-mark-model> with ID = <code>:id</code>": "Người dùng đã :mark model <d-mark-model>:model</d-mark-model> với ID = <code>:id</code>",
     "Log ID: <code>:id</code>": "Bản ghi ID số: <code>:id</code>",
     "Log ID: :id": "Bản ghi ID số: :id",
-    "Last change data": "Dữ liệu sửa đổi cuối cùng",
+    "Log change": "Nhật ký sửa đổi cuối cùng",
 
 
     "Movies Schedule": "Lịch Chiếu",

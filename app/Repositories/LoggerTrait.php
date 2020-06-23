@@ -145,4 +145,105 @@ trait LoggerTrait
             $fields
         );
     }
+
+    /**
+     * Make a log
+     *
+     * @param mixed|\Illuminate\Database\Eloquent\Model $oldData
+     * @param mixed $newData
+     * @param string $modelNamespace
+     * @param string $logType
+     * @param null $fullOldData
+     * @param array $extraFields
+     */
+    public function log(
+        $oldData,
+        $newData,
+        $modelNamespace,
+        $logType = 'create',
+        $fullOldData = null,
+        $extraFields = []
+    ) {
+        if ($logType == 'update') {
+            $modelData = clone $newData;
+            if (!is_array($oldData)) {
+                $oldData = [$oldData->getId() => $oldData->toArray()];
+            }
+            if (!is_array($newData)) {
+                $newData = [$newData->getId() => $newData->toArray()];
+            }
+            $logData = $this->arrayDiffRecursive($oldData, $newData);
+            $this->updateLog($modelData, $modelNamespace, $logData, $extraFields = []);
+        }
+    }
+
+    /**
+     * Get messages for messages columns
+     *
+     * @param array $oldArray
+     * @param array $newArray
+     * @param bool $isLogChildOldData
+     * @return array
+     */
+    protected function arrayDiffRecursive($oldArray, $newArray, $isLogChildOldData = true)
+    {
+        $messages = [];
+        $removedKeyFromNew = array_diff_key($oldArray, $newArray);
+        foreach ($removedKeyFromNew as $key => $value) {
+            $messages[$key] = [
+                'key_name' => $key,
+                'action' => 'removed',
+                'new_value' => null,
+                'old_value' => $value
+            ];
+        }
+        $updatedKeyFromNew = array_udiff_assoc($newArray, $oldArray, [$this, "compareArray"]);
+        $addedNewKeyFromNew = array_diff_key($newArray, $oldArray);
+        foreach ($addedNewKeyFromNew as $key => $value) {
+            if (is_array($value)) {
+                $newValue = $this->arrayDiffRecursive([], $value, false);
+            } else {
+                $newValue = null;
+            }
+            $messages[$key] = [
+                'key_name' => $key,
+                'action' => 'updated',
+                'new_value' => $newValue ?? $value,
+                'old_value' => null
+            ];
+            unset($updatedKeyFromNew[$key]);
+        }
+        foreach ($updatedKeyFromNew as $key => $value) {
+            $action = 'updated';
+            if ($value == null || $value == '') {
+                $action = 'removed';
+            }
+            if (is_array($value)) {
+                $newValue = $this->arrayDiffRecursive($oldArray[$key], $value, false);
+            } else {
+                $newValue = null;
+            }
+            $messages[$key] = [
+                'key_name' => $key,
+                'action' => $action,
+                'new_value' => $newValue ?? $value,
+                'old_value' => $isLogChildOldData ? $oldArray[$key] : null
+            ];
+        }
+        return $messages;
+    }
+
+    /**
+     * @param mixed $firstArrVal
+     * @param mixed $secondArrVal
+     * @return int
+     */
+    public static function compareArray($firstArrVal, $secondArrVal)
+    {
+//        if (is_array($firstArrVal) || is_array($secondArrVal)) {
+//            dump($firstArrVal, $secondArrVal);
+//            dd($firstArrVal == $secondArrVal);
+//        }
+        return $firstArrVal == $secondArrVal ? 0 : -1;
+    }
 }

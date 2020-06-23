@@ -227,7 +227,9 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                 if ($encodeSpecChar) {
                     $fields = $this->encodeSpecialChar($fields);
                 }
+                $oldData = clone $model;
                 $model->update($fields);
+                $this->log($oldData, $model, $this->model, 'update');
                 if ($isWriteLog) {
                     $this->updateLog($model, $this->model);
                 }

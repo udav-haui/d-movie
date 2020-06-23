@@ -30,6 +30,10 @@ class Log extends Model
     const UPDATE = 'update';
     const DELETE = 'delete';
 
+    protected $casts = [
+        self::MESSAGE => 'array'
+    ];
+
     /**
      * @return int
      */

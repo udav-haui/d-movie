@@ -46,8 +46,8 @@
             <div class="panel panel-info">
                 <div class="panel-heading">{!! __('Log ID: <code>:id</code>', ['id' => $log->getId()]) !!}</div>
                 <div class="panel-body">
-                    <h3 class="box-title">{{ __('Last change data') }}</h3>
-                    @dump(json_decode($log->getMessage(), true))
+                    <h3 class="box-title">{{ __('Log change') }}</h3>
+                    @dump($log->getMessage())
                 </div>
             </div>
         </div>

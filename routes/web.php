@@ -4,6 +4,8 @@ $admin = \App\Helper\Data::getAdminPath();
 Route::get('switch-language/{lang}', 'LanguageController@switch')
     ->name('app.switch-language');
 
+//Route::get('array', 'LanguageController@array')->name('testArray');
+
 Route::group(['namespace' => 'Frontend'], function () {
     Route::get('/', function () {
         return redirect(route('frontend.home'));

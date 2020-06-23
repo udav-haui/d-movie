@@ -51,7 +51,7 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
     /**
      * Get payment methods configs
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @api
      */
     public function getPaymentMethods()
     {
@@ -87,6 +87,12 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
         }
     }
 
+    /**
+     * Save payment method configs
+     *
+     * @api
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function savePaymentMethods()
     {
         try {
