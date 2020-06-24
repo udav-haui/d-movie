@@ -14330,7 +14330,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/admin_store_config.js */"./resources/js/admin_store_config.js");
+module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\admin_store_config.js */"./resources/js/admin_store_config.js");
 
 
 /***/ })

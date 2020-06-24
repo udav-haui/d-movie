@@ -70,6 +70,70 @@ class User extends Authenticatable
         OTHER = 2;
 
     /**
+     * @param null $option
+     * @return string
+     */
+    public static function getModelName($option = null)
+    {
+        if ($option == self::CUSTOMER) {
+            return __('Customer');
+        }
+        return __('User');
+    }
+
+    public static function mappedAttributeLabel()
+    {
+        return [
+            self::ACCOUNT_TYPE => __('user.' . self::ACCOUNT_TYPE),
+            self::STATE => __('user.' . self::STATE),
+            self::CAN_CHANGE_USERNAME => __('user.' . self::CAN_CHANGE_USERNAME),
+            self::LOGIN_WITH_SOCIAL_ACCOUNT => __('user.' . self::LOGIN_WITH_SOCIAL_ACCOUNT),
+            self::USERNAME => __('user.' . self::USERNAME),
+            self::NAME => __('user.' . self::NAME),
+            self::EMAIL => __('user.' . self::EMAIL),
+            self::PASSWORD => __('user.' . self::PASSWORD),
+            self::GENDER => __('user.' . self::GENDER),
+            self::PHONE => __('user.' . self::PHONE),
+            self::ADDRESS => __('user.' . self::ADDRESS),
+            self::AVATAR => __('user.' . self::AVATAR),
+            self::DOB => __('user.' . self::DOB),
+            self::DESCRIPTION => __('user.' . self::DESCRIPTION),
+            self::ROLE_ID => __('user.' . self::ROLE_ID),
+        ];
+    }
+
+    public static function mappedValue($keyForCompare)
+    {
+        if ($keyForCompare == self::ACCOUNT_TYPE) {
+            return [
+                self::ADMIN => __('Admin'),
+                self::STAFF => __('Staff'),
+                self::CUSTOMER => __('Customer')
+            ];
+        }
+        if ($keyForCompare == self::STATE) {
+            return [
+                self::ACTIVE => __('Active'),
+                self::NOT_VERIFY_BY_ADMIN => __('Wait for admin verification'),
+                self::NOT_ACTIVATE => __('Deactive')
+            ];
+        }
+        if ($keyForCompare == self::GENDER) {
+            return [
+                self::MALE => __('Male'),
+                self::FEMALE => __('Female'),
+                self::OTHER => __('Other')
+            ];
+        }
+        if ($keyForCompare == self::CAN_CHANGE_USERNAME) {
+            return [
+                self::CAN => __('Can'),
+                self::CANT => __('Can\'t')
+            ];
+        }
+    }
+
+    /**
      * Generate api token
      *
      * @return string
@@ -347,7 +411,7 @@ class User extends Authenticatable
      */
     public function getRoleName()
     {
-        return $this->role->role_name ?? __('No role assigned!');
+        return $this->account_type == self::ADMIN ? __('Admin') : ($this->role->role_name ?? __('No role assigned!'));
     }
 
     /**

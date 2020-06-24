@@ -2,14 +2,12 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class Config
  *
  * @package App
  */
-class Config extends Model
+class Config extends AbstractModel
 {
     const SALE_PAYMENT_METHODS = 'sales-payment_methods';
 
@@ -38,6 +36,24 @@ class Config extends Model
     public function getId()
     {
         return $this->getAttribute(self::ID);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getModelName($option = null)
+    {
+        return __('Config');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function mappedAttributeLabel()
+    {
+        return [
+            self::CONFIG_VALUES => __('config.' . self::CONFIG_VALUES)
+        ];
     }
 
     /**

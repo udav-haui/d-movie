@@ -31,4 +31,23 @@ abstract class AbstractModel extends \Illuminate\Database\Eloquent\Model
         }
         return Carbon::make($date)->format($format);
     }
+
+    /**
+     * @param mixed $option
+     * @return string
+     */
+    public static function getModelName($option = null)
+    {
+        return '';
+    }
+
+    public static function mappedAttributeLabel()
+    {
+        return [];
+    }
+
+    public static function mappedValue($keyForCompare)
+    {
+        return [];
+    }
 }

@@ -174,10 +174,10 @@ trait LoggerTrait
             } else {
                 $modelData = clone $newData;
                 if (!is_array($oldData)) {
-                    $oldData = [$oldData->getId() => $oldData->toArray()];
+                    $oldData = [$oldData->id => $oldData->toArray()];
                 }
                 if (!is_array($newData)) {
-                    $newData = [$newData->getId() => $newData->toArray()];
+                    $newData = [$newData->id => $newData->toArray()];
                 }
                 $logData = $this->arrayDiffRecursive($oldData, $newData, $identifierKey);
                 $this->updateLog($modelData, $modelNamespace, $logData, $extraFields = []);

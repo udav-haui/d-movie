@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Film extends Model
+class Film extends AbstractModel
 {
     protected $guarded = [];
 
@@ -49,6 +49,51 @@ class Film extends Model
     const ENABLE = 1;
 
     /**
+     * @return string
+     */
+    public static function getModelName($option = null)
+    {
+        return __('Film');
+    }
+
+    public static function mappedAttributeLabel()
+    {
+        return [
+            self::IS_COMING_SOON => __('film.'.self::IS_COMING_SOON),
+            self::IS_SNEAK_SHOW => __('film.'.self::IS_SNEAK_SHOW),
+            self::STATUS => __('film.' . self::STATUS),
+            self::TITLE => __('film.' . self::TITLE),
+            self::POSTER => __('film.' . self::POSTER),
+            self::DIRECTOR => __('film.' . self::DIRECTOR),
+            self::CAST => __('film.' . self::CAST),
+            self::GENRE => __('film.' . self::GENRE),
+            self::RUNNING_TIME => __('film.' . self::RUNNING_TIME),
+            self::LANGUAGE => __('film.' . self::LANGUAGE),
+            self::DESCRIPTION => __('film.' . self::DESCRIPTION),
+            self::RELEASE_DATE => __('film.' . self::RELEASE_DATE),
+            self::MARK => __('film.' . self::MARK),
+            self::TRAILER => __('film.' . self::TRAILER),
+            self::IS_OPEN_SALE_TICKET => __('film.' . self::IS_OPEN_SALE_TICKET),
+        ];
+    }
+
+    public static function mappedValue($keyForCompare)
+    {
+        if ($keyForCompare == 'yes/no') {
+            return [
+                '0' => __('No'),
+                '1' => __('Yes')
+            ];
+        }
+        if ($keyForCompare == 'enable/disable') {
+            return [
+                '0' => __('Disabled'),
+                '1' => __('Enabled')
+            ];
+        }
+    }
+
+    /**
      * Render to html
      *
      * @return string
@@ -65,13 +110,12 @@ class Film extends Model
     }
 
     /**
-     * Get formatted date
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function getFormattedDate()
+    public function getFormattedDate($date = '', $format = 'd-m-yy')
     {
-        return Carbon::make($this->getReleaseDate())->format('d-m-yy');
+        $date = $this->getReleaseDate();
+        return parent::getFormattedDate($date, $format);
     }
 
     /**

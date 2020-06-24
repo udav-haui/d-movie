@@ -232,10 +232,11 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                 }
                 $oldData = clone $model;
                 if ($changedData = $this->getChanged($oldData, $fields)) {
+                    dump($fields);
+                    dd($oldData->toArray());
                     $model->update($fields);
-                    $this->log($oldData, $model, $this->model, null, 'update');
                     if ($isWriteLog) {
-                        $this->updateLog($model, $this->model);
+                        $this->log($oldData, $model, $this->model, null, 'update');
                     }
                     return $model;
                 }

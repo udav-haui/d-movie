@@ -125,7 +125,7 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
                     null,
                     $config,
                     [Config::CONFIG_VALUES => $paymentConfigs],
-                    false,
+                    true,
                     false
                 );
             } else {

@@ -41,14 +41,16 @@
 @endsection
 
 @section('content')
+    <?php $user = $log->getUser(); ?>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">{!! __('Log ID: <code>:id</code>', ['id' => $log->getId()]) !!}</div>
                 <div class="panel-body">
-                    <h3 class="box-title">{{ __('Log change') }}</h3>
-                    {!! echo_log_recursive($log->getTargetModel(), $log->getMessage()) !!}
-                    @dump($log->getMessage())
+                    <h3 class="box-title">{!! __('Log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ['day' => $log->created_at, 'user' => $user->getUserName() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
+                    </h3>
+                    {!! echo_log_recursive($log->getMessage(), $log) !!}
+{{--                    @dump($log->getMessage())--}}
                 </div>
             </div>
         </div>

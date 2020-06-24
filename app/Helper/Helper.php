@@ -278,25 +278,56 @@ function compare_array($firstArrVal, $secondArrVal)
 }
 
 /**
- * @param string $targetUpdate
  * @param array $inputLogArray
+ * @param \App\Log $log
+ * @param object $targetModel
  * @return string
  */
-function echo_log_recursive($targetUpdate, $inputLogArray)
+function echo_log_recursive($inputLogArray, $log, $targetModel = null)
 {
     $rawHtml = '<ul>';
     foreach ($inputLogArray as $key => $item) {
-        $rawHtml .= '<li>';
-        if (is_array($item['new_value'])) {
-            $rawHtml .= __($item['action']) . " " . $key;
-            $rawHtml .= echo_log_recursive($key, $item['new_value']);
-        } else {
-            $rawHtml .= __($item['action']) . " ";
-            $rawHtml .= __($item['key_name']) . " " . __('from') . " ";
-            $rawHtml .= $item['old_value'] . " " . __('to') . " ";
-            $rawHtml .= $item['new_value'];
+        if ($item['key_name'] != 'updated_at') {
+            $rawHtml .= '<li>';
+            if (is_array($item['new_value'])) {
+                if (!$targetModel) {
+                    $targetModel = $log->getTargetModel();
+                    $targetModel = new $targetModel();
+                }
+                if ($key == $log->getTargetId()) {
+                    $targetModelLogText = __(
+                        "<code>:modelName</code>with identifier<code>:id</code>",
+                        [
+                            'modelName' => $targetModel::getModelName($item['old_value']['account_type'] ?? null),
+                            'id' => $targetModel instanceof \App\Config ? $item['old_value']['section_id'] : $key
+                        ]
+                    );
+                } else {
+                    $targetModelLogText = null;
+                }
+                $changedKey = $targetModelLogText ?? __('<code>:key</code>', ['key' => ($targetModel::mappedAttributeLabel()[$key] ?? $key)]);
+                $rawHtml .= __(mb_strtoupper($item['action'])) . $changedKey;
+                $rawHtml .= echo_log_recursive($item['new_value'], $log, $targetModel);
+            } else {
+                $rawHtml .= __($item['action']) . '&nbsp;';
+                $rawHtml .= "<d-mark-update>";
+                $rawHtml .= $targetModel::mappedAttributeLabel()[$item['key_name']] ?? $item['key_name'];
+                $rawHtml .= "</d-mark-update>";
+                $newDataLog = __(
+                    "&nbsp;from&nbsp;<d-mark-delete>:oldVal</d-mark-delete>&nbsp;to&nbsp;<d-mark-create>:newVal</d-mark-create>",
+                    [
+                        'oldVal' => $targetModel::mappedValue($item['key_name'])[$item['old_value']] ?? $item['old_value'],
+                        'newVal' => $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value']
+                    ]
+                );
+                $rawHtml .= $newDataLog;
+//                $rawHtml .= "&nbsp;" . __('') . "";
+//                $rawHtml .= ;
+//                $rawHtml .= "&nbsp;" . __('to') . "&nbsp;";
+//                $rawHtml .= $item['new_value'];
+            }
+            $rawHtml .= '</li>';
         }
-        $rawHtml .= '</li>';
     }
     $rawHtml .= '</ul>';
     return $rawHtml;
