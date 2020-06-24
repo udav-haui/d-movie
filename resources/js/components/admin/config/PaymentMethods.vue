@@ -104,7 +104,9 @@
                 response.then(function (res) {
                     if (res.status === 200) {
                         swalTopRightAlert(res.data.message);
-                    }else {
+                    } else if(res.status === 304) {
+
+                    } else {
                         normalAlert(res.data ? res.data.message: res.message);
                     }
                 }).catch(function (error) {

@@ -47,6 +47,7 @@
                 <div class="panel-heading">{!! __('Log ID: <code>:id</code>', ['id' => $log->getId()]) !!}</div>
                 <div class="panel-body">
                     <h3 class="box-title">{{ __('Log change') }}</h3>
+                    {!! echo_log_recursive($log->getTargetModel(), $log->getMessage()) !!}
                     @dump($log->getMessage())
                 </div>
             </div>

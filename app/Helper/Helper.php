@@ -204,3 +204,100 @@ function changeEnv($data = array())
         return false;
     }
 }
+
+/**
+ * Get changed value from two array
+ *
+ * @param array $oldArray
+ * @param array $newArray
+ * @param bool $isLogChildOldData
+ * @return array
+ */
+function array_diff_recursive($oldArray, $newArray, $isLogChildOldData = true)
+{
+    $messages = [];
+    $removedKeyFromNew = array_diff_key($oldArray, $newArray);
+    foreach ($removedKeyFromNew as $key => $value) {
+        $messages[$key] = [
+            'key_name' => $key,
+            'action' => 'removed',
+            'new_value' => null,
+            'old_value' => $value
+        ];
+    }
+    $updatedKeyFromNew = array_udiff_assoc($newArray, $oldArray, "compare_array");
+    $addedNewKeyFromNew = array_diff_key($newArray, $oldArray);
+    foreach ($addedNewKeyFromNew as $key => $value) {
+        if (is_array($value)) {
+            $newValue = array_diff_recursive([], $value, false);
+        } else {
+            $newValue = null;
+        }
+        $messages[$key] = [
+            'key_name' => $key,
+            'action' => 'updated',
+            'new_value' => $newValue ?? $value,
+            'old_value' => null
+        ];
+        unset($updatedKeyFromNew[$key]);
+    }
+    foreach ($updatedKeyFromNew as $key => $value) {
+        $action = 'updated';
+        if ($value == null || $value == '') {
+            $action = 'removed';
+        }
+        if (is_array($value)) {
+            $newValue = array_diff_recursive($oldArray[$key], $value, false);
+        } else {
+            $newValue = null;
+        }
+        $messages[$key] = [
+            'key_name' => $key,
+            'action' => $action,
+            'new_value' => $newValue ?? $value,
+            'old_value' => $isLogChildOldData ? $oldArray[$key] : null
+        ];
+    }
+    return $messages;
+}
+
+/**
+ * For array_diff_recursive
+ *
+ * @param mixed $firstArrVal
+ * @param mixed $secondArrVal
+ * @return int
+ */
+function compare_array($firstArrVal, $secondArrVal)
+{
+//        if (is_array($firstArrVal) || is_array($secondArrVal)) {
+//            dump($firstArrVal, $secondArrVal);
+//            dd($firstArrVal == $secondArrVal);
+//        }
+    return $firstArrVal == $secondArrVal ? 0 : -1;
+}
+
+/**
+ * @param string $targetUpdate
+ * @param array $inputLogArray
+ * @return string
+ */
+function echo_log_recursive($targetUpdate, $inputLogArray)
+{
+    $rawHtml = '<ul>';
+    foreach ($inputLogArray as $key => $item) {
+        $rawHtml .= '<li>';
+        if (is_array($item['new_value'])) {
+            $rawHtml .= __($item['action']) . " " . $key;
+            $rawHtml .= echo_log_recursive($key, $item['new_value']);
+        } else {
+            $rawHtml .= __($item['action']) . " ";
+            $rawHtml .= __($item['key_name']) . " " . __('from') . " ";
+            $rawHtml .= $item['old_value'] . " " . __('to') . " ";
+            $rawHtml .= $item['new_value'];
+        }
+        $rawHtml .= '</li>';
+    }
+    $rawHtml .= '</ul>';
+    return $rawHtml;
+}

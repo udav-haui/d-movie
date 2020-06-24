@@ -205,7 +205,7 @@ __webpack_require__.r(__webpack_exports__);
       response.then(function (res) {
         if (res.status === 200) {
           swalTopRightAlert(res.data.message);
-        } else {
+        } else if (res.status === 304) {} else {
           normalAlert(res.data ? res.data.message : res.message);
         }
       })["catch"](function (error) {
@@ -14330,7 +14330,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! F:\vadu\html\d-movie\resources\js\admin_store_config.js */"./resources/js/admin_store_config.js");
+module.exports = __webpack_require__(/*! /var/www/html/d-movie/resources/js/admin_store_config.js */"./resources/js/admin_store_config.js");
 
 
 /***/ })

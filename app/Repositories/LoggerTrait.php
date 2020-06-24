@@ -152,7 +152,9 @@ trait LoggerTrait
      * @param mixed|\Illuminate\Database\Eloquent\Model $oldData
      * @param mixed $newData
      * @param string $modelNamespace
+     * @param null $getChangedData
      * @param string $logType
+     * @param null $identifierKey
      * @param null $fullOldData
      * @param array $extraFields
      */
@@ -160,20 +162,26 @@ trait LoggerTrait
         $oldData,
         $newData,
         $modelNamespace,
+        $getChangedData = null,
         $logType = 'create',
+        $identifierKey = null,
         $fullOldData = null,
         $extraFields = []
     ) {
         if ($logType == 'update') {
-            $modelData = clone $newData;
-            if (!is_array($oldData)) {
-                $oldData = [$oldData->getId() => $oldData->toArray()];
+            if ($getChangedData) {
+                $this->updateLog($newData, $modelNamespace, $getChangedData, $extraFields = []);
+            } else {
+                $modelData = clone $newData;
+                if (!is_array($oldData)) {
+                    $oldData = [$oldData->getId() => $oldData->toArray()];
+                }
+                if (!is_array($newData)) {
+                    $newData = [$newData->getId() => $newData->toArray()];
+                }
+                $logData = $this->arrayDiffRecursive($oldData, $newData, $identifierKey);
+                $this->updateLog($modelData, $modelNamespace, $logData, $extraFields = []);
             }
-            if (!is_array($newData)) {
-                $newData = [$newData->getId() => $newData->toArray()];
-            }
-            $logData = $this->arrayDiffRecursive($oldData, $newData);
-            $this->updateLog($modelData, $modelNamespace, $logData, $extraFields = []);
         }
     }
 
@@ -182,10 +190,11 @@ trait LoggerTrait
      *
      * @param array $oldArray
      * @param array $newArray
+     * @param null $identifierKey
      * @param bool $isLogChildOldData
      * @return array
      */
-    protected function arrayDiffRecursive($oldArray, $newArray, $isLogChildOldData = true)
+    protected function arrayDiffRecursive($oldArray, $newArray, $identifierKey = null, $isLogChildOldData = true)
     {
         $messages = [];
         $removedKeyFromNew = array_diff_key($oldArray, $newArray);
@@ -201,7 +210,7 @@ trait LoggerTrait
         $addedNewKeyFromNew = array_diff_key($newArray, $oldArray);
         foreach ($addedNewKeyFromNew as $key => $value) {
             if (is_array($value)) {
-                $newValue = $this->arrayDiffRecursive([], $value, false);
+                $newValue = $this->arrayDiffRecursive([], $value, null, false);
             } else {
                 $newValue = null;
             }
@@ -219,18 +228,25 @@ trait LoggerTrait
                 $action = 'removed';
             }
             if (is_array($value)) {
-                $newValue = $this->arrayDiffRecursive($oldArray[$key], $value, false);
+                $newValue = $this->arrayDiffRecursive($oldArray[$key], $value, null, false);
             } else {
                 $newValue = null;
+            }
+            if (!is_array($oldArray[$key])) {
+                $oldVal = $oldArray[$key];
+            } elseif ($isLogChildOldData) {
+                $oldVal = $oldArray[$key];
+            } else {
+                $oldVal = null;
             }
             $messages[$key] = [
                 'key_name' => $key,
                 'action' => $action,
                 'new_value' => $newValue ?? $value,
-                'old_value' => $isLogChildOldData ? $oldArray[$key] : null
+                'old_value' => $oldVal
             ];
         }
-        return $messages;
+        return $identifierKey ? [$identifierKey => $messages] : $messages;
     }
 
     /**

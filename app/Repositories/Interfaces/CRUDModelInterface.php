@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Exceptions\CannotDeleteException;
+use App\Exceptions\NoChangedException;
+use App\Exceptions\UnknownException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -92,6 +95,9 @@ interface CRUDModelInterface
      * @param bool $isWriteLog
      * @param bool $encodeSpecChar
      * @return void
+     * @throws NoChangedException
+     * @throws CannotDeleteException
+     * @throws UnknownException
      */
     public function update(
         $modelId = null,

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Adminhtml;
 
 use App\Config;
+use App\Exceptions\NoChangedException;
 use App\Repositories\Interfaces\StoreConfigRepositoryInterface;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -92,6 +93,7 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
      *
      * @api
      * @return \Illuminate\Http\JsonResponse
+     * @throws NoChangedException
      */
     public function savePaymentMethods()
     {
@@ -99,19 +101,25 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
             $this->authorize('salesPaymentMethods', Config::class);
             $paymentConfigs = request('input');
 
-            if ($paymentConfigs) {
-                if ($paymentConfigs['momo']) {
-                    if (is_bool($paymentConfigs['momo']['secret_key'])) {
-                        unset($paymentConfigs['momo']['secret_key']);
-                    }
-                }
-            }
             $configQuery = $this->configRepository->getFilter(
                 null,
                 [Config::SECTION_ID => Config::SALES_PAYMENT_METHOD_SECTION_ID]
             );
             /** @var Config $config */
             $config = $configQuery->first();
+            if ($paymentConfigs) {
+                if ($paymentConfigs['momo']) {
+                    if (is_bool($paymentConfigs['momo']['secret_key'])) {
+                        unset($paymentConfigs['momo']['secret_key']);
+                        if ($config && ($configDataArray = $config->getConfigValues())) {
+                            if (isset($configDataArray['momo'])) {
+                                $oldSecretData = $configDataArray['momo']['secret_key'] ?? null;
+                                $paymentConfigs['momo']['secret_key'] = $oldSecretData;
+                            }
+                        }
+                    }
+                }
+            }
             if ($config) {
                 $this->configRepository->update(
                     null,
@@ -133,6 +141,8 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
                 ],
                 200
             );
+        } catch (NoChangedException $e) {
+            throw $e;
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             throw new HttpResponseException(
                 response()->json(["message" => __($e->getMessage())], 403)

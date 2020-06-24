@@ -2,6 +2,9 @@
 
 namespace App\Repositories\Abstracts;
 
+use App\Exceptions\CannotDeleteException;
+use App\Exceptions\NoChangedException;
+use App\Exceptions\UnknownException;
 use App\Repositories\Interfaces\CRUDModelInterface;
 use App\Repositories\LoggerTrait;
 use Carbon\Carbon;
@@ -228,20 +231,88 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                     $fields = $this->encodeSpecialChar($fields);
                 }
                 $oldData = clone $model;
-                $model->update($fields);
-                $this->log($oldData, $model, $this->model, 'update');
-                if ($isWriteLog) {
-                    $this->updateLog($model, $this->model);
+                if ($changedData = $this->getChanged($oldData, $fields)) {
+                    $model->update($fields);
+                    $this->log($oldData, $model, $this->model, null, 'update');
+                    if ($isWriteLog) {
+                        $this->updateLog($model, $this->model);
+                    }
+                    return $model;
                 }
-                return $model;
+                throw new NoChangedException();
             }
             return false;
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1451) {
-                throw new Exception(__('Can not delete or update because the record has relation to other.'));
+                throw new CannotDeleteException(
+                    __('Can not delete or update because the record has relation to other.')
+                );
             }
-            throw new Exception($e->getMessage());
+            throw new UnknownException($e->getMessage());
         }
+    }
+
+    /**
+     * Get merged nerver be changed fields
+     *
+     * @param array $neverChangedFieldInput
+     * @return array
+     */
+    protected function getMergeNeverBeChangedFields($neverChangedFieldInput)
+    {
+        $defaultModelExceptField = [];
+        if ($this->model == \App\Config::class) {
+            $defaultModelExceptField = ['section_id'];
+        }
+        return array_merge(
+            $defaultModelExceptField,
+            $neverChangedFieldInput,
+            $this->getDefaultNoCompareField()
+        );
+    }
+
+    /**
+     * Get be changed value
+     *
+     * @param array|Model $oldData
+     * @param array $newData
+     * @param array $neverBeChangedFields
+     * @return array
+     */
+    protected function getChanged(
+        $oldData,
+        $newData,
+        $neverBeChangedFields = []
+    ) {
+        $neverBeChangedFields = $this->getMergeNeverBeChangedFields($neverBeChangedFields);
+
+        if (!is_array($oldData)) {
+            $oldData = $oldData->toArray();
+        }
+        $oldData = $this->unsetNoCompareField($oldData, $neverBeChangedFields);
+        return $this->arrayDiffRecursive($newData, $oldData);
+    }
+
+    /**
+     * Get default no compare field
+     *
+     * @return string[]
+     */
+    private function getDefaultNoCompareField()
+    {
+        return ['id', 'created_at', 'updated_at'];
+    }
+
+    /**
+     * Like method name
+     *
+     * @param array $array
+     * @param string[] $fields
+     * @return array
+     */
+    private function unsetNoCompareField($array, $fields)
+    {
+        return array_diff_key($array, array_flip($fields));
     }
 
     /**

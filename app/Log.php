@@ -60,7 +60,7 @@ class Log extends Model
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getMessage()
     {
