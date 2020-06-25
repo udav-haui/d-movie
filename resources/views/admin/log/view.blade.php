@@ -47,7 +47,7 @@
             <div class="panel panel-info">
                 <div class="panel-heading">{!! __('Log ID: <code>:id</code>', ['id' => $log->getId()]) !!}</div>
                 <div class="panel-body">
-                    <h3 class="box-title">{!! __('Log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ['day' => $log->created_at, 'user' => $user->getUserName() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
+                    <h3 class="box-title">{!! __('Log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ['day' => $log->created_at, 'user' => $user->getUserName() ?? $user->getEmail() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
                     </h3>
                     {!! echo_log_recursive($log->getMessage(), $log) !!}
 {{--                    @dump($log->getMessage())--}}
