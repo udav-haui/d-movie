@@ -49,17 +49,18 @@ class FilmRepository extends CRUDModelAbstract implements Interfaces\FilmReposit
     }
 
     /**
-     * Update Film data
-     *
-     * @param string|int|null $filmId
-     * @param Film $film
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return Film
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function update($filmId = null, $film = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $filmId = null,
+        $film = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
             if ($filmId !== null) {
                 /** @var Film $film */

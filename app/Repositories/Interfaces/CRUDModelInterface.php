@@ -94,17 +94,21 @@ interface CRUDModelInterface
      * @param array $fields
      * @param bool $isWriteLog
      * @param bool $encodeSpecChar
+     * @param array $nonUpdateFields
+     * @param array $removedToLogFields
+     * @param bool $useUpdateInputFieldToLog
      * @return void
-     * @throws NoChangedException
-     * @throws CannotDeleteException
-     * @throws UnknownException
+     *
      */
     public function update(
         $modelId = null,
         $model = null,
         $fields = [],
         bool $isWriteLog = true,
-        bool $encodeSpecChar = true
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
     );
 
     /**

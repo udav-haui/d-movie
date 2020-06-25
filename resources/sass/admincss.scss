@@ -22,7 +22,9 @@ $sucessBackground: #228b221f;
 $borderColor: #32a3a3;
 $borderColor2: #01a1a2;
 
-$warningBg: rgba(255, 195, 109, .4);
+$warningBg: #fffbbb;
+$warningText: #333;
+// $warningBg: rgba(255, 195, 109, .4);
 
 $defaultBg: #f8f8f8;
 
@@ -121,7 +123,7 @@ blockquote {
 }
 .alert-warning {
     background: $warningBg;
-    color: $dmovieColor_3;
+    color: $warningText;
 }
 .alert-dismissable .close, .alert-dismissible .close {
     opacity: .6;

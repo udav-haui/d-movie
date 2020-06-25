@@ -2224,8 +2224,8 @@ blockquote {
 }
 
 .alert-warning {
-  background: rgba(255, 195, 109, 0.4);
-  color: #f90;
+  background: #fffbbb;
+  color: #333;
 }
 
 .alert-dismissable .close,

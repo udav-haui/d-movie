@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\NoChangedException;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Permission;
@@ -53,37 +54,70 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
     }
 
     /**
-     * Update A role
-     *
-     * @param null $roleId
-     * @param Role $role
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return \Illuminate\Database\Eloquent\Model
+     * @inheritDoc
      * @throws \Exception
      */
-    public function update($roleId = null, $role = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $roleId = null,
+        $role = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
+            /** @var array $permissions */
+            $permissions = $this->mappedRoleToCompare($fields['permissions']);
             if ($roleId !== null) {
                 $role = $this->find($roleId);
             }
             $role->permissions()->delete();
 
-            /** @var array $permissions */
-            $permissions = explode(',', $fields['permissions']);
-
             foreach ($permissions as $permission) {
                 $role->permissions()->create([
-                    'permission_code' => $permission
+                    'permission_code' => $permission['permission_code']
                 ]);
             }
-            $role = parent::update(null, $role, ['role_name' => $fields['role_name']]);
+            $role = parent::update(
+                null,
+                $role,
+                [
+                    'role_name' => $fields['role_name'],
+                    'users' => [],
+                    'permissions' => $permissions
+                ],
+                true,
+                true,
+                ['permissions', 'users'],
+                ['role_id'],
+                true
+            );
 
             return $role;
+        } catch (NoChangedException $e) {
+            throw $e;
         } catch (\Exception $exception) {
             throw new \Exception(__('Ooops, something wrong appended.') . ' - ' . $exception->getMessage());
         }
+    }
+
+    protected function mappedRoleToCompare($inputRoles)
+    {
+        if (is_string($inputRoles)) {
+            $inputRoles = explode(',', $inputRoles);
+        }
+        return array_map([$this, 'mapKeyRole'], $inputRoles);
+    }
+
+    /**
+     * @param mixed $value
+     * @return array
+     */
+    public static function mapKeyRole($value)
+    {
+        return ['permission_code' => $value];
     }
 
     /**

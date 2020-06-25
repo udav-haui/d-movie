@@ -47,12 +47,15 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response|void
      *
      * @throws \Exception
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof NoChangedException) {
+            return $exception->render($request);
+        }
         if ($exception instanceof AuthorizationException) {
             if ($request->ajax()) {
                 return response()->json([

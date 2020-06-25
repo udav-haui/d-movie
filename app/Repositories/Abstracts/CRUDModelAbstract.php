@@ -216,7 +216,10 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         $model = null,
         $fields = [],
         bool $isWriteLog = true,
-        bool $encodeSpecChar = true
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
     ) {
         $fields = $this->removeTokenField($fields);
         $fields = $this->removeMethodField($fields);
@@ -231,16 +234,26 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                     $fields = $this->encodeSpecialChar($fields);
                 }
                 $oldData = clone $model;
-                if ($changedData = $this->getChanged($oldData, $fields)) {
-                    dump($fields);
-                    dd($oldData->toArray());
+                $keepedUpdateData = $fields;
+                if ($changedData = $this->getChanged($oldData, $fields, $removedToLogFields)) {
+                    if ($nonUpdateFields) {
+                        $fields = array_diff_key($fields, array_flip($nonUpdateFields));
+                    }
                     $model->update($fields);
+                    $newLogData = $useUpdateInputFieldToLog ? [$model->id => $keepedUpdateData] : $model;
                     if ($isWriteLog) {
-                        $this->log($oldData, $model, $this->model, null, 'update');
+                        $this->log(
+                            $oldData,
+                            $newLogData,
+                            $this->model,
+                            null,
+                            'update',
+                            $this->getMergeNeverBeChangedFields($removedToLogFields)
+                        );
                     }
                     return $model;
                 }
-                throw new NoChangedException();
+                throw new NoChangedException(__("You changed nothing!"));
             }
             return false;
         } catch (\Illuminate\Database\QueryException $e) {
@@ -290,7 +303,7 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
         if (!is_array($oldData)) {
             $oldData = $oldData->toArray();
         }
-        $oldData = $this->unsetNoCompareField($oldData, $neverBeChangedFields);
+        $oldData = unset_no_compare_field($oldData, $neverBeChangedFields);
         return $this->arrayDiffRecursive($newData, $oldData);
     }
 
@@ -302,18 +315,6 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     private function getDefaultNoCompareField()
     {
         return ['id', 'created_at', 'updated_at'];
-    }
-
-    /**
-     * Like method name
-     *
-     * @param array $array
-     * @param string[] $fields
-     * @return array
-     */
-    private function unsetNoCompareField($array, $fields)
-    {
-        return array_diff_key($array, array_flip($fields));
     }
 
     /**
@@ -433,7 +434,11 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
     {
         foreach ($fields as $key => $value) {
             if ($value) {
-                $fields[$key] = htmlspecialchars($value);
+                if (is_array($value)) {
+                    $fields[$key] = $this->encodeSpecialChar($value);
+                } else {
+                    $fields[$key] = htmlspecialchars($value);
+                }
             }
         }
 

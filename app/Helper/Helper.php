@@ -277,6 +277,20 @@ function compare_array($firstArrVal, $secondArrVal)
     return $firstArrVal == $secondArrVal ? 0 : -1;
 }
 
+function unset_no_compare_field($array, $fields)
+{
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            $array[$key] = unset_no_compare_field($value, $fields);
+        } else {
+            if (in_array($key, $fields)) {
+                unset($array[$key]);
+            }
+        }
+    }
+    return $array;
+}
+
 /**
  * @param array $inputLogArray
  * @param \App\Log $log
@@ -285,15 +299,20 @@ function compare_array($firstArrVal, $secondArrVal)
  */
 function echo_log_recursive($inputLogArray, $log, $targetModel = null)
 {
+    dump($inputLogArray);
+    if (!$targetModel) {
+        $targetModel = $log->getTargetModel();
+        $targetModel = new $targetModel();
+    }
+    if ($targetModel instanceof \App\Role) {
+        return $targetModel::renderLogHtml($inputLogArray, $log);
+    }
+    dd(1);
     $rawHtml = '<ul>';
     foreach ($inputLogArray as $key => $item) {
         if ($item['key_name'] != 'updated_at') {
             $rawHtml .= '<li>';
             if (is_array($item['new_value'])) {
-                if (!$targetModel) {
-                    $targetModel = $log->getTargetModel();
-                    $targetModel = new $targetModel();
-                }
                 if ($key == $log->getTargetId()) {
                     $targetModelLogText = __(
                         "<code>:modelName</code>with identifier<code>:id</code>",
@@ -313,11 +332,30 @@ function echo_log_recursive($inputLogArray, $log, $targetModel = null)
                 $rawHtml .= "<d-mark-update>";
                 $rawHtml .= $targetModel::mappedAttributeLabel()[$item['key_name']] ?? $item['key_name'];
                 $rawHtml .= "</d-mark-update>";
+                if ($targetModel instanceof \App\Role) {
+                    if ($item['key_name'] != 'permissions') {
+                        $oldVal = $targetModel::mappedValue($item['key_name'])[$item['old_value']] ?? $item['old_value'];
+                        $newVal = $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value'];
+                    }
+                    if ($item['key_name'] == 'permissions') {
+                        dd($item['permissions']);
+                        if ($item['action'] == 'updated') {
+                            $newVal = $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value'];
+                            $oldVal = '';
+                        } elseif ($item['action'] == 'removed') {
+                            $oldVal = $targetModel::mappedValue($item['key_name'])[$item['old_value']['permission_code']] ?? $item['old_value']['permission_code'];
+                            $newVal = '';
+                        }
+                    }
+                } else {
+                    $oldVal = $targetModel::mappedValue($item['key_name'])[$item['old_value']] ?? $item['old_value'];
+                    $newVal = $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value'];
+                }
                 $newDataLog = __(
                     "&nbsp;from&nbsp;<d-mark-delete>:oldVal</d-mark-delete>&nbsp;to&nbsp;<d-mark-create>:newVal</d-mark-create>",
                     [
-                        'oldVal' => $targetModel::mappedValue($item['key_name'])[$item['old_value']] ?? $item['old_value'],
-                        'newVal' => $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value']
+                        'oldVal' => $oldVal,
+                        'newVal' => $newVal
                     ]
                 );
                 $rawHtml .= $newDataLog;

@@ -32,7 +32,7 @@ trait LoggerTrait
     /**
      * Create new log for update
      *
-     * @param \Illuminate\Database\Eloquent\Model $modelData
+     * @param \Illuminate\Database\Eloquent\Model|array $modelData
      * @param string $modelNamespace
      * @param null $fullOldData
      * @param array $extraFields
@@ -40,6 +40,7 @@ trait LoggerTrait
      */
     public function updateLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
+        $targetId = !is_array($modelData) ? $modelData->id : array_keys($modelData)[0];
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
@@ -48,7 +49,7 @@ trait LoggerTrait
                 $fullOldData ?? $modelData,
                 Data::UPDATE,
                 $modelNamespace,
-                $modelData->id
+                $targetId
             );
 
         $this->logRepository->createByUser(
@@ -56,7 +57,7 @@ trait LoggerTrait
             $fields
         );
         Log::channel('dmovie-update')
-            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has updated [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has updated [' . $modelNamespace . ']: ID=['.$targetId.']', $modelData);
     }
 
     /**
@@ -154,6 +155,7 @@ trait LoggerTrait
      * @param string $modelNamespace
      * @param null $getChangedData
      * @param string $logType
+     * @param array $noLogCompareFields
      * @param null $identifierKey
      * @param null $fullOldData
      * @param array $extraFields
@@ -164,6 +166,7 @@ trait LoggerTrait
         $modelNamespace,
         $getChangedData = null,
         $logType = 'create',
+        $noLogCompareFields = [],
         $identifierKey = null,
         $fullOldData = null,
         $extraFields = []
@@ -172,15 +175,22 @@ trait LoggerTrait
             if ($getChangedData) {
                 $this->updateLog($newData, $modelNamespace, $getChangedData, $extraFields = []);
             } else {
-                $modelData = clone $newData;
+                if (!is_array($newData)) {
+                    $modelData = clone $newData;
+                }
                 if (!is_array($oldData)) {
                     $oldData = [$oldData->id => $oldData->toArray()];
                 }
                 if (!is_array($newData)) {
                     $newData = [$newData->id => $newData->toArray()];
                 }
+                if ($noLogCompareFields) {
+                    $oldData = unset_no_compare_field($oldData, $noLogCompareFields);
+                    $newData = unset_no_compare_field($newData, $noLogCompareFields);
+                }
+                dd($oldData, $newData);
                 $logData = $this->arrayDiffRecursive($oldData, $newData, $identifierKey);
-                $this->updateLog($modelData, $modelNamespace, $logData, $extraFields = []);
+                $this->updateLog($modelData ?? $newData, $modelNamespace, $logData, $extraFields = []);
             }
         }
     }

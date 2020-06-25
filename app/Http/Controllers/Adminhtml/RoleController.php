@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adminhtml;
 
+use App\Exceptions\NoChangedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
@@ -135,6 +136,7 @@ class RoleController extends Controller
      * @param Role $role
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws NoChangedException
      */
     public function update(RoleRequest $request, Role $role)
     {
@@ -144,6 +146,8 @@ class RoleController extends Controller
                 return redirect(route('roles.index'))
                     ->with('success', __('Role have updated success.'));
             }
+        } catch (NoChangedException $e) {
+            throw $e;
         } catch (\Exception $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }

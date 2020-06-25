@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
 
 /**
  * Class NoChangedException
@@ -12,8 +13,15 @@ use Illuminate\Http\Exceptions\HttpResponseException;
  */
 class NoChangedException extends Exception
 {
-    public function render()
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function render($request)
     {
+        if (!$request->isJson()) {
+            return back()->withWarning($this->getMessage())->withInput();
+        }
         throw new HttpResponseException(
             response()->json(
                 [

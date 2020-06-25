@@ -41,17 +41,18 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
     }
 
     /**
-     * Update a user
-     *
-     * @param string|int|null $userId
-     * @param User $user
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return User
-     * @throws Exception
+     * @inheritDoc
      */
-    public function update($userId = null, $user = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $userId = null,
+        $user = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
             if ($userId !== null) {
                 /** @var User $user */

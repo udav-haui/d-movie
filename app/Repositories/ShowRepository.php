@@ -59,17 +59,18 @@ class ShowRepository extends CRUDModelAbstract implements ShowRepositoryInterfac
     }
 
     /**
-     * Update model data
-     *
-     * @param string|int|null $showId
-     * @param Show|null $show
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return Show
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function update($showId = null, $show = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $showId = null,
+        $show = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
             if ($showId !== null) {
                 /** @var Show $show */

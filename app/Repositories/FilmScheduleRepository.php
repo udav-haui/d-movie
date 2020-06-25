@@ -151,15 +151,18 @@ class FilmScheduleRepository extends CRUDModelAbstract implements FilmScheduleRe
     }
 
     /**
-     * @param int $modelId
-     * @param Schedule $schedule
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function update($modelId = null, $schedule = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $modelId = null,
+        $schedule = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
             if (array_key_exists('cinema_id', $fields)) {
                 unset($fields['cinema_id']);

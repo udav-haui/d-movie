@@ -49,17 +49,18 @@ class SliderRepository extends CRUDModelAbstract implements SliderRepositoryInte
     }
 
     /**
-     * Update model data
-     *
-     * @param string|int|null $sliderId
-     * @param Slider $slider
-     * @param array $fields
-     * @param bool $isWriteLog
-     * @return Slider|Model
-     * @throws Exception
+     * @inheritDoc
      */
-    public function update($sliderId = null, $slider = null, $fields = [], bool $isWriteLog = true, bool $encodeSpecChar = true)
-    {
+    public function update(
+        $sliderId = null,
+        $slider = null,
+        $fields = [],
+        bool $isWriteLog = true,
+        bool $encodeSpecChar = true,
+        $nonUpdateFields = [],
+        $removedToLogFields = [],
+        bool $useUpdateInputFieldToLog = false
+    ) {
         try {
             if (array_key_exists('image', $fields)) {
                 if ($slider) {

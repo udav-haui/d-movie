@@ -756,5 +756,6 @@
     "user.description": "Giới thiệu",
     "user.role_id": "Tập quyền",
     "Can": "Có thể",
-    "Can't": "Không thể"
+    "Can't": "Không thể",
+    "You changed nothing!": "Không có gì thay đổi"
 }
