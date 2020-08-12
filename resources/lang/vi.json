@@ -757,5 +757,12 @@
     "user.role_id": "Tập quyền",
     "Can": "Có thể",
     "Can't": "Không thể",
-    "You changed nothing!": "Không có gì thay đổi"
+    "You changed nothing!": "Không có gì thay đổi",
+    "configuration.sales.payment_methods": "Phương thức thanh toán",
+    "configs.partner_code": "Partner Code",
+    "Removed value of <code>:keyName</code>": "Xoá bỏ giá trị của <code>:keyName</code>",
+    "Modify value of <code>:keyName</code> from <d-mark-delete class='strike'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>": "Thay đổi giá trị của <code>:keyName</code> từ <d-mark-delete class='strike'>:oldValue</d-mark-delete> thành <d-mark-update>:newValue</d-mark-update>",
+    "configs.access_key": "Access Key",
+    "configs.secret_key": "Secret Key",
+    "configs.end_point": "End Point"
 }

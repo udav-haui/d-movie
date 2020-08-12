@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-
+@inject("helper", "App\Helper\LogViewHelper")
 <?php /** @var \App\Log $log */ ?>
 
 @section('app.title')
@@ -49,8 +49,24 @@
                 <div class="panel-body">
                     <h3 class="box-title">{!! __('Log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ['day' => $log->created_at, 'user' => $user->getUserName() ?? $user->getEmail() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
                     </h3>
-                    {!! echo_log_recursive($log->getMessage(), $log) !!}
-{{--                    @dump($log->getMessage())--}}
+                    <ul>
+                        <li>Đã cập nhật thông tin <d-mark-update>phương thức thanh toán</d-mark-update>
+                            <ul>
+                                <li>Momo
+                                    <ul>
+                                        <li>Sửa <d-mark-update>Partner Code</d-mark-update> từ old_value thành new_value</li>
+                                        <li>Xoá <d-mark-update>Access Key</d-mark-update></li>
+                                    </ul>
+                                </li>
+                                <li>VNPay
+                                <ul>
+                                    <li>Sửa <d-mark-update>Partner Code</d-mark-update> từ old_value thành new_value</li>
+                                </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {!! $helper->printLog($log) !!}
                 </div>
             </div>
         </div>

@@ -52,8 +52,52 @@ class Config extends AbstractModel
     public static function mappedAttributeLabel()
     {
         return [
-            self::CONFIG_VALUES => __('config.' . self::CONFIG_VALUES)
+            self::CONFIG_VALUES => __('config.' . self::CONFIG_VALUES),
+            self::SALES_PAYMENT_METHOD_SECTION_ID => __(self::SALES_PAYMENT_METHOD_SECTION_ID),
+            "partner_code" => __("configs.partner_code"),
+            "access_key" => __("configs.access_key"),
+            "secret_key" => __("configs.secret_key"),
+            "end_point" => __("configs.end_point")
         ];
+    }
+
+    /**
+     * @param array $logData
+     */
+    public static function renderLogHtml($logData)
+    {
+        $rawHtml = "<ul>";
+        foreach ($logData as $key => $item) {
+            if (!is_int($item["key_name"])) {
+                $rawHtml .= "<li>";
+                $rawHtml .= __(mb_strtoupper($item['action']))
+                    . self::mappedAttributeLabel()[$item['key_name'] ?? $item["key_name"]];
+            }
+            $rawHtml .= "<ul>";
+            dd($item);
+            if (is_array($item["new_value"])) {
+                $rawHtml .= self::renderLogHtml($item["new_value"]);
+            }
+            $_item = $item;
+            $rawHtml .= "<li>";
+            if ($_item['old_value'] && !is_array($_item["new_value"])) {
+                $rawHtml .= __("Save new")
+                    . "&nbsp;<code>"
+                    . self::mappedAttributeLabel()[$_item['key_name'] ?? $_item["key_name"]]
+                    . "</code>" . __("with value") . "<d-mark-create>"
+                    . $_item["new_value"]
+                    . "</d-mark-create>";
+            } elseif ($_item['old_value'] && !$_item["new_value"] && $_item["action"] == "removed") {
+                $rawHtml .= __("Removed value of <code>:keyName</code>",
+                    ["keyName" => self::mappedAttributeLabel()[$_item['key_name'] ?? $_item["key_name"]]]
+                );
+            } else {
+                $rawHtml .= __(
+                    "Modify value of <code>:keyName</code> from <d-mark-delete class='strike'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>"
+                );
+            }
+            $rawHtml .= "</li>";
+        }
     }
 
     /**

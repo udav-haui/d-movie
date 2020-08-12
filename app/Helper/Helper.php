@@ -299,7 +299,8 @@ function unset_no_compare_field($array, $fields)
  */
 function echo_log_recursive($inputLogArray, $log, $targetModel = null)
 {
-    dump($inputLogArray);
+
+    dd($log->getTargetModel(), \App\Config::class);
     if (!$targetModel) {
         $targetModel = $log->getTargetModel();
         $targetModel = new $targetModel();
@@ -307,7 +308,6 @@ function echo_log_recursive($inputLogArray, $log, $targetModel = null)
     if ($targetModel instanceof \App\Role) {
         return $targetModel::renderLogHtml($inputLogArray, $log);
     }
-    dd(1);
     $rawHtml = '<ul>';
     foreach ($inputLogArray as $key => $item) {
         if ($item['key_name'] != 'updated_at') {
@@ -338,7 +338,6 @@ function echo_log_recursive($inputLogArray, $log, $targetModel = null)
                         $newVal = $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value'];
                     }
                     if ($item['key_name'] == 'permissions') {
-                        dd($item['permissions']);
                         if ($item['action'] == 'updated') {
                             $newVal = $targetModel::mappedValue($item['key_name'])[$item['new_value']] ?? $item['new_value'];
                             $oldVal = '';

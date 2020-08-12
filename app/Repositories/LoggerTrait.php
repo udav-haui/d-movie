@@ -41,7 +41,6 @@ trait LoggerTrait
     public function updateLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
         $targetId = !is_array($modelData) ? $modelData->id : array_keys($modelData)[0];
-        /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
                 $extraFields,
@@ -56,6 +55,9 @@ trait LoggerTrait
             auth()->user(),
             $fields
         );
+        if (!is_array($modelData)) {
+            $modelData = $modelData->toArray();
+        }
         Log::channel('dmovie-update')
             ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has updated [' . $modelNamespace . ']: ID=['.$targetId.']', $modelData);
     }
@@ -156,7 +158,7 @@ trait LoggerTrait
      * @param null $getChangedData
      * @param string $logType
      * @param array $noLogCompareFields
-     * @param null $identifierKey
+     * @param array $replaceSpecificKey
      * @param null $fullOldData
      * @param array $extraFields
      */
@@ -167,7 +169,7 @@ trait LoggerTrait
         $getChangedData = null,
         $logType = 'create',
         $noLogCompareFields = [],
-        $identifierKey = null,
+        $replaceSpecificKey = [],
         $fullOldData = null,
         $extraFields = []
     ) {
@@ -188,8 +190,7 @@ trait LoggerTrait
                     $oldData = unset_no_compare_field($oldData, $noLogCompareFields);
                     $newData = unset_no_compare_field($newData, $noLogCompareFields);
                 }
-                dd($oldData, $newData);
-                $logData = $this->arrayDiffRecursive($oldData, $newData, $identifierKey);
+                $logData = $this->arrayDiffRecursive($oldData, $newData, $replaceSpecificKey);
                 $this->updateLog($modelData ?? $newData, $modelNamespace, $logData, $extraFields = []);
             }
         }
@@ -200,17 +201,20 @@ trait LoggerTrait
      *
      * @param array $oldArray
      * @param array $newArray
-     * @param null $identifierKey
+     * @param array $specialKey format key "replace_key": là key mới được thay thế cho "to_key" đã chọn
      * @param bool $isLogChildOldData
      * @return array
      */
-    protected function arrayDiffRecursive($oldArray, $newArray, $identifierKey = null, $isLogChildOldData = true)
+    protected function arrayDiffRecursive($oldArray, $newArray, $specialKey = [], $isLogChildOldData = true)
     {
         $messages = [];
         $removedKeyFromNew = array_diff_key($oldArray, $newArray);
         foreach ($removedKeyFromNew as $key => $value) {
+            if ($specialKey && $key == $specialKey['to_key']) {
+                $replaceKey = $specialKey['replace_key'];
+            }
             $messages[$key] = [
-                'key_name' => $key,
+                'key_name' => $replaceKey ?? $key,
                 'action' => 'removed',
                 'new_value' => null,
                 'old_value' => $value
@@ -219,13 +223,16 @@ trait LoggerTrait
         $updatedKeyFromNew = array_udiff_assoc($newArray, $oldArray, [$this, "compareArray"]);
         $addedNewKeyFromNew = array_diff_key($newArray, $oldArray);
         foreach ($addedNewKeyFromNew as $key => $value) {
+            if ($specialKey && $key == $specialKey['to_key']) {
+                $replaceKey = $specialKey['replace_key'];
+            }
             if (is_array($value)) {
-                $newValue = $this->arrayDiffRecursive([], $value, null, false);
+                $newValue = $this->arrayDiffRecursive([], $value, $specialKey, false);
             } else {
                 $newValue = null;
             }
             $messages[$key] = [
-                'key_name' => $key,
+                'key_name' => $replaceKey ?? $key,
                 'action' => 'updated',
                 'new_value' => $newValue ?? $value,
                 'old_value' => null
@@ -237,8 +244,11 @@ trait LoggerTrait
             if ($value == null || $value == '') {
                 $action = 'removed';
             }
+            if ($specialKey && $key == $specialKey['to_key']) {
+                $replaceKey = $specialKey['replace_key'];
+            }
             if (is_array($value)) {
-                $newValue = $this->arrayDiffRecursive($oldArray[$key], $value, null, false);
+                $newValue = $this->arrayDiffRecursive($oldArray[$key], $value, $specialKey, false);
             } else {
                 $newValue = null;
             }
@@ -250,13 +260,13 @@ trait LoggerTrait
                 $oldVal = null;
             }
             $messages[$key] = [
-                'key_name' => $key,
+                'key_name' => $replaceKey ?? $key,
                 'action' => $action,
                 'new_value' => $newValue ?? $value,
                 'old_value' => $oldVal
             ];
         }
-        return $identifierKey ? [$identifierKey => $messages] : $messages;
+        return $messages;
     }
 
     /**
@@ -267,9 +277,12 @@ trait LoggerTrait
     public static function compareArray($firstArrVal, $secondArrVal)
     {
 //        if (is_array($firstArrVal) || is_array($secondArrVal)) {
+//            dump('s');
 //            dump($firstArrVal, $secondArrVal);
-//            dd($firstArrVal == $secondArrVal);
+//            dump($firstArrVal == $secondArrVal);
 //        }
+//        dump($firstArrVal, $secondArrVal);
+//        dump($firstArrVal == $secondArrVal);
         return $firstArrVal == $secondArrVal ? 0 : -1;
     }
 }

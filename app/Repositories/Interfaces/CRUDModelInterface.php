@@ -99,6 +99,10 @@ interface CRUDModelInterface
      * @param bool $useUpdateInputFieldToLog
      * @return void
      *
+     * @throws NoChangedException
+     * @throws CannotDeleteException
+     * @throws UnknownException
+     *
      */
     public function update(
         $modelId = null,

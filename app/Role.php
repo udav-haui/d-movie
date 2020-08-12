@@ -34,6 +34,7 @@ class Role extends AbstractModel
             $rawHtml .= __(mb_strtoupper($item['action'])) . $targetModelLogText;
             $rawHtml .= "<ul>";
             foreach ($item['new_value'] as $_key => $_item) {
+
                 if ($_key == self::ROLE_NAME) {
                     $rawHtml .= '<li>';
                     $rawHtml .= __($item['action']) . '&nbsp;';

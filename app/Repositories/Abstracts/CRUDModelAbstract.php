@@ -235,12 +235,21 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                 }
                 $oldData = clone $model;
                 $keepedUpdateData = $fields;
-                if ($changedData = $this->getChanged($oldData, $fields, $removedToLogFields)) {
+                if ($this->getChanged($oldData, $fields, $removedToLogFields)) {
                     if ($nonUpdateFields) {
                         $fields = array_diff_key($fields, array_flip($nonUpdateFields));
                     }
                     $model->update($fields);
                     $newLogData = $useUpdateInputFieldToLog ? [$model->id => $keepedUpdateData] : $model;
+
+                    // Config model
+                    if ($this->model == \App\Config::class) {
+                        $specificKeyToReplaceInLog = [
+                            "replace_key" => $model->getSectionId(),
+                            "to_key" => "config_value"
+                        ];
+                    }
+
                     if ($isWriteLog) {
                         $this->log(
                             $oldData,
@@ -248,7 +257,8 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
                             $this->model,
                             null,
                             'update',
-                            $this->getMergeNeverBeChangedFields($removedToLogFields)
+                            $this->getMergeNeverBeChangedFields($removedToLogFields),
+                            $specificKeyToReplaceInLog ?? []
                         );
                     }
                     return $model;
@@ -304,7 +314,10 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
             $oldData = $oldData->toArray();
         }
         $oldData = unset_no_compare_field($oldData, $neverBeChangedFields);
-        return $this->arrayDiffRecursive($newData, $oldData);
+        return $this->arrayDiffRecursive(
+            $newData,
+            $oldData
+        );
     }
 
     /**
