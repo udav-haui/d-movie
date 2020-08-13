@@ -23,7 +23,8 @@ class LogViewHelper
             case \App\Role::class:
                 return $targetModel::renderLogHtml($log->getMessage(), $log);
             case \App\Config::class:
-                return $targetModel::renderLogHtml($log->getMessage());
+                $logData = \App\Config::mappingLogData($log->getMessage());
+                return $targetModel::renderLogHtml([1=>$logData]);
             default;
                 return "";
         }

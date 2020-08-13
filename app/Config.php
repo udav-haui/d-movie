@@ -61,43 +61,67 @@ class Config extends AbstractModel
         ];
     }
 
+    public static function mappingLogData($logData)
+    {
+        return current($logData)["new_value"]["config_value"];
+    }
+
     /**
      * @param array $logData
+     * @param int $loopTime
      */
-    public static function renderLogHtml($logData)
+    public static function renderLogHtml($logData, $loopTime = 0)
     {
-        $rawHtml = "<ul>";
+        //$logData = Config::mappingLogData($logData);
+        $rawHtml = "";
         foreach ($logData as $key => $item) {
-            if (!is_int($item["key_name"])) {
+            // print Đã cập nhật thông tin ....
+            if ($loopTime == 0) {
+                $rawHtml .= "<ul>";
                 $rawHtml .= "<li>";
                 $rawHtml .= __(mb_strtoupper($item['action']))
-                    . self::mappedAttributeLabel()[$item['key_name'] ?? $item["key_name"]];
+                    . isset(self::mappedAttributeLabel()[$item['key_name']]) ?self::mappedAttributeLabel()[$item['key_name']]: $item["key_name"];
             }
-            $rawHtml .= "<ul>";
-            dd($item);
+
+            if ($loopTime == 1) {
+                $rawHtml .= "<li>";
+                $keyName =
+                    isset(self::mappedAttributeLabel()[$item["key_name"]]) ?
+                    self::mappedAttributeLabel()[$item["key_name"]] :
+                    $item["key_name"];
+
+                $rawHtml .= "&nbsp;<code>" . $keyName . "</code>";
+            }
             if (is_array($item["new_value"])) {
-                $rawHtml .= self::renderLogHtml($item["new_value"]);
-            }
-            $_item = $item;
-            $rawHtml .= "<li>";
-            if ($_item['old_value'] && !is_array($_item["new_value"])) {
-                $rawHtml .= __("Save new")
-                    . "&nbsp;<code>"
-                    . self::mappedAttributeLabel()[$_item['key_name'] ?? $_item["key_name"]]
-                    . "</code>" . __("with value") . "<d-mark-create>"
-                    . $_item["new_value"]
-                    . "</d-mark-create>";
-            } elseif ($_item['old_value'] && !$_item["new_value"] && $_item["action"] == "removed") {
-                $rawHtml .= __("Removed value of <code>:keyName</code>",
-                    ["keyName" => self::mappedAttributeLabel()[$_item['key_name'] ?? $_item["key_name"]]]
-                );
+                $rawHtml .= "<ul>";
+                $rawHtml .= self::renderLogHtml($item["new_value"], $loopTime + 1);
             } else {
-                $rawHtml .= __(
-                    "Modify value of <code>:keyName</code> from <d-mark-delete class='strike'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>"
-                );
+                $rawHtml .= "<li>";
+                if ($item['action'] == "created") {
+                    $rawHtml .= __("Save new")
+                        . "&nbsp;<code>"
+                        . isset(self::mappedAttributeLabel()[$item['key_name']]) ?self::mappedAttributeLabel()[$item['key_name']]: $item["key_name"]
+                        . "</code>" . __("with value") . "<d-mark-create>"
+                        . $item["new_value"]
+                        . "</d-mark-create>";
+                } elseif ($item['old_value'] && !$item["new_value"] && $item["action"] == "removed") {
+                    $rawHtml .= __("Removed value of <code>:keyName</code>",
+                        ["keyName" => self::mappedAttributeLabel()[$item['key_name'] ]?? $item["key_name"]]
+                    );
+                } else {
+                    $rawHtml .= __(
+                        "Modify value of <code>:keyName</code> from <d-mark-delete class='strike'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>",
+                        [
+                            "keyName" => isset(self::mappedAttributeLabel()[$item['key_name']]) ?self::mappedAttributeLabel()[$item['key_name']]: $item["key_name"],
+                            "oldValue" => $item['old_value'],
+                            "newValue" => $item["new_value"]
+                        ]
+                    );
+                }
+                $rawHtml .= "</li>";
             }
-            $rawHtml .= "</li>";
         }
+        return $rawHtml;
     }
 
     /**
