@@ -28,6 +28,9 @@ class LogController extends \App\Http\Controllers\Controller
             $authUser = auth()->user();
             $dt = datatables()->of($logs);
 
+            $dt->editColumn(Log::CREATED_AT, function (Log $log) {
+                return get_format_day_date_string($log->created_at, "Do MMMM YYYY");
+            });
 
             $dt->editColumn(Log::USER, function (Log $log) use ($authUser) {
                 if ($authUser->can('update', \App\User::class)) {
@@ -55,11 +58,13 @@ class LogController extends \App\Http\Controllers\Controller
                     $mark = '<d-mark-model>'.__($log->getAction()).'</d-mark-model>';
                 }
 
+                $model = $log->getTargetModel();
+                $model = new $model();
                 return __(
                     'The user has :mark the model <d-mark-model>:model</d-mark-model> with ID = <code>:id</code>',
                     [
                         'mark' => $mark,
-                        'model' => $log->getTargetModel(),
+                        'model' => $model::getModelName(),
                         'id' => $log->getTargetId()
                     ]
                 );

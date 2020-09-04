@@ -2,6 +2,7 @@ window.Vue = require('vue');
 Vue.mixin(require('./trans'));
 window.Vuex = require('vuex');
 
+// Vue.component('status', require('./components/Status.vue').default);
 Vue.component('payment-methods', require('./components/admin/config/PaymentMethods.vue').default);
 
 // Add a request interceptor

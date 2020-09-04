@@ -15,7 +15,7 @@ class CanInstall
      */
     public function handle($request, Closure $next)
     {
-        if (!$this->alreadyInstalled()) {
+        if (!$this->alreadyInstalled() && strpos($request->getPathInfo(), "/install") !== 0) {
             return redirect('install');
         }
         return $next($request);

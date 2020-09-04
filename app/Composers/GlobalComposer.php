@@ -66,16 +66,22 @@ class GlobalComposer
         ];
 
         $users = $this->userRepository->getActiveUsers($fields);
-        $cinemas = $this->cinemaRepository->getVisible()->get();
+        try {
+            $cinemas = $this->cinemaRepository->getVisible()->get();
 
-        $activePagesGlobal = $this->pageRepository->getFilter(null, [
-            'language' => app()->getLocale()
-        ]);
-        $activePagesGlobal = $this->pageRepository->getVisible($activePagesGlobal)->get();
+            $activePagesGlobal = $this->pageRepository->getFilter(null, [
+                'language' => app()->getLocale()
+            ]);
+            $activePagesGlobal = $this->pageRepository->getVisible($activePagesGlobal)->get();
 
-        $sliderquery = $this->sliderRepository->getVisible();
+            $sliderquery = $this->sliderRepository->getVisible();
 
-        $sliders = $this->sliderRepository->orderBy($sliderquery, ['order' => 'ASC'])->get();
+            $sliders = $this->sliderRepository->orderBy($sliderquery, ['order' => 'ASC'])->get();
+        } catch (\Exception $e) {
+            $cinemas = null;
+            $activePagesGlobal = null;
+            $sliders = null;
+        }
 
         $view->with('activeUsers', $users);
         $view->with('activeCinemasGlobal', $cinemas);

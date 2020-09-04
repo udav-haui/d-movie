@@ -38,7 +38,7 @@ abstract class AbstractModel extends \Illuminate\Database\Eloquent\Model
      */
     public static function getModelName($option = null)
     {
-        return '';
+        return 'Unnamed';
     }
 
     public static function mappedAttributeLabel()
@@ -49,5 +49,42 @@ abstract class AbstractModel extends \Illuminate\Database\Eloquent\Model
     public static function mappedValue($keyForCompare)
     {
         return [];
+    }
+
+    public static function renderLogHtml($logData, $customVal = null)
+    {
+        $rawHtml = '<ul>';
+        foreach ($logData as $item) {
+//            $rawHtml .= '<li>';
+//            $targetModelLogText = __(
+//                "<code>:modelName</code>with identifier<code>:id</code>",
+//                [
+//                    'modelName' => \App\AbstractModel::getModelName(),
+//                    'id' => $customVal->getTargetId()
+//                ]
+//            );
+//            $rawHtml .= __(mb_strtoupper($item['action'])) . $targetModelLogText;
+//            $rawHtml .= "<ul>";
+            if (is_array($item["new_value"])) {
+                $rawHtml .= self::renderLogHtml($item["new_value"], $customVal);
+            } elseif ($item["action"] == "removed") {
+                $rawHtml .= "<li>";
+                $rawHtml .= "The model&nbsp;<d-mark-delete class='strikethrough'>" . \App\AbstractModel::getModelName() . "</d-mark-delete> was removed!";
+                $rawHtml .= "</li></ul>";
+            } else {
+                $rawHtml .= "<li>";
+                $rawHtml .= __(
+                    ":action value of <code>:keyName</code> from <d-mark-delete class='strikethrough'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>",
+                    [
+                        "action" => __($item["action"]),
+                        "keyName" => isset(self::mappedAttributeLabel()[$item['key_name']]) ?self::mappedAttributeLabel()[$item['key_name']]: $item["key_name"],
+                        "oldValue" => self::mappedAttributeLabel()[$item['old_value']] ?? $item['old_value'],
+                        "newValue" => self::mappedAttributeLabel()[$item["new_value"]] ?? $item['new_value']
+                    ]
+                );
+                $rawHtml .= "</li></ul>";
+            }
+        }
+        return $rawHtml;
     }
 }

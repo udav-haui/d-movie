@@ -17,6 +17,9 @@ class Config extends AbstractModel
 
     const SALES_PAYMENT_METHOD_SECTION_ID = "configuration.sales.payment_methods";
 
+    const ENABLED = 1;
+    const DISABLED = 0;
+
     protected $guarded = [];
 
     /**
@@ -57,7 +60,10 @@ class Config extends AbstractModel
             "partner_code" => __("configs.partner_code"),
             "access_key" => __("configs.access_key"),
             "secret_key" => __("configs.secret_key"),
-            "end_point" => __("configs.end_point")
+            "end_point" => __("configs.end_point"),
+            "status" => __("Status"),
+            self::ENABLED => __("Enabled"),
+            self::DISABLED => __("Disabled")
         ];
     }
 
@@ -69,10 +75,10 @@ class Config extends AbstractModel
     /**
      * @param array $logData
      * @param int $loopTime
+     * @return string
      */
     public static function renderLogHtml($logData, $loopTime = 0)
     {
-        //$logData = Config::mappingLogData($logData);
         $rawHtml = "";
         foreach ($logData as $key => $item) {
             // print Đã cập nhật thông tin ....
@@ -110,11 +116,11 @@ class Config extends AbstractModel
                     );
                 } else {
                     $rawHtml .= __(
-                        "Modify value of <code>:keyName</code> from <d-mark-delete class='strike'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>",
+                        "Modify value of <code>:keyName</code> from <d-mark-delete class='strikethrough'>:oldValue</d-mark-delete> to <d-mark-update>:newValue</d-mark-update>",
                         [
                             "keyName" => isset(self::mappedAttributeLabel()[$item['key_name']]) ?self::mappedAttributeLabel()[$item['key_name']]: $item["key_name"],
-                            "oldValue" => $item['old_value'],
-                            "newValue" => $item["new_value"]
+                            "oldValue" => self::mappedAttributeLabel()[$item['old_value']] ?? $item['old_value'],
+                            "newValue" => self::mappedAttributeLabel()[$item["new_value"]] ?? $item['old_value']
                         ]
                     );
                 }

@@ -21,14 +21,13 @@
 @endsection
 
 @section('bottom.js')
-    <script src="{{ asset('adminhtml/assets/plugins/bower_components/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('adminhtml/assets/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('adminhtml/assets/plugins/bower_components/jquery/jquery.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('adminhtml/assets/bootstrap/dist/js/bootstrap.min.js') }}" defer></script>
 
-    <script src="{{ asset('adminhtml/assets/plugins/bower_components/jquery/jquery-ui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('adminhtml/assets/plugins/sidebar/sidebar-menu.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('adminhtml/js/store_config/general.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('adminhtml/assets/plugins/accordion/script.js') }}"></script>
-
+    <script src="{{ asset('adminhtml/assets/plugins/bower_components/jquery/jquery-ui.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('adminhtml/assets/plugins/sidebar/sidebar-menu.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('adminhtml/js/store_config/general.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('adminhtml/assets/plugins/accordion/script.js') }}" defer></script>
     <script>
         window._translations = {!! cache('translations') !!};
     </script>
@@ -59,38 +58,38 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-files-o"></i>
-                                    <span>Layout Options</span>
-                                </a>
-                                <ul class="sidebar-submenu" style="display: none;">
-                                    <li><a href="top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-                                    <li><a href="boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-                                    <li><a href="fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-                                    <li class=""><a href="collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="../widgets.html">
-                                    <i class="fa fa-th"></i> <span>Widgets</span>
-                                    <small class="label pull-right label-info">new</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-pie-chart"></i>
-                                    <span>Charts</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="sidebar-submenu">
-                                    <li><a href="../charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>
-                                    <li><a href="../charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                                    <li><a href="../charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                                    <li><a href="../charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-                                </ul>
-                            </li>
+{{--                            <li>--}}
+{{--                                <a href="#">--}}
+{{--                                    <i class="fa fa-files-o"></i>--}}
+{{--                                    <span>Layout Options</span>--}}
+{{--                                </a>--}}
+{{--                                <ul class="sidebar-submenu" style="display: none;">--}}
+{{--                                    <li><a href="top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>--}}
+{{--                                    <li><a href="boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>--}}
+{{--                                    <li><a href="fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>--}}
+{{--                                    <li class=""><a href="collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a>--}}
+{{--                                    </li>--}}
+{{--                                </ul>--}}
+{{--                            </li>--}}
+{{--                            <li>--}}
+{{--                                <a href="../widgets.html">--}}
+{{--                                    <i class="fa fa-th"></i> <span>Widgets</span>--}}
+{{--                                    <small class="label pull-right label-info">new</small>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
+{{--                            <li>--}}
+{{--                                <a href="#">--}}
+{{--                                    <i class="fa fa-pie-chart"></i>--}}
+{{--                                    <span>Charts</span>--}}
+{{--                                    <i class="fa fa-angle-left pull-right"></i>--}}
+{{--                                </a>--}}
+{{--                                <ul class="sidebar-submenu">--}}
+{{--                                    <li><a href="../charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>--}}
+{{--                                    <li><a href="../charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>--}}
+{{--                                    <li><a href="../charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>--}}
+{{--                                    <li><a href="../charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>--}}
+{{--                                </ul>--}}
+{{--                            </li>--}}
                         </ul>
                     </section>
                     <section class="col-lg-9 col-sm-8 col-xs-12">

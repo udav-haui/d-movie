@@ -85,7 +85,7 @@ class RoleController extends Controller
             $this->roleRepository->store($request);
             return redirect(route('roles.index'))->with('success', __('Role have created success!'));
         } catch (\Exception $exception) {
-            return back()->withErrors($exception->getMessage());
+            return back()->withError($exception->getMessage())->withInput();
         }
     }
 

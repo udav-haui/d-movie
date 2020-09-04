@@ -122,6 +122,16 @@ function get_visible($query)
     return $query->where('status', 1);
 }
 
+function make_instance($path)
+{
+    return new $path();
+}
+
+function get_format_day_date_string($date, $format = "Do MMMM YYYY, h:mm:ss A")
+{
+    return \Carbon\Carbon::make($date)->isoFormat($format);
+}
+
 /**
  * @param $query
  * @param array $filterFields

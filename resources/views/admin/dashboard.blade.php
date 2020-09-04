@@ -375,14 +375,6 @@
 {{--                        </select>--}}
 {{--                    </div>--}}
                 </h3>
-                <div class="row sales-report">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <h2>March 2017</h2>
-                        <p>SALES REPORT</p>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 ">
-                        <h1 class="text-right text-success m-t-20">$3,690</h1> </div>
-                </div>
                 <div class="table-responsive">
                     <?php $latest7DaysBooking = $bookings->filter(function (\App\Booking $booking) {
                         /** @var \Carbon\Carbon $createTime */

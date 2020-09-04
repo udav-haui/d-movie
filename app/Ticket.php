@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Ticket extends Model
+class Ticket extends AbstractModel
 {
     protected $guarded = [];
 

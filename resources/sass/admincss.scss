@@ -575,7 +575,8 @@ table.dataTable{
     z-index: 99999 !important;
 }
 .dmovie-border {
-    border: 1px solid $borderColor !important;
+    //border: 1px solid $borderColor !important;
+    border: 1px solid #e4e7ea !important;
     border-radius: 0 !important;
 }
 .form-control {
@@ -752,4 +753,8 @@ d-mark-model {
 }
 .strikethrough {
     text-decoration: line-through;
+}
+
+.select2-container .select2-dropdown {
+    border: 1px solid #e4e7ea;
 }

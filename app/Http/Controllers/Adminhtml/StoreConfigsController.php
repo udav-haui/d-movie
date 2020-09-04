@@ -66,6 +66,7 @@ class StoreConfigsController extends \App\Http\Controllers\Controller
             if ($paymentConfig) {
                 $paymentConfigVal = $paymentConfig->getConfigValues();
                 $momoPaymentConfigVal = $paymentConfigVal['momo'] ?? null;
+                $momoData['status'] = $momoPaymentConfigVal['status'] ?? 0;
                 $momoData['partner_code'] = $momoPaymentConfigVal['partner_code'] ?? null;
                 $momoData['access_key'] = $momoPaymentConfigVal['access_key'] ?? null;
                 $momoData['end_point'] = $momoPaymentConfigVal['end_point'] ?? null;

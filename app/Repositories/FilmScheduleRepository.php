@@ -141,7 +141,7 @@ class FilmScheduleRepository extends CRUDModelAbstract implements FilmScheduleRe
                     Time::SCHEDULE => $schedule->getId()
                 ]);
 
-                $this->createLog($time, Time::class);
+//                $this->createLog($time, Time::class);
             }
 
             return $schedule;

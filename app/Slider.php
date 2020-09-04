@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Slider extends Model
+class Slider extends AbstractModel
 {
     /* Constant slider column */
     const ID = 'id';

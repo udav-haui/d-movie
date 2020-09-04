@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Time extends Model
+class Time extends AbstractModel
 {
     protected $guarded = [];
 

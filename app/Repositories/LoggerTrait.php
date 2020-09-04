@@ -73,6 +73,7 @@ trait LoggerTrait
      */
     public function createLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
+        $targetId = !is_array($modelData) ? $modelData->id : array_keys($modelData)[0];
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
@@ -81,7 +82,7 @@ trait LoggerTrait
                 $fullOldData ?? $modelData,
                 Data::CREATE,
                 $modelNamespace,
-                $modelData->id
+                $targetId
             );
 
         $this->logRepository->createByUser(
@@ -89,7 +90,36 @@ trait LoggerTrait
             $fields
         );
         Log::channel('dmovie-create')
-            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has created [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has created [' . $modelNamespace . ']: ID=['.$targetId.']', $modelData);
+    }
+
+    /**
+     * @param $logTypeData
+     * @param $modelData
+     * @param $modelNamespace
+     * @param $fullOldData
+     */
+    private function _log($logTypeData, $modelData, $modelNamespace, $fullOldData)
+    {
+        $targetId = !is_array($modelData) ? $modelData->id : array_keys($modelData)[0];
+        $fields = [
+            'short_message' => $logTypeData["short_message"],
+            'message' => $fullOldData ?? $modelData,
+            'action' => $logTypeData["action"],
+            'target_model' => $modelNamespace,
+            'target_id' => $targetId
+        ];
+
+        $this->logRepository->createByUser(
+            auth()->user(),
+            $fields
+        );
+        if (!is_array($modelData)) {
+            $modelData = $modelData->toArray();
+        }
+
+        Log::channel($logTypeData["log_channel"])
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] '. $logTypeData["short_message"] .' [' . $modelNamespace . ']: ID=['.$targetId.']', $modelData);
     }
 
     /**
@@ -103,6 +133,7 @@ trait LoggerTrait
      */
     public function deleteLog($modelData, $modelNamespace, $fullOldData = null, $extraFields = [])
     {
+        $targetId = !is_array($modelData) ? $modelData->id : array_keys($modelData)[0];
         /** @var array $fields */
         $fields = $this->logRepository
             ->defaultFields(
@@ -111,15 +142,18 @@ trait LoggerTrait
                 $fullOldData ?? $modelData,
                 Data::DELETE,
                 $modelNamespace,
-                $modelData->id
+                $targetId
             );
 
         $this->logRepository->createByUser(
             auth()->user(),
             $fields
         );
+        if (!is_array($modelData)) {
+            $modelData = $modelData->toArray();
+        }
         Log::channel('dmovie-delete')
-            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has deleted [' . $modelNamespace . ']: ID=['.$modelData->id.']', $modelData->toArray());
+            ->info('User: ID=[' . auth()->user()->getAuthIdentifier() . '] has deleted [' . $modelNamespace . ']: ID=['.$targetId.']', $modelData);
     }
 
     /**
@@ -173,26 +207,53 @@ trait LoggerTrait
         $fullOldData = null,
         $extraFields = []
     ) {
+        if (!is_array($newData)) {
+            $modelData = clone $newData;
+        }
+        if (!is_array($newData)) {
+            $newData = [$newData->id => $newData->toArray()];
+        }
+
+        if (!is_array($oldData)) {
+            $oldData = [$oldData->id => $oldData->toArray()];
+        }
+        if ($noLogCompareFields) {
+            $oldData = unset_no_compare_field($oldData, $noLogCompareFields);
+            $newData = unset_no_compare_field($newData, $noLogCompareFields);
+        }
+
+        $logData = $this->arrayDiffRecursive($oldData, $newData, $replaceSpecificKey);
+        if ($logType == 'create') {
+            $this->_log(
+                [
+                    "short_message" => Data::CREATE_MSG,
+                    "action" => Data::CREATE,
+                    "log_channel" => "dmovie-create"
+                ],
+                $modelData ?? $newData,
+                $modelNamespace,
+                $logData
+            );
+            // $this->createLog($modelData ?? $newData, $modelNamespace, $logData);
+        }
         if ($logType == 'update') {
             if ($getChangedData) {
                 $this->updateLog($newData, $modelNamespace, $getChangedData, $extraFields = []);
             } else {
-                if (!is_array($newData)) {
-                    $modelData = clone $newData;
-                }
-                if (!is_array($oldData)) {
-                    $oldData = [$oldData->id => $oldData->toArray()];
-                }
-                if (!is_array($newData)) {
-                    $newData = [$newData->id => $newData->toArray()];
-                }
-                if ($noLogCompareFields) {
-                    $oldData = unset_no_compare_field($oldData, $noLogCompareFields);
-                    $newData = unset_no_compare_field($newData, $noLogCompareFields);
-                }
-                $logData = $this->arrayDiffRecursive($oldData, $newData, $replaceSpecificKey);
                 $this->updateLog($modelData ?? $newData, $modelNamespace, $logData, $extraFields = []);
             }
+        }
+        if ($logType == 'delete') {
+            $this->_log(
+                [
+                    "short_message" => Data::DELETE_MSG,
+                    "action" => Data::DELETE,
+                    "log_channel" => "dmovie-delete"
+                ],
+                $oldData,
+                $modelNamespace,
+                $logData
+            );
         }
     }
 

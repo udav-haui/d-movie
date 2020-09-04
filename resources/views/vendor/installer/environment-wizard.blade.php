@@ -33,6 +33,13 @@
             {{ trans('installer_messages.environment.wizard.tabs.application') }}
         </label>
 
+        <input id="tab4" type="radio" name="tabs" class="tab-input" />
+        <label for="tab4" class="tab-label">
+            <i class="fa fa-user fa-2x fa-fw" aria-hidden="true"></i>
+            <br />
+            {{ __("Admin Account") }}
+        </label>
+
         <form method="post" action="{{ route('LaravelInstaller::environmentSaveWizard') }}" class="tabs-wrap">
             <div class="tab" id="tab1content">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -117,12 +124,26 @@
                 <div class="form-group {{ $errors->has('app_url') ? ' has-error ' : '' }}">
                     <label for="app_url">
                         {{ trans('installer_messages.environment.wizard.form.app_url_label') }}
+                        <strong style="color: red">*</strong>
                     </label>
-                    <input type="url" name="app_url" id="app_url" value="http://localhost" placeholder="{{ trans('installer_messages.environment.wizard.form.app_url_placeholder') }}" />
+                    <input type="url" name="app_url" id="app_url" value="{{ url('/') }}" placeholder="{{ trans('installer_messages.environment.wizard.form.app_url_placeholder') }}" />
                     @if ($errors->has('app_url'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
                             {{ $errors->first('app_url') }}
+                        </span>
+                    @endif
+                </div>
+
+                <div class="form-group {{ $errors->has('admin_path') ? ' has-error ' : '' }}">
+                    <label for="admin_path">
+                        {{ __("Admin path") }} <strong style="color: red">*</strong>
+                    </label>
+                    <input type="text" required name="admin_path" id="admin_path" value="admin" placeholder="{{ __("Admin path") }}" />
+                    @if ($errors->has('admin_path'))
+                        <span class="error-block">
+                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                            {{ $errors->first('admin_path') }}
                         </span>
                     @endif
                 </div>
@@ -184,7 +205,7 @@
                     <label for="database_name">
                         {{ trans('installer_messages.environment.wizard.form.db_name_label') }}
                     </label>
-                    <input type="text" name="database_name" id="database_name" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.db_name_placeholder') }}" />
+                    <input type="text" name="database_name" id="database_name" value="{{ old("database_name") }}" placeholder="{{ trans('installer_messages.environment.wizard.form.db_name_placeholder') }}" />
                     @if ($errors->has('database_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -197,7 +218,7 @@
                     <label for="database_username">
                         {{ trans('installer_messages.environment.wizard.form.db_username_label') }}
                     </label>
-                    <input type="text" name="database_username" id="database_username" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.db_username_placeholder') }}" />
+                    <input type="text" name="database_username" id="database_username" value="{{ old("database_username") }}" placeholder="{{ trans('installer_messages.environment.wizard.form.db_username_placeholder') }}" />
                     @if ($errors->has('database_username'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -231,15 +252,9 @@
                     <input type="radio" name="appSettingsTabs" id="appSettingsTab1" value="null" checked />
                     <label for="appSettingsTab1">
                         <span>
-                            {{ trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_title') }}
+                            {!! trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_title') !!}
                         </span>
                     </label>
-
-
-
-
-
-
 
                     <div class="info">
                         <div class="form-group {{ $errors->has('broadcast_driver') ? ' has-error ' : '' }}">
@@ -251,7 +266,7 @@
                                     </a>
                                 </sup>
                             </label>
-                            <input type="text" name="broadcast_driver" id="broadcast_driver" value="log" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_placeholder') }}" />
+                            <input type="text" name="broadcast_driver" id="broadcast_driver" value="redis" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_placeholder') }}" />
                             @if ($errors->has('broadcast_driver'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -269,7 +284,7 @@
                                     </a>
                                 </sup>
                             </label>
-                            <input type="text" name="cache_driver" id="cache_driver" value="file" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_placeholder') }}" />
+                            <input type="text" name="cache_driver" id="cache_driver" value="redis" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_placeholder') }}" />
                             @if ($errors->has('cache_driver'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -391,9 +406,22 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group {{ $errors->has('mail_encryption') ? ' has-error ' : '' }}">
+                            <label for="mail_encryption">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_encryption_label') }}</label>
+                            <input type="text" name="mail_encryption" id="mail_encryption" value="ssl" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_encryption_placeholder') }}" />
+                            @if ($errors->has('mail_encryption'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('mail_encryption') }}
+                                </span>
+                            @endif
+                        </div>
                         <div class="form-group {{ $errors->has('mail_host') ? ' has-error ' : '' }}">
                             <label for="mail_host">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_host_label') }}</label>
                             <input type="text" name="mail_host" id="mail_host" value="smtp.mailtrap.io" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_host_placeholder') }}" />
+                            <label class="text-help">
+                                {{ __("The server name (eg smtp.gmail.com).") }}
+                            </label>
                             @if ($errors->has('mail_host'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -403,7 +431,10 @@
                         </div>
                         <div class="form-group {{ $errors->has('mail_port') ? ' has-error ' : '' }}">
                             <label for="mail_port">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_port_label') }}</label>
-                            <input type="number" name="mail_port" id="mail_port" value="2525" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_port_placeholder') }}" />
+                            <input type="number" name="mail_port" id="mail_port" value="465" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_port_placeholder') }}" />
+                            <label class="text-help">
+                                {{ __("Use 465 (ssl) or 587 (tls)") }}
+                            </label>
                             @if ($errors->has('mail_port'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -413,7 +444,7 @@
                         </div>
                         <div class="form-group {{ $errors->has('mail_username') ? ' has-error ' : '' }}">
                             <label for="mail_username">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_username_label') }}</label>
-                            <input type="text" name="mail_username" id="mail_username" value="null" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_username_placeholder') }}" />
+                            <input type="text" name="mail_username" id="mail_username" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_username_placeholder') }}" />
                             @if ($errors->has('mail_username'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -423,7 +454,7 @@
                         </div>
                         <div class="form-group {{ $errors->has('mail_password') ? ' has-error ' : '' }}">
                             <label for="mail_password">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_password_label') }}</label>
-                            <input type="text" name="mail_password" id="mail_password" value="null" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_password_placeholder') }}" />
+                            <input type="password" name="mail_password" id="mail_password" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_password_placeholder') }}" />
                             @if ($errors->has('mail_password'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -431,19 +462,10 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group {{ $errors->has('mail_encryption') ? ' has-error ' : '' }}">
-                            <label for="mail_encryption">{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_encryption_label') }}</label>
-                            <input type="text" name="mail_encryption" id="mail_encryption" value="null" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.mail_encryption_placeholder') }}" />
-                            @if ($errors->has('mail_encryption'))
-                                <span class="error-block">
-                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-                                    {{ $errors->first('mail_encryption') }}
-                                </span>
-                            @endif
-                        </div>
+
                     </div>
                 </div>
-                <div class="block margin-bottom-2">
+                <div class="block">
                     <input type="radio" name="appSettingsTabs" id="appSettingsTab4" value="null"/>
                     <label for="appSettingsTab4">
                         <span>
@@ -491,6 +513,156 @@
                         </div>
                     </div>
                 </div>
+                <div class="block">
+                    <input type="radio" name="appSettingsTabs" id="appSettingsTab5" value="null"/>
+                    <label for="appSettingsTab5">
+                        <span>
+                            {{ __("Facebook Provider") }}
+                        </span>
+                    </label>
+                    <div class="info">
+                        <div class="form-group {{ $errors->has('facebook_app_id') ? ' has-error ' : '' }}">
+                            <label for="facebook_app_id">
+                                {{ __("Facebook App Id") }}
+                            </label>
+                            <input type="text" name="facebook_app_id" id="facebook_app_id" value="" placeholder="{{ __("Facebook App Id") }}" />
+                            @if ($errors->has('facebook_app_id'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('facebook_app_id') }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group {{ $errors->has('facebook_app_secret') ? ' has-error ' : '' }}">
+                            <label for="facebook_app_secret">
+                                {{ __("Facebook App Secret") }}
+                            </label>
+                            <input type="password" name="facebook_app_secret" id="facebook_app_secret" value="" placeholder="{{ __("Facebook App Secret") }}" />
+                            @if ($errors->has('facebook_app_secret'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('facebook_app_secret') }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="block margin-bottom-2">
+                    <input type="radio" name="appSettingsTabs" id="appSettingsTab6" value="null"/>
+                    <label for="appSettingsTab6">
+                        <span>
+                            {{ __("Google Provider") }}
+                        </span>
+                    </label>
+                    <div class="info">
+                        <div class="form-group {{ $errors->has('google_client_id') ? ' has-error ' : '' }}">
+                            <label for="google_client_id">
+                                {{ __("Google Client Id") }}
+                            </label>
+                            <input type="text" name="google_client_id" id="google_client_id" value="" placeholder="{{ __("Google Client Id") }}" />
+                            @if ($errors->has('google_client_id'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('google_client_id') }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group {{ $errors->has('google_client_secret') ? ' has-error ' : '' }}">
+                            <label for="google_client_secret">
+                                {{ __("Google Client Secret") }}
+                            </label>
+                            <input type="password" name="google_client_secret" id="google_client_secret" value="" placeholder="{{ __("Google Client Secret") }}" />
+                            @if ($errors->has('google_client_secret'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('google_client_secret') }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="form-group {{ $errors->has('nocaptcha_sitekey') ? ' has-error ' : '' }}">
+                            <label for="nocaptcha_sitekey">
+                                {{ __("reCaptcha Site Key") }}
+                            </label>
+                            <input type="text" name="nocaptcha_sitekey" id="nocaptcha_sitekey" value="" placeholder="{{ __("reCaptcha Site Key") }}" />
+                            @if ($errors->has('nocaptcha_sitekey'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('nocaptcha_sitekey') }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="form-group {{ $errors->has('nocaptcha_secret') ? ' has-error ' : '' }}">
+                            <label for="nocaptcha_secret">
+                                {{ __("reCaptcha Secret") }}
+                            </label>
+                            <input type="password" name="nocaptcha_secret" id="nocaptcha_secret" value="" placeholder="{{ __("reCaptcha Secret") }}" />
+                            @if ($errors->has('nocaptcha_secret'))
+                                <span class="error-block">
+                                    <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ $errors->first('nocaptcha_secret') }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="button" onclick="showCreateAdminAccount();return false">
+                        {{ __("Create admin account") }}
+                        <i class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="tab" id="tab4content">
+                <div class="form-group {{ $errors->has('username') ? ' has-error ' : '' }}">
+                    <label for="username">
+                        {{ __("Username") }} <strong style="color: red">*</strong>
+                    </label>
+                    <input required type="text" name="admin_user[username]" id="username" value="{{ old('admin_user')["username"] ?? null }}" placeholder="{{ __("Place the admin username") }}" />
+                    @if ($errors->has('username'))
+                        <span class="error-block">
+                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                            {{ $errors->first('username') }}
+                        </span>
+                    @endif
+                </div>
+                <div class="form-group {{ $errors->has('email') ? ' has-error ' : '' }}">
+                    <label for="email">
+                        {{ __("Email") }} <strong style="color: red">*</strong>
+                    </label>
+                    <input required type="email" name="admin_user[email]" id="email" value="{{ old('admin_user')["email"] ?? null }}" placeholder="{{ __("Place the admin email") }}" />
+                    @if ($errors->has('email'))
+                        <span class="error-block">
+                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                            {{ $errors->first('email') }}
+                        </span>
+                    @endif
+                </div>
+                <div class="form-group {{ $errors->has('password') ? ' has-error ' : '' }}">
+                    <label for="password">
+                        {{ __("Password") }} <strong style="color: red">*</strong>
+                    </label>
+                    <input required type="password" name="admin_user[password]" id="password" value="" placeholder="{{ __("Place the admin password") }}" />
+                    @if ($errors->has('password'))
+                        <span class="error-block">
+                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                            {{ $errors->first('password') }}
+                        </span>
+                    @endif
+                </div>
+                <div class="form-group {{ $errors->has('password_confirmation') ? ' has-error ' : '' }}">
+                    <label for="password_confirmation">
+                        {{ __("Password confirmation") }} <strong style="color: red">*</strong>
+                    </label>
+                    <input type="password" name="admin_user[password_confirmation]" id="password_confirmation" value="" required placeholder="{{ __("Password confirmation") }}" />
+                    @if ($errors->has('password_confirmation'))
+                        <span class="error-block">
+                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                            {{ $errors->first('password_confirmation') }}
+                        </span>
+                    @endif
+                </div>
+
                 <div class="buttons">
                     <button class="button" type="submit">
                         {{ trans('installer_messages.environment.wizard.form.buttons.install') }}
@@ -518,6 +690,9 @@
         }
         function showApplicationSettings() {
             document.getElementById('tab3').checked = true;
+        }
+        function showCreateAdminAccount() {
+            document.getElementById('tab4').checked = true;
         }
     </script>
 @endsection

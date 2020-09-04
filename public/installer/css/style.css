@@ -3017,7 +3017,7 @@ input[type=text] {
           align-items: center; }
 
 .box {
-  width: 450px;
+  width: 800px;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
   -webkit-box-sizing: border-box;
@@ -3291,6 +3291,15 @@ input[type='text'] {
   width: calc(100% - 24px);
   margin: 0 auto 1em; }
 
+input[type='email'] {
+    outline: none;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    padding: 10px 12px;
+    width: calc(100% - 24px);
+    margin: 0 auto 1em;
+}
+
 input[type='password'] {
   outline: none;
   border: 1px solid #dddddd;
@@ -3368,14 +3377,14 @@ input[type='number'] {
     .block input[type='radio']:checked + label {
       background-color: #a9a9a9; }
     .block input[type='radio']:checked ~ .info {
-      height: 200px;
+      height: 350px;
       overflow-y: auto;
       -webkit-transition: all 0.3s ease-in-out;
       transition: all 0.3s ease-in-out; }
     .block input[type='radio'] ~ .info > div {
       padding-top: 15px; }
   .block label {
-    width: 450px;
+    width: 800px;
     max-width: 100%;
     cursor: pointer; }
   .block span {

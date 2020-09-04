@@ -431,7 +431,7 @@ class User extends Authenticatable
      */
     public function isActive()
     {
-        return $this->getStatus() === self::ACTIVE;
+        return $this->getStatus() == self::ACTIVE;
     }
 
     /**

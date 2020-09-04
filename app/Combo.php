@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Combo extends Model
+class Combo extends AbstractModel
 {
     protected $guarded = [];
 

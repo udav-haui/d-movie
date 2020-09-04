@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class FilmSchedule extends Model
+class FilmSchedule extends AbstractModel
 {
     protected $table = 'film_show';
 

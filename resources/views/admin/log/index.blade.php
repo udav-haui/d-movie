@@ -26,7 +26,7 @@
 @section('bottom.js')
     <script src="{{ asset('adminhtml/assets/plugins/datatables/plugins/ellipsis.js') }}"></script>
     <script>
-        let colOrder = [[1, 'desc']],
+        let colOrder = [[0, 'desc']],
             aoColumns = [
                 {
                     data: 'id',
@@ -45,10 +45,6 @@
                     data: 'action',
                     name: 'action',
                     //render: $.fn.dataTable.render.ellipsis( 50, true )
-                },
-                {
-                    data: 'target_model',
-                    name: 'target_model'
                 },
                 {
                     data: 'task',
@@ -76,13 +72,6 @@
                     createdCell: function (td, cellData, rowData, row, col) {
                         $(td).attr('data-id', rowData.id);
                         $(td).attr('scope', 'action');
-                    }
-                },
-                {
-                    targets: 'data-cell-target_model',
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).attr('data-id', rowData.id);
-                        $(td).attr('scope', 'target_model');
                     }
                 },
                 {
@@ -134,7 +123,6 @@
                     <th class="data-cell-created_at">{{ __('Create Time') }}</th>
                     <th class="data-cell-user_id">{{ __('By User') }}</th>
                     <th class="data-cell-action">{{ __('Action') }}</th>
-                    <th class="data-cell-target_model">{{ __('Target Model') }}</th>
                     <th class="no-sort min-width-65 data-cell-task">{{ __('Task') }}</th>
                 </tr>
                 </thead>

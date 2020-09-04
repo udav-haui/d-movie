@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class Log extends Model
+class Log extends AbstractModel
 {
     protected $guarded = [];
 

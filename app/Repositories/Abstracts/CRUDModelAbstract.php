@@ -200,11 +200,19 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
             $model = $this->model::create($fields);
 
             if ($isWriteLog) {
-                $this->createLog($model, $this->model);
+                $this->log(
+                    [],
+                    [$model->getId() => $model->toArray()],
+                    $this->model,
+                    null,
+                    'create',
+                    [],
+                    $specificKeyToReplaceInLog ?? []
+                );
             }
             return $model;
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -343,9 +351,15 @@ abstract class CRUDModelAbstract implements CRUDModelInterface
             if ($modelId !== null) {
                 $model = $this->find($modelId);
             }
+            $oldData = clone $model;
             $model->delete();
             if ($isWriteLog) {
-                $this->deleteLog($model, $this->model);
+                $this->log(
+                    $oldData,
+                    [],
+                    $this->model,
+                    null
+                );
             }
             return $model;
         } catch (\Illuminate\Database\QueryException $exception) {

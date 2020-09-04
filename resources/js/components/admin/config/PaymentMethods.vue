@@ -21,6 +21,18 @@
                                 <div class="row">
                                     <div class="col-lg-12 form-horizontal">
                                         <div class="form-group">
+                                            <label for="momo_status" class="col-sm-3 control-label">{{ __("Status")}}</label>
+                                            <div class="col-sm-9">
+                                                <select2
+                                                    id="momo_status"
+                                                    name="momo_status"
+                                                    v-model="momoConfig.status"
+                                                    :options="options"
+                                                    :settings="{ width: '100%', containerCssClass: ' dmovie-border', minimumResultsForSearch: -1 }" />
+<!--                                                <status :options="options" v-model="momoConfig.status"></status>-->
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="momo_partner_code" class="col-sm-3 control-label">Partner Code</label>
                                             <div class="col-sm-9">
                                                 <input type="text" v-model="momoConfig.partnerCode" class="form-control" id="momo_partner_code" :placeholder="partnerCodePlaceHolderTextHint">
@@ -56,7 +68,9 @@
 </template>
 
 <script>
-    import { getPaymentMethodsConfig, savePaymentMethodsConfig } from '../../../store/apis/store_config/store_config_api'
+    import { getPaymentMethodsConfig, savePaymentMethodsConfig } from '../../../store/apis/store_config/store_config_api';
+    import Select2 from 'v-select2-component';
+    Vue.component('select2', Select2);
     export default {
         mounted: function() {
             console.log("mounted");
@@ -85,7 +99,12 @@
         ],
         data: function() {
             return {
+                options: [
+                    { id: 1, text: "Enable" },
+                    { id: 0, text: "Disable" },
+                ],
                 momoConfig: {
+                    status: "1",
                     partnerCode: null,
                     accessKey: null,
                     secretKey: null,

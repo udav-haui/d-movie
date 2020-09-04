@@ -1047,6 +1047,15 @@ input[type='text'] {
 	width: calc(100% - 24px);
 	margin: 0 auto 1em;
 }
+input[type='email'] {
+    outline: none;
+    border: 1px solid $color_27;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 3px;
+    padding: 10px 12px;
+    width: calc(100% - 24px);
+    margin: 0 auto 1em;
+}
 input[type='password'] {
 	outline: none;
 	border: 1px solid $color_27;

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App
  */
-class SocialAccount extends Model
+class SocialAccount extends AbstractModel
 {
     /**
      * Fillable array

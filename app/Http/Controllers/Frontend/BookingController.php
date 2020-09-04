@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Booking;
+use App\Config;
 use App\Events\NewBookingEvent;
 use App\Events\NewJoinerEvent;
 use App\Events\SeatSelectedStatus;
+use App\Exceptions\UnknownException;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\ComboRepositoryInterface;
 use App\Repositories\Interfaces\FilmRepositoryInterface;
+use App\Repositories\Interfaces\StoreConfigRepositoryInterface;
 use App\Repositories\Interfaces\TimeRepositoryInterface;
 use App\Repositories\Interfaces\SeatRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -23,6 +26,11 @@ use App\Time;
  */
 class BookingController extends Controller
 {
+    /**
+     * @var StoreConfigRepositoryInterface
+     */
+    protected $configRepository;
+
     /**
      * @var FilmRepositoryInterface
      */
@@ -51,7 +59,7 @@ class BookingController extends Controller
     /**
      * @var UserRepositoryInterface
      */
-    private $userRepository;
+    protected $userRepository;
 
     /**
      * BookingController constructor.
@@ -62,6 +70,7 @@ class BookingController extends Controller
      * @param UserRepositoryInterface $userRepository
      * @param ComboRepositoryInterface $comboRepository
      * @param BookingRepositoryInterface $bookingRepository
+     * @param StoreConfigRepositoryInterface $configRepository
      */
     public function __construct(
         FilmRepositoryInterface $filmRepository,
@@ -69,7 +78,8 @@ class BookingController extends Controller
         TimeRepositoryInterface $timeRepository,
         UserRepositoryInterface $userRepository,
         ComboRepositoryInterface $comboRepository,
-        BookingRepositoryInterface $bookingRepository
+        BookingRepositoryInterface $bookingRepository,
+        StoreConfigRepositoryInterface $configRepository
     ) {
         $this->middleware('auth');
         $this->filmRepository = $filmRepository;
@@ -78,6 +88,7 @@ class BookingController extends Controller
         $this->bookingRepository = $bookingRepository;
         $this->seatRepository = $seatRepository;
         $this->userRepository = $userRepository;
+        $this->configRepository = $configRepository;
     }
 
     /**
@@ -130,13 +141,15 @@ class BookingController extends Controller
 
         $exceptShows = [$show->getId()];
 
+        $momoPaymentMethod = $this->getMomoPaymentMethod();
+
         if ($countSeat > 0) {
             $seats = $show->seats()
                 ->orderByDesc('row')
                 ->orderByDesc('number')
                 ->get();
             $seats = $seats->groupBy('row');
-            return view('frontend.booking.show', compact('film', 'time', 'show', 'seats', 'bookedSeats', 'combos'));
+            return view('frontend.booking.show', compact('momoPaymentMethod','film', 'time', 'show', 'seats', 'bookedSeats', 'combos'));
         }
 
         $flag = true;
@@ -253,10 +266,15 @@ class BookingController extends Controller
                         }
                     }
 
-                    $endpoint = config('app.momo.endpoint');
-                    $partnerCode = config('app.momo.partner_code');
-                    $accessKey = config('app.momo.access_key');
-                    $secretKey = config('app.momo.secret_key');
+                    $momoPaymentMethod = $this->getMomoPaymentMethod();
+                    if (!$momoPaymentMethod || !$momoPaymentMethod["status"]) {
+                        throw new UnknownException(__("No payment method available. Please try again!"));
+                    }
+
+                    $endpoint = $momoPaymentMethod["end_point"];
+                    $partnerCode = $momoPaymentMethod["partner_code"];
+                    $accessKey = $momoPaymentMethod["access_key"];
+                    $secretKey = $momoPaymentMethod["secret_key"];
                     $amount = request('totalPrice');
                     $requestId = 'DM'.time();
 
@@ -294,9 +312,9 @@ class BookingController extends Controller
                     $result = json_decode($jsonResult, true);
                     return $result['payUrl'];
                 }
-                throw new \Exception(__('Something went wrong! Please try again.'));
+                throw new UnknownException(__('Something went wrong! Please try again.'));
             }
-            throw new \Exception(__('Something went wrong! Please try again.'));
+            throw new UnknownException(__('Something went wrong! Please try again.'));
         } catch (\Exception $exception) {
             return request()->ajax() ?
                 response()->json([
@@ -416,5 +434,23 @@ class BookingController extends Controller
         }
 
         return collect(['status' => 200]);
+    }
+
+    protected function getMomoPaymentMethod()
+    {
+        $paymentConfig = $this->configRepository
+            ->getFilter(null, [Config::SECTION_ID => Config::SALES_PAYMENT_METHOD_SECTION_ID])
+            ->first();
+        if ($paymentConfig) {
+            $paymentConfigVal = $paymentConfig->getConfigValues();
+            $momoPaymentConfigVal = $paymentConfigVal["momo"] ?? null;
+            $momoData['status'] = $momoPaymentConfigVal['status'] ?? 0;
+            $momoData['partner_code'] = $momoPaymentConfigVal['partner_code'] ?? null;
+            $momoData['access_key'] = $momoPaymentConfigVal['access_key'] ?? null;
+            $momoData['end_point'] = $momoPaymentConfigVal['end_point'] ?? null;
+            $momoData['secret_key'] =  $momoPaymentConfigVal['secret_key'] ?? null;
+            return $momoData;
+        }
+        return null;
     }
 }

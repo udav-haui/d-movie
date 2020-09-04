@@ -175,7 +175,7 @@
                                               id="description"
                                               rows="10"
                                               class="form-control dmovie-border
-                                        @error('description') invalid @enderror">{{ old('description', $cinema->getDescription()) }}</textarea>
+                                        @error('description') invalid @enderror">{!! old('description', $cinema->getDescription())  !!}</textarea>
                                     @error('description')
                                     <span class="error text-danger dmovie-error-box">{{ $message }}</span>
                                     @enderror

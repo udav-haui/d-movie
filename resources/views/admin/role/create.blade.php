@@ -63,6 +63,7 @@
                            type="text"
                            class="form-control @error('role_name') invalid @enderror dmovie-textbox-border"
                            id="role_name"
+                           value="{{ old('role_name') }}"
                            placeholder="{{ __('Role name') }}" />
                     @error('role_name')
                         <span class="error text-danger dmovie-error-box">{{ $message }}</span>

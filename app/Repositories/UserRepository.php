@@ -112,12 +112,16 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
         'state' => \App\User::ACTIVE
     ])
     {
-        $users = User::query();
+        try {
+            $users = User::query();
 
-        foreach ($fields as $field => $value) {
-            $this->addToFilter($field, $value, $users);
+            foreach ($fields as $field => $value) {
+                $this->addToFilter($field, $value, $users);
+            }
+            return $users->get();
+        } catch (\Exception $e) {
+            return [];
         }
-        return $users->get();
     }
 
     /**
@@ -332,7 +336,13 @@ class UserRepository extends CRUDModelAbstract implements UserRepositoryInterfac
                         $user->deleteAvatarFile();
                     }
 
-                    $this->deleteLog($user, User::class);
+                    $this->log(
+                        $user,
+                        [],
+                        $this->model,
+                        null,
+                        'delete'
+                    );
 
                     return true;
                 }

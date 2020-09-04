@@ -14,23 +14,20 @@ class LogViewHelper
 {
     /**
      * @param Log $log
+     * @return string
      */
     public function printLog($log)
     {
         $targetModel = $log->getTargetModel();
         $targetModel = new $targetModel();
         switch ($log->getTargetModel()) {
-            case \App\Role::class:
+            case Role::class:
                 return $targetModel::renderLogHtml($log->getMessage(), $log);
             case \App\Config::class:
                 $logData = \App\Config::mappingLogData($log->getMessage());
                 return $targetModel::renderLogHtml([1=>$logData]);
-            default;
-                return "";
+            default:
+                return \App\AbstractModel::renderLogHtml($log->getMessage(), $log);
         }
-        if ($targetModel instanceof \App\Role) {
-            return $targetModel::renderLogHtml($log->getMessage(), $log);
-        }
-        dd($log->getMessage());
     }
 }

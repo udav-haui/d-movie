@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Exceptions\NoChangedException;
+use App\Exceptions\UnknownException;
 use App\Http\Requests\AssignRequest;
 use App\Http\Requests\RoleRequest;
 use App\Permission;
@@ -34,7 +35,7 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
         try {
             $role = $this->create([
                 'role_name' => $request->role_name
-            ]);
+            ], false);
 
             if ($role) {
                 if ($request->permissions != null) {
@@ -43,13 +44,26 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
                         $role->permissions()->create([
                             'permission_code' => $permission
                         ]);
-                        // $this->createLog($createdPermission, Permission::class);
                     }
                 }
+
+                $logData[$role->getId()] = [
+                    'role_name' => $role->getRoleName(),
+                    'users' => [],
+                    'permissions' => $permissions ?? []
+                ];
+                $this->log(
+                    [],
+                    $logData,
+                    $this->model,
+                    null,
+                    'create',
+                    $this->getMergeNeverBeChangedFields(['role_id'])
+                );
             }
             return $role;
         } catch (\Exception $exception) {
-            throw new \Exception(__('Ooops, something wrong appended.' . $exception->getMessage()));
+            throw new UnknownException(__('Ooops, something wrong appended.' . $exception->getMessage()));
         }
     }
 
@@ -135,11 +149,26 @@ class RoleRepository extends CRUDModelAbstract implements RoleRepositoryInterfac
             $role = $this->find($roleId);
         }
         try {
+            $permissions = $role->permissions->toArray();
+            $oldRole = clone $role;
             $role->permissions()->delete();
             parent::delete(null, $role);
+
+            $logData[$oldRole->getId()] = [
+                'role_name' => $oldRole->getRoleName(),
+                'permissions' => $permissions ?? []
+            ];
+            $this->log(
+                $logData,
+                [],
+                $this->model,
+                null,
+                'delete',
+                $this->getMergeNeverBeChangedFields(['role_id'])
+            );
             return true;
         } catch (\Exception $exception) {
-            throw new \Exception(__('Ooops, something wrong appended.' . $exception->getMessage()));
+            throw new UnknownException(__('Ooops, something wrong appended.' . $exception->getMessage()));
         }
     }
 

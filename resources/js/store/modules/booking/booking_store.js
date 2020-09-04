@@ -8,7 +8,7 @@ export default {
         soldSeats: [],
         selectedCombo: {},
         allPackages: {},
-        paymentMethod: 'momo'
+        paymentMethod: ''
     },
     getters: {
         film: function (state) {

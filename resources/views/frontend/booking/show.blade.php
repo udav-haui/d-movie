@@ -37,6 +37,7 @@
 
         <select-seats
             user="{{ json_encode(auth()->user()) }}"
+            :momo="{{ json_encode($momoPaymentMethod) }}"
             base-url="{{ asset('/') }}"
             film-name="{{ $film->getTitle() }}"
             home-route="{{ route('frontend.home') }}"

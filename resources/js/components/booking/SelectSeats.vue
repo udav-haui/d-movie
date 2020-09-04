@@ -523,6 +523,7 @@
         },
         props: [
             "baseUrl",
+            "momo",
             "filmName",
             "homeRoute",
             "filmId",
@@ -710,40 +711,45 @@
                 if (method === 'vnpay') {
 
                     alert(unavailableMethodText);
-                    $('#card1').trigger('click');
                 } else {
-                    this.$store.dispatch('setPaymentMethod', method);
+                    if (this.momo && this.momo.status == "0") {
+                        alert("Phương thức thanh toán không khả dụng. Vui lòng thử lại sau");
+                    } else {
+                        this.$store.dispatch('setPaymentMethod', method);
+                    }
                 }
 
             },
             openConfirm (event) {
-                let self = this;
-                let store = this.$store;
-                let langSelector = $('.lang-text'),
-                    confirmToPaymentTitle = langSelector.attr('confirm-to-payment-title'),
-                    confirmToPaymentText = langSelector.attr('confirm-to-payment-text'),
-                    confirmToPaymentRecheck = langSelector.attr('confirm-to-payment-recheck'),
-                    confirmToPaymentConfirm = langSelector.attr('confirm-to-payment-confirm');
-                // Open customized confirmation dialog window
-                $.fancyConfirm({
-                    title     : confirmToPaymentTitle,
-                    message   : confirmToPaymentText,
-                    okButton  : confirmToPaymentConfirm,
-                    noButton  : confirmToPaymentRecheck,
-                    callback  : function (value) {
-                        if (value) {
-                            store.dispatch('setPackages', self.decodeTime);
-                            let data = self.$store.getters.allPackages;
-                            axios.post(route('bookings.api.getPayment', data))
-                                .then(res => {
-                                    window.location.replace(res.data);
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                });
+                if (this.paymentMethod !== '' && this.momo.status == '1') {
+                    let self = this;
+                    let store = this.$store;
+                    let langSelector = $('.lang-text'),
+                        confirmToPaymentTitle = langSelector.attr('confirm-to-payment-title'),
+                        confirmToPaymentText = langSelector.attr('confirm-to-payment-text'),
+                        confirmToPaymentRecheck = langSelector.attr('confirm-to-payment-recheck'),
+                        confirmToPaymentConfirm = langSelector.attr('confirm-to-payment-confirm');
+                    // Open customized confirmation dialog window
+                    $.fancyConfirm({
+                        title     : confirmToPaymentTitle,
+                        message   : confirmToPaymentText,
+                        okButton  : confirmToPaymentConfirm,
+                        noButton  : confirmToPaymentRecheck,
+                        callback  : function (value) {
+                            if (value) {
+                                store.dispatch('setPackages', self.decodeTime);
+                                let data = self.$store.getters.allPackages;
+                                axios.post(route('bookings.api.getPayment', data))
+                                    .then(res => {
+                                        window.location.replace(res.data);
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                    });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         },
     }

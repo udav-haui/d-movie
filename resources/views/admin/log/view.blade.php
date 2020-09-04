@@ -41,14 +41,18 @@
 @endsection
 
 @section('content')
-    <?php $user = $log->getUser(); ?>
+    <?php
+        $user = $log->getUser();
+        $model = $log->getTargetModel();
+        $model = new $model();
+    ?>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">{!! __('Log ID: <code>:id</code>', ['id' => $log->getId()]) !!}</div>
                 <div class="panel-body">
                     <h3 class="box-title">
-                        {!! __('Log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ['day' => $log->created_at, 'user' => $user->getUserName() ?? $user->getEmail() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
+                        {!! __('<strong>:modelName</strong>\'s log change in <d-mark-create>:day</d-mark-create> by <code>:user</code>', ["modelName" => $model::getModelName(), 'day' => get_format_day_date_string($log->created_at, "Do MMMM YYYY, ".__("[on] :time", ["time" => "h:mm:ss A"])), 'user' => $user->getUserName() ?? $user->getEmail() . "&nbsp;&#45;&nbsp;" . $user->getRoleName()]) !!}
                     </h3>
                     {!! $helper->printLog($log) !!}
                 </div>

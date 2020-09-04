@@ -37,7 +37,7 @@ class StaticPageController extends Controller
      */
     public function show(string $pageSlug)
     {
-        return view('frontend.static_page.show', compact('globalSlug', 'pageSlug'));
+        return view('frontend.static_page.show', compact( 'pageSlug'));
     }
 
     /**
